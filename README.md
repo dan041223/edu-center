@@ -1,3 +1,4 @@
+# EDUCENTER
 ## VISIÓN GENERAL:
 Proponemos un proyecto que sirva, de forma común, a cualquier centro que requiera de nuestra aplicación. Es decir, EduCenter será una aplicación de fácil modificación y personalización, de forma que se sienta único para cada centro que adquiera está herramienta.
 ## VERSIÓN BASE
