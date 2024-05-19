@@ -1,0 +1,28 @@
+import 'package:educenter/models/asignatura.dart';
+import 'package:educenter/models/clase.dart';
+import 'package:educenter/models/usuario.dart';
+
+class Examen {
+  int id_examen;
+  int id_asignatura;
+  String id_profesor;
+  int id_clase;
+  DateTime fecha_examen;
+  int trimestre;
+  bool realizado;
+  Asignatura asignatura;
+  Usuario profesor;
+  Clase clase;
+
+  Examen(
+      this.id_examen,
+      this.id_asignatura,
+      this.id_profesor,
+      this.id_clase,
+      this.fecha_examen,
+      this.trimestre,
+      this.realizado,
+      this.asignatura,
+      this.profesor,
+      this.clase);
+}
