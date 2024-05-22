@@ -83,17 +83,17 @@ class _childProfileState extends State<childProfile> {
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(20.0),
                       ),
-                      child: Padding(
-                        padding: const EdgeInsets.all(40.0),
-                        child: InkWell(
-                          onTap: () {
-                            Navigator.of(context).push(MaterialPageRoute(
-                                builder: (context) => AsignaturasHijo(
-                                      asignaturas: asignaturas,
-                                      alumnoElegido: widget.alumnoElegido,
-                                    )));
-                          },
-                          child: const Column(
+                      child: InkWell(
+                        onTap: () {
+                          Navigator.of(context).push(MaterialPageRoute(
+                              builder: (context) => AsignaturasHijo(
+                                    asignaturas: asignaturas,
+                                    alumnoElegido: widget.alumnoElegido,
+                                  )));
+                        },
+                        child: const Padding(
+                          padding: EdgeInsets.all(40.0),
+                          child: Column(
                             mainAxisAlignment: MainAxisAlignment.center,
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: <Widget>[
@@ -116,16 +116,16 @@ class _childProfileState extends State<childProfile> {
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(20.0),
                       ),
-                      child: Padding(
-                        padding: const EdgeInsets.all(40.0),
-                        child: InkWell(
-                          onTap: () {
-                            Navigator.of(context).push(MaterialPageRoute(
-                                builder: (context) => EventosHijo(
-                                      alumnoElegido: widget.alumnoElegido,
-                                    )));
-                          },
-                          child: const Column(
+                      child: InkWell(
+                        onTap: () {
+                          Navigator.of(context).push(MaterialPageRoute(
+                              builder: (context) => EventosHijo(
+                                    alumnoElegido: widget.alumnoElegido,
+                                  )));
+                        },
+                        child: const Padding(
+                          padding: EdgeInsets.all(40.0),
+                          child: Column(
                             mainAxisAlignment: MainAxisAlignment.center,
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: <Widget>[
@@ -148,20 +148,20 @@ class _childProfileState extends State<childProfile> {
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(20.0),
                       ),
-                      child: Padding(
-                        padding: const EdgeInsets.all(40.0),
-                        child: InkWell(
-                          onTap: () {
-                            Navigator.of(context).push(MaterialPageRoute(
-                                builder: (context) => AnotacionesHijo(
-                                    alumnoElegido: widget.alumnoElegido)));
-                          },
-                          child: const Column(
+                      child: InkWell(
+                        onTap: () {
+                          Navigator.of(context).push(MaterialPageRoute(
+                              builder: (context) => AnotacionesHijo(
+                                  alumnoElegido: widget.alumnoElegido)));
+                        },
+                        child: const Padding(
+                          padding: EdgeInsets.all(40.0),
+                          child: Column(
                             mainAxisAlignment: MainAxisAlignment.center,
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: <Widget>[
                               Text(
-                                "Citas",
+                                "Examenes",
                                 textAlign: TextAlign.center,
                                 style: TextStyle(
                                   fontSize: 20,

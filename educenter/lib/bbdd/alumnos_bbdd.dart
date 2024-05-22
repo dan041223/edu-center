@@ -1,3 +1,4 @@
+import 'package:educenter/bbdd/eventos_bbdd.dart';
 import 'package:educenter/bbdd/examenes_bbdd.dart';
 import 'package:educenter/bbdd/users_bbdd.dart';
 import 'package:educenter/models/alumno.dart';
@@ -5,6 +6,7 @@ import 'package:educenter/models/asignatura.dart';
 import 'package:educenter/models/clase.dart';
 import 'package:educenter/models/evento.dart';
 import 'package:educenter/models/examen.dart';
+import 'package:educenter/models/incidencia.dart';
 import 'package:educenter/models/usuario.dart';
 
 class AlumnosBBDD {
@@ -63,6 +65,11 @@ class AlumnosBBDD {
         .inFilter("id_evento", idsEventosAlumno);
 
     for (var eventosMap in eventosData) {
+      List<Usuario> listaProfesores =
+          await EventosBBDD().getListaProfesoresEvento(eventosMap["id_evento"]);
+      List<Alumno> listaAlumnos =
+          await EventosBBDD().getListaAlumnosEvento(eventosMap["id_evento"]);
+
       Evento evento = Evento(
           eventosMap["id_evento"],
           eventosMap["nombre_evento"],
@@ -70,7 +77,10 @@ class AlumnosBBDD {
           eventosMap["tipo_evento"],
           DateTime.parse(eventosMap["fecha_inicio"]),
           DateTime.parse(eventosMap["fecha_fin"]),
-          eventosMap["ubicacion"]);
+          eventosMap["ubicacion"],
+          listaProfesores,
+          listaAlumnos,
+          eventosMap["color_evento"]);
 
       listaEventos.add(evento);
     }
@@ -119,5 +129,30 @@ class AlumnosBBDD {
     }
 
     return listaExamenes;
+  }
+
+  Future<List<Incidencia>> getListaIncidenciasDeAlumno(Alumno alumno) async {
+    List<Incidencia> listaIncidencias = List.empty(growable: true);
+    var incidenciasAlumno = await usersBBDD.supabase
+        .from("incidencias")
+        .select("*")
+        .eq("id_alumno", alumno.id_alumno);
+
+    for (var incidencia in incidenciasAlumno) {
+      Incidencia incidenciaObjeto = Incidencia(
+          incidencia["id_incidencia"],
+          incidencia["tipo_incidencia"],
+          incidencia["titulo_incidencia"],
+          incidencia["descripcion"],
+          incidencia["id_alumno"],
+          incidencia["id_profesor"],
+          incidencia["justificante_url"],
+          incidencia["justificacion"],
+          incidencia["justificante_nombre"],
+          DateTime.parse(incidencia["fecha_incidencia"]));
+      listaIncidencias.add(incidenciaObjeto);
+    }
+
+    return listaIncidencias;
   }
 }

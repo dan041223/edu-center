@@ -1,3 +1,6 @@
+import 'package:educenter/asignaturas_hijo.dart';
+import 'package:educenter/bbdd/examenes_alumno_bbdd.dart';
+import 'package:educenter/bbdd/users_bbdd.dart';
 import 'package:educenter/drawer.dart';
 import 'package:educenter/models/alumno.dart';
 import 'package:educenter/models/clase.dart';
@@ -22,11 +25,22 @@ class ExamenPanel extends StatefulWidget {
 }
 
 class _ExamenPanelState extends State<ExamenPanel> {
+  String notaExamen = "N/A";
   @override
   void initState() {
     Future.delayed(const Duration(milliseconds: 1), () async {
+      notaExamen = await ExamenesAlumnoBBDD().getNotaExamenAlumno(
+          widget.alumnoSeleccionado, widget.examenSeleccionado);
       setState(() {});
     });
+  }
+
+  Color hexToColor(String hex) {
+    hex = hex.replaceAll('#', '');
+    if (hex.length == 6) {
+      hex = 'FF$hex';
+    }
+    return Color(int.parse(hex, radix: 16));
   }
 
   @override
@@ -39,84 +53,140 @@ class _ExamenPanelState extends State<ExamenPanel> {
         body: Column(
           children: [
             Container(
-                decoration: const BoxDecoration(
+                decoration: BoxDecoration(
                     shape: BoxShape.rectangle,
-                    color: Colors.blue,
-                    borderRadius: BorderRadius.all(Radius.circular(20))),
+                    color: hexToColor(
+                        widget.examenSeleccionado.asignatura.color_codigo),
+                    borderRadius: const BorderRadius.all(Radius.circular(20))),
                 margin: const EdgeInsets.symmetric(horizontal: 10),
                 padding: const EdgeInsets.all(25),
                 height: 150,
                 child: Stack(
                   children: [
                     Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text(
-                          widget.examenSeleccionado.fecha_examen
-                              .toString()
-                              .split(" ")
-                              .first,
-                          style: const TextStyle(fontSize: 15),
+                        Column(
+                          children: [
+                            Text(
+                              "${widget.alumnoSeleccionado.nombre} ${widget.alumnoSeleccionado.apellido}",
+                              style: const TextStyle(
+                                  fontSize: 15, fontWeight: FontWeight.bold),
+                            ),
+                          ],
                         ),
-                        const SizedBox(
-                          width: 10,
-                        ),
-                        const Icon(Icons.calendar_month)
+                        Column(
+                          children: [
+                            const Icon(Icons.calendar_month),
+                            Text(
+                              widget.examenSeleccionado.fecha_examen
+                                  .toString()
+                                  .split(" ")
+                                  .first,
+                              style: const TextStyle(
+                                  fontSize: 15, fontWeight: FontWeight.bold),
+                            ),
+                            const SizedBox(
+                              width: 10,
+                            ),
+                          ],
+                        )
                       ],
                     ),
                     Align(
                       alignment: Alignment.bottomLeft,
                       child: Text(
                         widget.examenSeleccionado.asignatura.nombre_asignatura,
-                        style: const TextStyle(fontSize: 25),
+                        style: const TextStyle(
+                            fontSize: 25, fontWeight: FontWeight.bold),
                       ),
                     ),
                   ],
                 )),
-            Container(
-              margin: const EdgeInsets.all(10),
-              padding: const EdgeInsets.all(15),
-              decoration: const BoxDecoration(
-                  shape: BoxShape.rectangle,
-                  color: Colors.grey,
-                  borderRadius: BorderRadius.all(Radius.circular(20))),
-              child: Column(
-                children: [
-                  const Row(
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                child: Scrollbar(
+                  child: GridView(
+                    physics: const AlwaysScrollableScrollPhysics(),
+                    gridDelegate:
+                        const SliverGridDelegateWithFixedCrossAxisCount(
+                      childAspectRatio: 1,
+                      crossAxisCount: 2,
+                      crossAxisSpacing: 4.0,
+                      mainAxisSpacing: 4.0,
+                    ),
                     children: [
-                      Text(
-                        "Profesor al mando:",
-                        style: TextStyle(fontSize: 25),
-                      )
+                      Card(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          children: [
+                            Container(
+                              width: 100,
+                              height: 100,
+                              clipBehavior: Clip.antiAlias,
+                              decoration: const BoxDecoration(
+                                shape: BoxShape.circle,
+                              ),
+                              child: Column(
+                                children: [
+                                  Image.network(
+                                    'https://st2.depositphotos.com/1025740/5398/i/950/depositphotos_53989307-stock-photo-profesora.jpg',
+                                    fit: BoxFit.cover,
+                                  ),
+                                ],
+                              ),
+                            ),
+                            Text(
+                              "${widget.profesorSeleccionado.nombre} ${widget.profesorSeleccionado.apellido}",
+                              style:
+                                  const TextStyle(fontWeight: FontWeight.bold),
+                            )
+                          ],
+                        ),
+                      ),
+                      Card(
+                          child: Column(
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        children: [
+                          Text(
+                            widget.examenSeleccionado.trimestre.toString(),
+                            style: const TextStyle(
+                                fontSize: 80, fontWeight: FontWeight.bold),
+                          ),
+                          const Text(
+                            "Trimestre",
+                            style: TextStyle(fontWeight: FontWeight.bold),
+                          )
+                        ],
+                      )),
+                      Card(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          children: [
+                            Text(
+                              "$notaExamen/10",
+                              style: const TextStyle(
+                                  fontSize: 50, fontWeight: FontWeight.bold),
+                            ),
+                            const Text(
+                              "Calificacion",
+                              style: TextStyle(fontWeight: FontWeight.bold),
+                            ),
+                          ],
+                        ),
+                      ),
+                      const Card(
+                        child: Text("Hola"),
+                      ),
+                      const Card(
+                        child: Text("Hola"),
+                      ),
                     ],
                   ),
-                  Row(
-                    children: [
-                      Container(
-                        margin: EdgeInsets.only(top: 15),
-                        width: 80,
-                        height: 80,
-                        clipBehavior: Clip.antiAlias,
-                        decoration: const BoxDecoration(
-                          shape: BoxShape.circle,
-                        ),
-                        child: Image.network(
-                          'https://medac.es/sites/default/files/blog/destacadas/Qu%C3%A9%20hay%20que%20estudiar%20para%20ser%20profesora%20de%20infantil.jpg',
-                          fit: BoxFit.cover,
-                        ),
-                      ),
-                      const SizedBox(
-                        width: 20,
-                      ),
-                      Text(
-                        "${widget.profesorSeleccionado.nombre} ${widget.profesorSeleccionado.apellido}",
-                        style: const TextStyle(fontSize: 20),
-                      ),
-                    ],
-                  ),
-                ],
+                ),
               ),
-            )
+            ),
           ],
         ));
   }
