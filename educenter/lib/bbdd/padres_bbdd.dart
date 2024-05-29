@@ -1,7 +1,9 @@
 // ignore_for_file: camel_case_types
 
+import 'package:educenter/bbdd/alumnos_bbdd.dart';
 import 'package:educenter/bbdd/users_bbdd.dart';
 import 'package:educenter/models/alumno.dart';
+import 'package:educenter/models/clase.dart';
 
 class padresBBDD {
   Future<List<Alumno>> getHijosDePadre() async {
@@ -26,12 +28,14 @@ class padresBBDD {
     //         .eq("id_padre", usersBBDD.user!.id));
 
     for (var hijosMap in hijosData) {
+      Clase clase = await AlumnosBBDD().getClaseAlumno(hijosMap["id_clase"]);
       Alumno alumno = Alumno(
           hijosMap["id_alumno"],
           hijosMap["nombre"],
           hijosMap["apellido"],
           DateTime.parse(hijosMap["fecha_nacimiento"]),
-          hijosMap["id_clase"]);
+          hijosMap["id_clase"],
+          clase);
       listaHijos.add(alumno);
     }
     return listaHijos;

@@ -3,7 +3,7 @@ import 'package:educenter/bbdd/examenes_bbdd.dart';
 import 'package:educenter/drawer.dart';
 import 'package:educenter/evento.dart';
 import 'package:educenter/eventos_examenes.dart';
-import 'package:educenter/examen.dart';
+import 'package:educenter/examen_panel.dart';
 import 'package:educenter/models/alumno.dart';
 import 'package:educenter/models/asignatura.dart';
 import 'package:educenter/models/evento.dart';

@@ -49,7 +49,8 @@ class AasignaturasHijoState extends State<AsignaturasHijo> {
               ),
               Text(
                 "${widget.alumnoElegido.nombre} ${widget.alumnoElegido.apellido}",
-                style: const TextStyle(fontSize: 25),
+                style:
+                    const TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
               )
             ],
           ),
@@ -86,19 +87,22 @@ class AasignaturasHijoState extends State<AsignaturasHijo> {
                                         widget.asignaturas[index],
                                   )));
                         },
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: <Widget>[
-                            Text(
-                              widget.asignaturas[index].nombre_asignatura,
-                              textAlign: TextAlign.center,
-                              style: const TextStyle(
-                                fontSize: 20,
-                                color: Colors.black,
+                        child: Padding(
+                          padding: const EdgeInsets.all(20.0),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: <Widget>[
+                              Text(
+                                widget.asignaturas[index].nombre_asignatura,
+                                textAlign: TextAlign.center,
+                                style: const TextStyle(
+                                    fontSize: 20,
+                                    color: Colors.black,
+                                    fontWeight: FontWeight.bold),
                               ),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
                       ),
                     );

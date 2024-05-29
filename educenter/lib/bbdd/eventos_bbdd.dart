@@ -1,5 +1,7 @@
+import 'package:educenter/bbdd/alumnos_bbdd.dart';
 import 'package:educenter/bbdd/users_bbdd.dart';
 import 'package:educenter/models/alumno.dart';
+import 'package:educenter/models/clase.dart';
 import 'package:educenter/models/evento.dart';
 import 'package:educenter/models/usuario.dart';
 
@@ -21,12 +23,15 @@ class EventosBBDD {
     List<Alumno> listaAlumnos = List.empty(growable: true);
 
     for (var alumnosMap in alumnosData) {
+      Clase clase = await AlumnosBBDD().getClaseAlumno(alumnosMap["id_clase"]);
+
       Alumno alumno = Alumno(
           alumnosMap["id_alumno"],
           alumnosMap["nombre"],
           alumnosMap["apellido"],
           DateTime.parse(alumnosMap["fecha_nacimiento"]),
-          alumnosMap["id_clase"]);
+          alumnosMap["id_clase"],
+          clase);
       listaAlumnos.add(alumno);
     }
     return listaAlumnos;

@@ -1,6 +1,4 @@
-import 'package:educenter/asignaturas_hijo.dart';
 import 'package:educenter/bbdd/examenes_alumno_bbdd.dart';
-import 'package:educenter/bbdd/users_bbdd.dart';
 import 'package:educenter/drawer.dart';
 import 'package:educenter/models/alumno.dart';
 import 'package:educenter/models/clase.dart';
@@ -26,11 +24,15 @@ class ExamenPanel extends StatefulWidget {
 
 class _ExamenPanelState extends State<ExamenPanel> {
   String notaExamen = "N/A";
+  String observacionesProfeAlumnoExamen = "N/A";
   @override
   void initState() {
     Future.delayed(const Duration(milliseconds: 1), () async {
       notaExamen = await ExamenesAlumnoBBDD().getNotaExamenAlumno(
           widget.alumnoSeleccionado, widget.examenSeleccionado);
+      observacionesProfeAlumnoExamen = await ExamenesAlumnoBBDD()
+          .getObservacionesExamenAlumno(
+              widget.alumnoSeleccionado, widget.examenSeleccionado);
       setState(() {});
     });
   }
@@ -103,90 +105,87 @@ class _ExamenPanelState extends State<ExamenPanel> {
                     ),
                   ],
                 )),
-            Expanded(
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                child: Scrollbar(
-                  child: GridView(
-                    physics: const AlwaysScrollableScrollPhysics(),
-                    gridDelegate:
-                        const SliverGridDelegateWithFixedCrossAxisCount(
-                      childAspectRatio: 1,
-                      crossAxisCount: 2,
-                      crossAxisSpacing: 4.0,
-                      mainAxisSpacing: 4.0,
-                    ),
-                    children: [
-                      Card(
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.spaceAround,
-                          children: [
-                            Container(
-                              width: 100,
-                              height: 100,
-                              clipBehavior: Clip.antiAlias,
-                              decoration: const BoxDecoration(
-                                shape: BoxShape.circle,
-                              ),
-                              child: Column(
-                                children: [
-                                  Image.network(
-                                    'https://st2.depositphotos.com/1025740/5398/i/950/depositphotos_53989307-stock-photo-profesora.jpg',
-                                    fit: BoxFit.cover,
-                                  ),
-                                ],
-                              ),
-                            ),
-                            Text(
-                              "${widget.profesorSeleccionado.nombre} ${widget.profesorSeleccionado.apellido}",
-                              style:
-                                  const TextStyle(fontWeight: FontWeight.bold),
-                            )
-                          ],
-                        ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 10.0),
+              child: Column(
+                children: [
+                  Expanded(
+                    child: GridView(
+                      physics: const AlwaysScrollableScrollPhysics(),
+                      gridDelegate:
+                          const SliverGridDelegateWithFixedCrossAxisCount(
+                        childAspectRatio: 1,
+                        crossAxisCount: 2,
+                        crossAxisSpacing: 4.0,
+                        mainAxisSpacing: 4.0,
                       ),
-                      Card(
+                      children: [
+                        Card(
                           child: Column(
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
-                        children: [
-                          Text(
-                            widget.examenSeleccionado.trimestre.toString(),
-                            style: const TextStyle(
-                                fontSize: 80, fontWeight: FontWeight.bold),
+                            mainAxisAlignment: MainAxisAlignment.spaceAround,
+                            children: [
+                              Container(
+                                width: 100,
+                                height: 100,
+                                clipBehavior: Clip.antiAlias,
+                                decoration: const BoxDecoration(
+                                  shape: BoxShape.circle,
+                                ),
+                                child: Image.network(
+                                  'https://st2.depositphotos.com/1025740/5398/i/950/depositphotos_53989307-stock-photo-profesora.jpg',
+                                  fit: BoxFit.cover,
+                                ),
+                              ),
+                              Text(
+                                "${widget.profesorSeleccionado.nombre} ${widget.profesorSeleccionado.apellido}",
+                                style: const TextStyle(
+                                    fontWeight: FontWeight.bold),
+                              ),
+                            ],
                           ),
-                          const Text(
-                            "Trimestre",
-                            style: TextStyle(fontWeight: FontWeight.bold),
-                          )
-                        ],
-                      )),
-                      Card(
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.spaceAround,
-                          children: [
-                            Text(
-                              "$notaExamen/10",
-                              style: const TextStyle(
-                                  fontSize: 50, fontWeight: FontWeight.bold),
-                            ),
-                            const Text(
-                              "Calificacion",
-                              style: TextStyle(fontWeight: FontWeight.bold),
-                            ),
-                          ],
                         ),
-                      ),
-                      const Card(
-                        child: Text("Hola"),
-                      ),
-                      const Card(
-                        child: Text("Hola"),
-                      ),
-                    ],
+                        Card(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.spaceAround,
+                            children: [
+                              Text(
+                                widget.examenSeleccionado.trimestre.toString(),
+                                style: const TextStyle(
+                                  fontSize: 80,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              const Text(
+                                "Trimestre",
+                                style: TextStyle(fontWeight: FontWeight.bold),
+                              ),
+                            ],
+                          ),
+                        ),
+                        Card(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.spaceAround,
+                            children: [
+                              Text(
+                                "$notaExamen/10",
+                                style: const TextStyle(
+                                  fontSize: 50,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              const Text(
+                                "Calificación",
+                                style: TextStyle(fontWeight: FontWeight.bold),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
-                ),
+                ],
               ),
-            ),
+            )
           ],
         ));
   }

@@ -16,12 +16,16 @@ class AlumnosBBDD {
         .select('*')
         .eq("id_alumno", idAlumno)
         .single();
+
+    Clase clase = await getClaseAlumno(data["id_clase"]);
+
     Alumno alumnoSeleccionado = Alumno(
         data["id_alumno"],
         data["nombre"],
         data["apellido"],
         DateTime.parse(data["fecha_nacimiento"]),
-        data["id_clase"]);
+        data["id_clase"],
+        clase);
     return alumnoSeleccionado;
   }
 
@@ -86,6 +90,19 @@ class AlumnosBBDD {
     }
 
     return listaEventos;
+  }
+
+  Future<Clase> getClaseAlumno(int idClase) async {
+    var data = await usersBBDD.supabase
+        .from("clases")
+        .select("*")
+        .eq("id_clase", idClase)
+        .single();
+
+    Clase clase =
+        Clase(data["id_clase"], data["nombre_clase"], data["id_centro"]);
+
+    return clase;
   }
 
   Future<List<Examen>> getListaExamenesDeAlumno(Alumno alumno) async {
