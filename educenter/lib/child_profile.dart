@@ -3,8 +3,10 @@
 import 'package:educenter/anotaciones_hijo.dart';
 import 'package:educenter/asignaturas_hijo.dart';
 import 'package:educenter/bbdd/alumnos_bbdd.dart';
+import 'package:educenter/bbdd/clases_bbdd.dart';
 import 'package:educenter/drawer.dart';
 import 'package:educenter/eventos_hijo.dart';
+import 'package:educenter/horario.dart';
 import 'package:educenter/models/alumno.dart';
 import 'package:educenter/models/asignatura.dart';
 import 'package:educenter/models/examen.dart';
@@ -74,7 +76,13 @@ class _childProfileState extends State<childProfile> {
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 10.0),
               child: Scrollbar(
-                child: ListView(
+                child: GridView(
+                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                    childAspectRatio: 1,
+                    crossAxisCount: 2,
+                    crossAxisSpacing: 4.0,
+                    mainAxisSpacing: 4.0,
+                  ),
                   physics: const AlwaysScrollableScrollPhysics(),
                   children: [
                     Card(
@@ -83,27 +91,30 @@ class _childProfileState extends State<childProfile> {
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(20.0),
                       ),
-                      child: Padding(
-                        padding: const EdgeInsets.all(40.0),
-                        child: InkWell(
-                          onTap: () {
-                            Navigator.of(context).push(MaterialPageRoute(
-                                builder: (context) => AsignaturasHijo(
-                                      asignaturas: asignaturas,
-                                      alumnoElegido: widget.alumnoElegido,
-                                    )));
-                          },
-                          child: const Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.center,
+                      child: InkWell(
+                        onTap: () {
+                          Navigator.of(context).push(MaterialPageRoute(
+                              builder: (context) => AsignaturasHijo(
+                                    asignaturas: asignaturas,
+                                    alumnoElegido: widget.alumnoElegido,
+                                  )));
+                        },
+                        child: const Padding(
+                          padding: EdgeInsets.all(20.0),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                             children: <Widget>[
+                              Icon(
+                                Icons.book,
+                                size: 40,
+                              ),
                               Text(
                                 "Asignaturas",
                                 textAlign: TextAlign.center,
                                 style: TextStyle(
-                                  fontSize: 20,
-                                  color: Colors.black,
-                                ),
+                                    fontSize: 20,
+                                    color: Colors.black,
+                                    fontWeight: FontWeight.bold),
                               ),
                             ],
                           ),
@@ -116,26 +127,29 @@ class _childProfileState extends State<childProfile> {
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(20.0),
                       ),
-                      child: Padding(
-                        padding: const EdgeInsets.all(40.0),
-                        child: InkWell(
-                          onTap: () {
-                            Navigator.of(context).push(MaterialPageRoute(
-                                builder: (context) => EventosHijo(
-                                      alumnoElegido: widget.alumnoElegido,
-                                    )));
-                          },
-                          child: const Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.center,
+                      child: InkWell(
+                        onTap: () {
+                          Navigator.of(context).push(MaterialPageRoute(
+                              builder: (context) => EventosHijo(
+                                    alumnoElegido: widget.alumnoElegido,
+                                  )));
+                        },
+                        child: const Padding(
+                          padding: EdgeInsets.all(20.0),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                             children: <Widget>[
+                              Icon(
+                                Icons.calendar_month,
+                                size: 40,
+                              ),
                               Text(
-                                "Eventos - Examenes",
+                                "Calendario",
                                 textAlign: TextAlign.center,
                                 style: TextStyle(
-                                  fontSize: 20,
-                                  color: Colors.black,
-                                ),
+                                    fontSize: 20,
+                                    color: Colors.black,
+                                    fontWeight: FontWeight.bold),
                               ),
                             ],
                           ),
@@ -148,25 +162,36 @@ class _childProfileState extends State<childProfile> {
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(20.0),
                       ),
-                      child: Padding(
-                        padding: const EdgeInsets.all(40.0),
-                        child: InkWell(
-                          onTap: () {
-                            Navigator.of(context).push(MaterialPageRoute(
-                                builder: (context) => AnotacionesHijo(
-                                    alumnoElegido: widget.alumnoElegido)));
-                          },
-                          child: const Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.center,
+                      child: InkWell(
+                        onTap: () {
+                          // Navigator.of(context).push(MaterialPageRoute(
+                          //     builder: (context) => AnotacionesHijo(
+                          //         alumnoElegido: widget.alumnoElegido)));
+                          ClasesBBDD()
+                              .getHorarioClase(widget.alumnoElegido.id_clase)
+                              .then((horario) => Navigator.of(context).push(
+                                  MaterialPageRoute(
+                                      builder: (context) => Horario(
+                                          alumnoSeleccionado:
+                                              widget.alumnoElegido,
+                                          horario: horario))));
+                        },
+                        child: const Padding(
+                          padding: EdgeInsets.all(20.0),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                             children: <Widget>[
+                              Icon(
+                                Icons.watch_later_outlined,
+                                size: 40,
+                              ),
                               Text(
-                                "Citas",
+                                "Horario",
                                 textAlign: TextAlign.center,
                                 style: TextStyle(
-                                  fontSize: 20,
-                                  color: Colors.black,
-                                ),
+                                    fontSize: 20,
+                                    color: Colors.black,
+                                    fontWeight: FontWeight.bold),
                               ),
                             ],
                           ),

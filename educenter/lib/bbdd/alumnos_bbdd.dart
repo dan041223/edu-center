@@ -1,3 +1,4 @@
+import 'package:educenter/bbdd/eventos_bbdd.dart';
 import 'package:educenter/bbdd/examenes_bbdd.dart';
 import 'package:educenter/bbdd/users_bbdd.dart';
 import 'package:educenter/models/alumno.dart';
@@ -5,6 +6,7 @@ import 'package:educenter/models/asignatura.dart';
 import 'package:educenter/models/clase.dart';
 import 'package:educenter/models/evento.dart';
 import 'package:educenter/models/examen.dart';
+import 'package:educenter/models/incidencia.dart';
 import 'package:educenter/models/usuario.dart';
 
 class AlumnosBBDD {
@@ -14,12 +16,16 @@ class AlumnosBBDD {
         .select('*')
         .eq("id_alumno", idAlumno)
         .single();
+
+    Clase clase = await getClaseAlumno(data["id_clase"]);
+
     Alumno alumnoSeleccionado = Alumno(
         data["id_alumno"],
         data["nombre"],
         data["apellido"],
         DateTime.parse(data["fecha_nacimiento"]),
-        data["id_clase"]);
+        data["id_clase"],
+        clase);
     return alumnoSeleccionado;
   }
 
@@ -63,6 +69,11 @@ class AlumnosBBDD {
         .inFilter("id_evento", idsEventosAlumno);
 
     for (var eventosMap in eventosData) {
+      List<Usuario> listaProfesores =
+          await EventosBBDD().getListaProfesoresEvento(eventosMap["id_evento"]);
+      List<Alumno> listaAlumnos =
+          await EventosBBDD().getListaAlumnosEvento(eventosMap["id_evento"]);
+
       Evento evento = Evento(
           eventosMap["id_evento"],
           eventosMap["nombre_evento"],
@@ -70,12 +81,28 @@ class AlumnosBBDD {
           eventosMap["tipo_evento"],
           DateTime.parse(eventosMap["fecha_inicio"]),
           DateTime.parse(eventosMap["fecha_fin"]),
-          eventosMap["ubicacion"]);
+          eventosMap["ubicacion"],
+          listaProfesores,
+          listaAlumnos,
+          eventosMap["color_evento"]);
 
       listaEventos.add(evento);
     }
 
     return listaEventos;
+  }
+
+  Future<Clase> getClaseAlumno(int idClase) async {
+    var data = await usersBBDD.supabase
+        .from("clases")
+        .select("*")
+        .eq("id_clase", idClase)
+        .single();
+
+    Clase clase =
+        Clase(data["id_clase"], data["nombre_clase"], data["id_centro"]);
+
+    return clase;
   }
 
   Future<List<Examen>> getListaExamenesDeAlumno(Alumno alumno) async {
@@ -113,11 +140,37 @@ class AlumnosBBDD {
           examenesMap["realizado"],
           asignatura,
           profesor,
-          clase);
+          clase,
+          examenesMap["descripcion"]);
 
       listaExamenes.add(examen);
     }
 
     return listaExamenes;
+  }
+
+  Future<List<Incidencia>> getListaIncidenciasDeAlumno(Alumno alumno) async {
+    List<Incidencia> listaIncidencias = List.empty(growable: true);
+    var incidenciasAlumno = await usersBBDD.supabase
+        .from("incidencias")
+        .select("*")
+        .eq("id_alumno", alumno.id_alumno);
+
+    for (var incidencia in incidenciasAlumno) {
+      Incidencia incidenciaObjeto = Incidencia(
+          incidencia["id_incidencia"],
+          incidencia["tipo_incidencia"],
+          incidencia["titulo_incidencia"],
+          incidencia["descripcion"],
+          incidencia["id_alumno"],
+          incidencia["id_profesor"],
+          incidencia["justificante_url"],
+          incidencia["justificacion"],
+          incidencia["justificante_nombre"],
+          DateTime.parse(incidencia["fecha_incidencia"]));
+      listaIncidencias.add(incidenciaObjeto);
+    }
+
+    return listaIncidencias;
   }
 }
