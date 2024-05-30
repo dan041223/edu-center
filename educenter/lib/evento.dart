@@ -49,61 +49,70 @@ class _EventoPanelState extends State<EventoPanel> {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           Container(
-            decoration: BoxDecoration(
-              shape: BoxShape.rectangle,
-              color: hexToColor(widget.eventoSeleccionado.color),
-              borderRadius: BorderRadius.circular(20),
-            ),
-            margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-            padding: const EdgeInsets.all(25),
-            height: 150,
-            child: Stack(
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Column(
-                      children: [
-                        Text(
-                          "${widget.alumnoSeleccionado.nombre} ${widget.alumnoSeleccionado.apellido}",
-                          style: const TextStyle(
-                            fontSize: 15,
-                            fontWeight: FontWeight.bold,
+              decoration: BoxDecoration(
+                  shape: BoxShape.rectangle,
+                  color: hexToColor(widget.eventoSeleccionado.color),
+                  borderRadius: const BorderRadius.all(Radius.circular(20))),
+              margin: const EdgeInsets.all(10),
+              padding: const EdgeInsets.all(25),
+              child: Column(
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            "${widget.alumnoSeleccionado.nombre} ${widget.alumnoSeleccionado.apellido}",
+                            style: const TextStyle(
+                                fontSize: 15, fontWeight: FontWeight.bold),
                           ),
-                        ),
-                      ],
-                    ),
-                    Column(
-                      children: [
-                        const Icon(Icons.calendar_today),
-                        Text(
-                          widget.eventoSeleccionado.fecha_inicio
-                              .toString()
-                              .split(" ")
-                              .first,
-                          style: const TextStyle(
-                            fontSize: 15,
-                            fontWeight: FontWeight.bold,
+                          Text(
+                            widget.eventoSeleccionado.nombre_evento,
+                            style: const TextStyle(
+                                fontSize: 25, fontWeight: FontWeight.bold),
                           ),
-                        ),
-                        const SizedBox(width: 10),
-                      ],
-                    ),
-                  ],
-                ),
-                Align(
-                  alignment: Alignment.bottomLeft,
-                  child: Text(
-                    widget.eventoSeleccionado.nombre_evento,
-                    style: const TextStyle(
-                      fontSize: 25,
-                      fontWeight: FontWeight.bold,
-                    ),
+                        ],
+                      ),
+                      Column(
+                        children: [
+                          Text(
+                            widget.eventoSeleccionado.fecha_inicio
+                                .toString()
+                                .split(" ")
+                                .first,
+                            style: const TextStyle(
+                                fontSize: 15, fontWeight: FontWeight.bold),
+                          ),
+                          const Icon(Icons.calendar_month),
+                          Text(
+                            widget.eventoSeleccionado.fecha_fin
+                                .toString()
+                                .split(" ")
+                                .first,
+                            style: const TextStyle(
+                                fontSize: 15, fontWeight: FontWeight.bold),
+                          ),
+                          const SizedBox(
+                            width: 10,
+                          ),
+                        ],
+                      )
+                    ],
                   ),
-                ),
-              ],
-            ),
-          ),
+                  widget.eventoSeleccionado.descripcion_evento != null &&
+                          widget.eventoSeleccionado.descripcion_evento != ""
+                      ? Padding(
+                          padding: EdgeInsets.only(top: 20),
+                          child: Text(
+                            widget.eventoSeleccionado.descripcion_evento!,
+                            style: TextStyle(fontWeight: FontWeight.bold),
+                          ),
+                        )
+                      : Container()
+                ],
+              )),
           Padding(
             padding: const EdgeInsets.all(20.0),
             child: Column(

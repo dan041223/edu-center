@@ -13,6 +13,7 @@ class Examen {
   Asignatura asignatura;
   Usuario profesor;
   Clase clase;
+  String? descripcion;
 
   Examen(
       this.id_examen,
@@ -24,5 +25,6 @@ class Examen {
       this.realizado,
       this.asignatura,
       this.profesor,
-      this.clase);
+      this.clase,
+      this.descripcion);
 }

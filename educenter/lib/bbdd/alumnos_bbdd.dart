@@ -140,7 +140,8 @@ class AlumnosBBDD {
           examenesMap["realizado"],
           asignatura,
           profesor,
-          clase);
+          clase,
+          examenesMap["descripcion"]);
 
       listaExamenes.add(examen);
     }

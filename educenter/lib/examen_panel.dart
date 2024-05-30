@@ -4,7 +4,9 @@ import 'package:educenter/models/alumno.dart';
 import 'package:educenter/models/clase.dart';
 import 'package:educenter/models/examen.dart';
 import 'package:educenter/models/usuario.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 
 class ExamenPanel extends StatefulWidget {
   Examen examenSeleccionado;
@@ -28,6 +30,7 @@ class _ExamenPanelState extends State<ExamenPanel> {
   @override
   void initState() {
     Future.delayed(const Duration(milliseconds: 1), () async {
+      if (!mounted) return;
       notaExamen = await ExamenesAlumnoBBDD().getNotaExamenAlumno(
           widget.alumnoSeleccionado, widget.examenSeleccionado);
       observacionesProfeAlumnoExamen = await ExamenesAlumnoBBDD()
@@ -60,20 +63,26 @@ class _ExamenPanelState extends State<ExamenPanel> {
                     color: hexToColor(
                         widget.examenSeleccionado.asignatura.color_codigo),
                     borderRadius: const BorderRadius.all(Radius.circular(20))),
-                margin: const EdgeInsets.symmetric(horizontal: 10),
+                margin: const EdgeInsets.all(10),
                 padding: const EdgeInsets.all(25),
-                height: 150,
-                child: Stack(
+                child: Column(
                   children: [
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
                               "${widget.alumnoSeleccionado.nombre} ${widget.alumnoSeleccionado.apellido}",
                               style: const TextStyle(
                                   fontSize: 15, fontWeight: FontWeight.bold),
+                            ),
+                            Text(
+                              widget.examenSeleccionado.asignatura
+                                  .nombre_asignatura,
+                              style: const TextStyle(
+                                  fontSize: 25, fontWeight: FontWeight.bold),
                             ),
                           ],
                         ),
@@ -95,97 +104,88 @@ class _ExamenPanelState extends State<ExamenPanel> {
                         )
                       ],
                     ),
-                    Align(
-                      alignment: Alignment.bottomLeft,
-                      child: Text(
-                        widget.examenSeleccionado.asignatura.nombre_asignatura,
-                        style: const TextStyle(
-                            fontSize: 25, fontWeight: FontWeight.bold),
-                      ),
-                    ),
+                    widget.examenSeleccionado.descripcion != null &&
+                            widget.examenSeleccionado.descripcion != ""
+                        ? Padding(
+                            padding: EdgeInsets.only(top: 20),
+                            child: Text(
+                              widget.examenSeleccionado.descripcion!,
+                              style: TextStyle(fontWeight: FontWeight.bold),
+                            ),
+                          )
+                        : Container()
                   ],
                 )),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 10.0),
-              child: Column(
+              child: GridView(
+                shrinkWrap: true,
+                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                  childAspectRatio: 1,
+                  crossAxisCount: 2,
+                  crossAxisSpacing: 4.0,
+                  mainAxisSpacing: 4.0,
+                ),
                 children: [
-                  Expanded(
-                    child: GridView(
-                      physics: const AlwaysScrollableScrollPhysics(),
-                      gridDelegate:
-                          const SliverGridDelegateWithFixedCrossAxisCount(
-                        childAspectRatio: 1,
-                        crossAxisCount: 2,
-                        crossAxisSpacing: 4.0,
-                        mainAxisSpacing: 4.0,
-                      ),
+                  Card(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
                       children: [
-                        Card(
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.spaceAround,
-                            children: [
-                              Container(
-                                width: 100,
-                                height: 100,
-                                clipBehavior: Clip.antiAlias,
-                                decoration: const BoxDecoration(
-                                  shape: BoxShape.circle,
-                                ),
-                                child: Image.network(
-                                  'https://st2.depositphotos.com/1025740/5398/i/950/depositphotos_53989307-stock-photo-profesora.jpg',
-                                  fit: BoxFit.cover,
-                                ),
-                              ),
-                              Text(
-                                "${widget.profesorSeleccionado.nombre} ${widget.profesorSeleccionado.apellido}",
-                                style: const TextStyle(
-                                    fontWeight: FontWeight.bold),
-                              ),
-                            ],
+                        Container(
+                          width: 100,
+                          height: 100,
+                          clipBehavior: Clip.antiAlias,
+                          decoration: const BoxDecoration(
+                            shape: BoxShape.circle,
+                          ),
+                          child: Image.network(
+                            'https://st2.depositphotos.com/1025740/5398/i/950/depositphotos_53989307-stock-photo-profesora.jpg',
+                            fit: BoxFit.cover,
                           ),
                         ),
-                        Card(
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.spaceAround,
-                            children: [
-                              Text(
-                                widget.examenSeleccionado.trimestre.toString(),
-                                style: const TextStyle(
-                                  fontSize: 80,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                              const Text(
-                                "Trimestre",
-                                style: TextStyle(fontWeight: FontWeight.bold),
-                              ),
-                            ],
+                        Text(
+                          "${widget.profesorSeleccionado.nombre} ${widget.profesorSeleccionado.apellido}",
+                          style: const TextStyle(fontWeight: FontWeight.bold),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Card(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      children: [
+                        Text(
+                          widget.examenSeleccionado.trimestre.toString(),
+                          style: const TextStyle(
+                            fontSize: 80,
+                            fontWeight: FontWeight.bold,
                           ),
                         ),
-                        Card(
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.spaceAround,
-                            children: [
-                              Text(
-                                "$notaExamen/10",
-                                style: const TextStyle(
-                                  fontSize: 50,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                              const Text(
-                                "Calificación",
-                                style: TextStyle(fontWeight: FontWeight.bold),
-                              ),
-                            ],
-                          ),
+                        const Text(
+                          "Trimestre",
+                          style: TextStyle(fontWeight: FontWeight.bold),
                         ),
                       ],
                     ),
                   ),
                 ],
               ),
-            )
+            ),
+            Container(
+                decoration: BoxDecoration(
+                    shape: BoxShape.rectangle,
+                    color: hexToColor(
+                        widget.examenSeleccionado.asignatura.color_codigo),
+                    borderRadius: const BorderRadius.all(Radius.circular(20))),
+                margin: const EdgeInsets.all(10),
+                padding: const EdgeInsets.all(25),
+                child: Column(
+                  children: [
+                    Row(
+                      children: [],
+                    )
+                  ],
+                ))
           ],
         ));
   }
