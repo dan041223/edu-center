@@ -66,6 +66,7 @@ class _ExamenPanelState extends State<ExamenPanel> {
                 margin: const EdgeInsets.all(10),
                 padding: const EdgeInsets.all(25),
                 child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -106,12 +107,25 @@ class _ExamenPanelState extends State<ExamenPanel> {
                     ),
                     widget.examenSeleccionado.descripcion != null &&
                             widget.examenSeleccionado.descripcion != ""
-                        ? Padding(
-                            padding: EdgeInsets.only(top: 20),
-                            child: Text(
-                              widget.examenSeleccionado.descripcion!,
-                              style: TextStyle(fontWeight: FontWeight.bold),
-                            ),
+                        ? Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              SizedBox(
+                                height: 20,
+                              ),
+                              Text(
+                                "A tener en cuenta...",
+                                style: const TextStyle(
+                                    fontSize: 18, fontWeight: FontWeight.bold),
+                              ),
+                              SizedBox(
+                                height: 10,
+                              ),
+                              Text(
+                                widget.examenSeleccionado.descripcion!,
+                                style: TextStyle(fontWeight: FontWeight.bold),
+                              ),
+                            ],
                           )
                         : Container()
                   ],
@@ -180,9 +194,38 @@ class _ExamenPanelState extends State<ExamenPanel> {
                 margin: const EdgeInsets.all(10),
                 padding: const EdgeInsets.all(25),
                 child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Row(
-                      children: [],
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        const Text(
+                          "Nota:",
+                          style: TextStyle(
+                              fontSize: 40, fontWeight: FontWeight.bold),
+                        ),
+                        Text(
+                          "$notaExamen/10",
+                          style: const TextStyle(
+                              fontSize: 50, fontWeight: FontWeight.bold),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(
+                      height: 20,
+                    ),
+                    Text(
+                      "¿Que tal lo ha hecho ${widget.alumnoSeleccionado.nombre}?",
+                      style: const TextStyle(
+                          fontSize: 18, fontWeight: FontWeight.bold),
+                    ),
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    Text(
+                      observacionesProfeAlumnoExamen,
+                      style: const TextStyle(
+                          fontSize: 15, fontWeight: FontWeight.bold),
                     )
                   ],
                 ))
