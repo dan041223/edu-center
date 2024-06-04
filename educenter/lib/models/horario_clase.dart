@@ -1,6 +1,7 @@
+// ignore_for_file: non_constant_identifier_names
+
 import 'package:educenter/models/asignatura.dart';
 import 'package:educenter/models/clase.dart';
-import 'package:flutter/material.dart';
 
 class HorarioClase {
   int id_clase;

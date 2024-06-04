@@ -9,7 +9,6 @@ class Examen {
   int id_clase;
   DateTime fecha_examen;
   int trimestre;
-  bool realizado;
   Asignatura asignatura;
   Usuario profesor;
   Clase clase;
@@ -22,7 +21,6 @@ class Examen {
       this.id_clase,
       this.fecha_examen,
       this.trimestre,
-      this.realizado,
       this.asignatura,
       this.profesor,
       this.clase,

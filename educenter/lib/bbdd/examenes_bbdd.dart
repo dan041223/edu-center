@@ -1,7 +1,7 @@
+import 'package:educenter/bbdd/profesores_bbdd.dart';
 import 'package:educenter/bbdd/users_bbdd.dart';
 import 'package:educenter/models/asignatura.dart';
 import 'package:educenter/models/clase.dart';
-import 'package:educenter/models/examen.dart';
 import 'package:educenter/models/usuario.dart';
 
 class ExamenesBBDD {
@@ -20,12 +20,15 @@ class ExamenesBBDD {
         .eq("id_asignatura", idAsignatura)
         .single();
 
+    Usuario profesor = await ProfesoresBBDD()
+        .getProfesorDeAsignatura(asignatura["id_asignatura"]);
     Asignatura asignaturaObjeto = Asignatura(
         asignatura["id_asignatura"],
         asignatura["id_clase"],
         asignatura["id_profesor"],
         asignatura["nombre_asignatura"],
-        asignatura["color_codigo"]);
+        asignatura["color_codigo"],
+        profesor);
 
     return asignaturaObjeto;
   }
@@ -39,20 +42,22 @@ class ExamenesBBDD {
 
     String idProfesor = data["id_profesor"].toString();
 
-    var asignatura = await usersBBDD.supabase
+    var usuario = await usersBBDD.supabase
         .from("usuarios")
         .select("*")
         .eq("id_usuario", idProfesor)
         .single();
 
     Usuario usuarioObjeto = Usuario(
-        asignatura["id_usuario"],
-        asignatura["nombre"],
-        asignatura["apellido"],
-        asignatura["dni"],
-        asignatura["id_clase"],
-        asignatura["id_centro"],
-        asignatura["tipo_usuario"]);
+        usuario["id_usuario"],
+        usuario["nombre"],
+        usuario["apellido"],
+        usuario["dni"],
+        usuario["id_clase"],
+        usuario["id_centro"],
+        usuario["tipo_usuario"],
+        usuario["url_foto_perfil"],
+        usuario["email_contacto"]);
 
     return usuarioObjeto;
   }

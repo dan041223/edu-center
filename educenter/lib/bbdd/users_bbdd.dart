@@ -2,6 +2,7 @@
 
 import 'package:educenter/login.dart';
 import 'package:educenter/main_menu.dart';
+import 'package:educenter/models/usuario.dart';
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -35,7 +36,7 @@ class usersBBDD {
     return true;
   }
 
-  signInWithEmail(email, pass, context) async {
+  signInWithEmail(email, pass, context, Function action) async {
     try {
       final AuthResponse res =
           await supabase.auth.signInWithPassword(email: email, password: pass);
@@ -44,6 +45,7 @@ class usersBBDD {
       if (session != null && user != null && context != null) {
         ScaffoldMessenger.of(context)
             .showSnackBar(const SnackBar(content: Text("Usuario encontrado")));
+        action();
         Navigator.of(context).push(MaterialPageRoute(
           builder: (context) => const main_menu(
             body: Center(
@@ -65,5 +67,26 @@ class usersBBDD {
     Navigator.of(context).pushReplacement(MaterialPageRoute(
       builder: (context) => const Login(),
     ));
+  }
+
+  Future<Usuario> getUsuario() async {
+    var data = await supabase
+        .from("usuarios")
+        .select("*")
+        .eq("id_usuario", user!.id)
+        .single();
+
+    Usuario usuario = Usuario(
+        data["id_usuario"],
+        data["nombre"],
+        data["apellido"],
+        data["dni"],
+        data["id_clase"],
+        data["id_centro"],
+        data["tipo_usuario"],
+        data["url_foto_perfil"],
+        data["email_contacto"]);
+
+    return usuario;
   }
 }

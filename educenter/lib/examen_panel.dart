@@ -1,9 +1,13 @@
+// ignore_for_file: must_be_immutable
+
 import 'package:educenter/bbdd/examenes_alumno_bbdd.dart';
+import 'package:educenter/components/fecha_xs.dart';
 import 'package:educenter/drawer.dart';
 import 'package:educenter/models/alumno.dart';
 import 'package:educenter/models/clase.dart';
 import 'package:educenter/models/examen.dart';
 import 'package:educenter/models/usuario.dart';
+import 'package:educenter/utils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -27,8 +31,10 @@ class ExamenPanel extends StatefulWidget {
 class _ExamenPanelState extends State<ExamenPanel> {
   String notaExamen = "N/A";
   String observacionesProfeAlumnoExamen = "N/A";
+  bool loading = true;
   @override
   void initState() {
+    super.initState();
     Future.delayed(const Duration(milliseconds: 1), () async {
       if (!mounted) return;
       notaExamen = await ExamenesAlumnoBBDD().getNotaExamenAlumno(
@@ -36,16 +42,10 @@ class _ExamenPanelState extends State<ExamenPanel> {
       observacionesProfeAlumnoExamen = await ExamenesAlumnoBBDD()
           .getObservacionesExamenAlumno(
               widget.alumnoSeleccionado, widget.examenSeleccionado);
-      setState(() {});
+      setState(() {
+        loading = false;
+      });
     });
-  }
-
-  Color hexToColor(String hex) {
-    hex = hex.replaceAll('#', '');
-    if (hex.length == 6) {
-      hex = 'FF$hex';
-    }
-    return Color(int.parse(hex, radix: 16));
   }
 
   @override
@@ -60,12 +60,13 @@ class _ExamenPanelState extends State<ExamenPanel> {
             Container(
                 decoration: BoxDecoration(
                     shape: BoxShape.rectangle,
-                    color: hexToColor(
+                    color: Utils.hexToColor(
                         widget.examenSeleccionado.asignatura.color_codigo),
                     borderRadius: const BorderRadius.all(Radius.circular(20))),
                 margin: const EdgeInsets.all(10),
                 padding: const EdgeInsets.all(25),
                 child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -86,32 +87,33 @@ class _ExamenPanelState extends State<ExamenPanel> {
                             ),
                           ],
                         ),
-                        Column(
-                          children: [
-                            const Icon(Icons.calendar_month),
-                            Text(
-                              widget.examenSeleccionado.fecha_examen
-                                  .toString()
-                                  .split(" ")
-                                  .first,
-                              style: const TextStyle(
-                                  fontSize: 15, fontWeight: FontWeight.bold),
-                            ),
-                            const SizedBox(
-                              width: 10,
-                            ),
-                          ],
-                        )
+                        fechaXS(
+                            widget.examenSeleccionado.fecha_examen.toString(),
+                            Colors.white)
                       ],
                     ),
                     widget.examenSeleccionado.descripcion != null &&
                             widget.examenSeleccionado.descripcion != ""
-                        ? Padding(
-                            padding: EdgeInsets.only(top: 20),
-                            child: Text(
-                              widget.examenSeleccionado.descripcion!,
-                              style: TextStyle(fontWeight: FontWeight.bold),
-                            ),
+                        ? Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const SizedBox(
+                                height: 20,
+                              ),
+                              const Text(
+                                "A tener en cuenta...",
+                                style: TextStyle(
+                                    fontSize: 18, fontWeight: FontWeight.bold),
+                              ),
+                              const SizedBox(
+                                height: 10,
+                              ),
+                              Text(
+                                widget.examenSeleccionado.descripcion!,
+                                style: const TextStyle(
+                                    fontWeight: FontWeight.bold),
+                              ),
+                            ],
                           )
                         : Container()
                   ],
@@ -174,15 +176,46 @@ class _ExamenPanelState extends State<ExamenPanel> {
             Container(
                 decoration: BoxDecoration(
                     shape: BoxShape.rectangle,
-                    color: hexToColor(
+                    color: Utils.hexToColor(
                         widget.examenSeleccionado.asignatura.color_codigo),
                     borderRadius: const BorderRadius.all(Radius.circular(20))),
                 margin: const EdgeInsets.all(10),
                 padding: const EdgeInsets.all(25),
                 child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Row(
-                      children: [],
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        const Text(
+                          "Nota:",
+                          style: TextStyle(
+                              fontSize: 40, fontWeight: FontWeight.bold),
+                        ),
+                        loading
+                            ? CircularProgressIndicator()
+                            : Text(
+                                "$notaExamen/10",
+                                style: const TextStyle(
+                                    fontSize: 50, fontWeight: FontWeight.bold),
+                              ),
+                      ],
+                    ),
+                    const SizedBox(
+                      height: 20,
+                    ),
+                    Text(
+                      "¿Que tal lo ha hecho ${widget.alumnoSeleccionado.nombre}?",
+                      style: const TextStyle(
+                          fontSize: 18, fontWeight: FontWeight.bold),
+                    ),
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    Text(
+                      observacionesProfeAlumnoExamen,
+                      style: const TextStyle(
+                          fontSize: 15, fontWeight: FontWeight.bold),
                     )
                   ],
                 ))

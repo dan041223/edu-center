@@ -1,3 +1,6 @@
+import 'package:educenter/models/alumno.dart';
+import 'package:educenter/models/usuario.dart';
+
 class Incidencia {
   int id_incidencia;
   String tipo_incidencia;
@@ -9,6 +12,8 @@ class Incidencia {
   String? justificacion;
   String? justificante_nombre;
   DateTime fecha_incidencia;
+  Alumno alumno;
+  Usuario profesor;
 
   Incidencia(
       this.id_incidencia,
@@ -20,5 +25,7 @@ class Incidencia {
       this.justificante_url,
       this.justificacion,
       this.justificante_nombre,
-      this.fecha_incidencia);
+      this.fecha_incidencia,
+      this.alumno,
+      this.profesor);
 }

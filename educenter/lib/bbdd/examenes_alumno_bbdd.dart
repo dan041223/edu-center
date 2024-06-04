@@ -1,5 +1,7 @@
+import 'package:educenter/bbdd/alumnos_bbdd.dart';
 import 'package:educenter/bbdd/users_bbdd.dart';
 import 'package:educenter/models/alumno.dart';
+import 'package:educenter/models/asignatura.dart';
 import 'package:educenter/models/examen.dart';
 
 class ExamenesAlumnoBBDD {
@@ -40,5 +42,20 @@ class ExamenesAlumnoBBDD {
       observaciones = data["observaciones"].toString();
       return observaciones;
     }
+  }
+
+  Future<List<Examen>> getExamenesAsignaturaAlumno(
+    Alumno alumno,
+    Asignatura asignatura,
+  ) async {
+    List<Examen> listaExamenesAlumno =
+        await AlumnosBBDD().getListaExamenesDeAlumno(alumno);
+    List<Examen> listaExamenesAsignaturaAlumno = [];
+    for (var examen in listaExamenesAlumno) {
+      if (examen.asignatura.id_asignatura == asignatura.id_asignatura) {
+        listaExamenesAsignaturaAlumno.add(examen);
+      }
+    }
+    return listaExamenesAsignaturaAlumno;
   }
 }

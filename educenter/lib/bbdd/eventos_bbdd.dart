@@ -1,11 +1,12 @@
 import 'package:educenter/bbdd/alumnos_bbdd.dart';
 import 'package:educenter/bbdd/users_bbdd.dart';
 import 'package:educenter/models/alumno.dart';
+import 'package:educenter/models/asignatura.dart';
 import 'package:educenter/models/clase.dart';
-import 'package:educenter/models/evento.dart';
 import 'package:educenter/models/usuario.dart';
 
 class EventosBBDD {
+  // ignore: non_constant_identifier_names
   Future<List<Alumno>> getListaAlumnosEvento(int id_evento) async {
     var data = await usersBBDD.supabase
         .from("alumnos_evento")
@@ -24,6 +25,8 @@ class EventosBBDD {
 
     for (var alumnosMap in alumnosData) {
       Clase clase = await AlumnosBBDD().getClaseAlumno(alumnosMap["id_clase"]);
+      List<Asignatura> asignaturas =
+          await AlumnosBBDD().getAsignaturasAlumno(alumnosMap["id_alumno"]);
 
       Alumno alumno = Alumno(
           alumnosMap["id_alumno"],
@@ -31,12 +34,15 @@ class EventosBBDD {
           alumnosMap["apellido"],
           DateTime.parse(alumnosMap["fecha_nacimiento"]),
           alumnosMap["id_clase"],
-          clase);
+          clase,
+          alumnosMap["url_foto_perfil"],
+          asignaturas);
       listaAlumnos.add(alumno);
     }
     return listaAlumnos;
   }
 
+  // ignore: non_constant_identifier_names
   Future<List<Usuario>> getListaProfesoresEvento(int id_evento) async {
     var data = await usersBBDD.supabase
         .from("profesor_evento")
@@ -61,7 +67,9 @@ class EventosBBDD {
           profesoresMap["dni"],
           profesoresMap["id_clase"],
           profesoresMap["id_centro"],
-          profesoresMap["tipo_usuario"]);
+          profesoresMap["tipo_usuario"],
+          profesoresMap["url_foto_perfil"],
+          profesoresMap["email_contacto"]);
       listaProfesores.add(profesor);
     }
     return listaProfesores;
