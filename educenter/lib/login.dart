@@ -1,5 +1,4 @@
 import 'package:educenter/bbdd/users_bbdd.dart';
-import 'package:educenter/main_menu.dart';
 import 'package:educenter/signup.dart';
 import 'package:flutter/material.dart';
 
@@ -13,6 +12,11 @@ class Login extends StatefulWidget {
 class _LoginState extends State<Login> {
   TextEditingController controllerEmail = TextEditingController();
   TextEditingController controllerPass = TextEditingController();
+  bool loading = false;
+  @override
+  void initState() {
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -37,19 +41,27 @@ class _LoginState extends State<Login> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
-                ElevatedButton(
-                    onPressed: () async {
-                      usersBBDD().signInWithEmail(
-                          controllerEmail.text, controllerPass.text, context);
-                    },
-                    child: const Text("Login")),
-                ElevatedButton(
-                    onPressed: () async {
-                      Navigator.of(context).push(MaterialPageRoute(
-                        builder: (context) => const SignUp(),
-                      ));
-                    },
-                    child: const Text("Sign Up")),
+                loading
+                    ? const CircularProgressIndicator()
+                    : ElevatedButton(
+                        onPressed: () async {
+                          if (loading) {
+                            return;
+                          }
+                          setState(() {
+                            loading = true;
+                          });
+                          await usersBBDD().signInWithEmail(
+                              controllerEmail.text,
+                              controllerPass.text,
+                              context,
+                              () => {
+                                    setState(() {
+                                      loading = false;
+                                    })
+                                  });
+                        },
+                        child: const Text("Login")),
               ],
             ),
             Row(
@@ -57,14 +69,40 @@ class _LoginState extends State<Login> {
               children: [
                 ElevatedButton(
                     onPressed: () {
-                      usersBBDD()
-                          .signInWithEmail("padre@email.com", "padre", context);
+                      if (loading) {
+                        return;
+                      }
+                      setState(() {
+                        loading = true;
+                      });
+                      usersBBDD().signInWithEmail(
+                          "padre@email.com",
+                          "padre",
+                          context,
+                          () => {
+                                setState(() {
+                                  loading = false;
+                                })
+                              });
                     },
                     child: const Text("LoginPadre")),
                 ElevatedButton(
                     onPressed: () {
+                      if (loading) {
+                        return;
+                      }
+                      setState(() {
+                        loading = true;
+                      });
                       usersBBDD().signInWithEmail(
-                          "profesor@email.com", "profe", context);
+                          "profesor@email.com",
+                          "profe",
+                          context,
+                          () => {
+                                setState(() {
+                                  loading = false;
+                                })
+                              });
                     },
                     child: const Text("LoginProfe")),
               ],
@@ -74,8 +112,21 @@ class _LoginState extends State<Login> {
               children: [
                 ElevatedButton(
                     onPressed: () {
-                      usersBBDD()
-                          .signInWithEmail("admin@email.com", "admin", context);
+                      if (loading) {
+                        return;
+                      }
+                      setState(() {
+                        loading = true;
+                      });
+                      usersBBDD().signInWithEmail(
+                          "admin@email.com",
+                          "admin",
+                          context,
+                          () => {
+                                setState(() {
+                                  loading = false;
+                                })
+                              });
                     },
                     child: const Text("LoginAdmin")),
               ],

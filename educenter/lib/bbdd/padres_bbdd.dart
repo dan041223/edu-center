@@ -3,6 +3,7 @@
 import 'package:educenter/bbdd/alumnos_bbdd.dart';
 import 'package:educenter/bbdd/users_bbdd.dart';
 import 'package:educenter/models/alumno.dart';
+import 'package:educenter/models/asignatura.dart';
 import 'package:educenter/models/clase.dart';
 
 class padresBBDD {
@@ -29,13 +30,17 @@ class padresBBDD {
 
     for (var hijosMap in hijosData) {
       Clase clase = await AlumnosBBDD().getClaseAlumno(hijosMap["id_clase"]);
+      List<Asignatura> asignaturas =
+          await AlumnosBBDD().getAsignaturasAlumno(hijosMap["id_alumno"]);
       Alumno alumno = Alumno(
           hijosMap["id_alumno"],
           hijosMap["nombre"],
           hijosMap["apellido"],
           DateTime.parse(hijosMap["fecha_nacimiento"]),
           hijosMap["id_clase"],
-          clase);
+          clase,
+          hijosMap["url_foto_perfil"],
+          asignaturas);
       listaHijos.add(alumno);
     }
     return listaHijos;

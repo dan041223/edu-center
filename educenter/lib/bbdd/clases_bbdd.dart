@@ -1,7 +1,9 @@
+import 'package:educenter/bbdd/profesores_bbdd.dart';
 import 'package:educenter/bbdd/users_bbdd.dart';
 import 'package:educenter/models/asignatura.dart';
 import 'package:educenter/models/clase.dart';
 import 'package:educenter/models/horario_clase.dart';
+import 'package:educenter/models/usuario.dart';
 
 class ClasesBBDD {
   Future<List<HorarioClase>> getHorarioClase(int id_clase) async {
@@ -50,8 +52,16 @@ class ClasesBBDD {
         .eq("id_asignatura", id_asignatura)
         .single();
 
-    Asignatura asignatura = Asignatura(data["id_asignatura"], data["id_clase"],
-        data["id_profesor"], data["nombre_asignatura"], data["color_codigo"]);
+    Usuario profesor =
+        await ProfesoresBBDD().getProfesorDeAsignatura(data["id_asignatura"]);
+
+    Asignatura asignatura = Asignatura(
+        data["id_asignatura"],
+        data["id_clase"],
+        data["id_profesor"],
+        data["nombre_asignatura"],
+        data["color_codigo"],
+        profesor);
 
     return asignatura;
   }

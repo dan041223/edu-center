@@ -1,15 +1,14 @@
 // ignore_for_file: camel_case_types
 
-import 'package:educenter/anotaciones_hijo.dart';
 import 'package:educenter/asignaturas_hijo.dart';
-import 'package:educenter/bbdd/alumnos_bbdd.dart';
+import 'package:educenter/bbdd/centro_bbdd.dart';
 import 'package:educenter/bbdd/clases_bbdd.dart';
+import 'package:educenter/centro_panel.dart';
+import 'package:educenter/citas_panel.dart';
 import 'package:educenter/drawer.dart';
 import 'package:educenter/eventos_hijo.dart';
 import 'package:educenter/horario.dart';
 import 'package:educenter/models/alumno.dart';
-import 'package:educenter/models/asignatura.dart';
-import 'package:educenter/models/examen.dart';
 import 'package:flutter/material.dart';
 
 // ignore: must_be_immutable
@@ -22,16 +21,6 @@ class childProfile extends StatefulWidget {
 }
 
 class _childProfileState extends State<childProfile> {
-  List<Asignatura> asignaturas = List.empty(growable: true);
-  @override
-  void initState() {
-    Future.delayed(const Duration(milliseconds: 1), () async {
-      asignaturas =
-          await AlumnosBBDD().getAsignaturasAlumno(widget.alumnoElegido);
-      setState(() {});
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -39,12 +28,6 @@ class _childProfileState extends State<childProfile> {
         title: const Text("EduCenter"),
       ),
       drawer: const DrawerMio(),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () async {
-          List<Examen> examenes = await AlumnosBBDD()
-              .getListaExamenesDeAlumno(widget.alumnoElegido);
-        },
-      ),
       body: Column(
         children: [
           Row(
@@ -95,7 +78,8 @@ class _childProfileState extends State<childProfile> {
                         onTap: () {
                           Navigator.of(context).push(MaterialPageRoute(
                               builder: (context) => AsignaturasHijo(
-                                    asignaturas: asignaturas,
+                                    asignaturas:
+                                        widget.alumnoElegido.asignaturas,
                                     alumnoElegido: widget.alumnoElegido,
                                   )));
                         },
@@ -187,6 +171,89 @@ class _childProfileState extends State<childProfile> {
                               ),
                               Text(
                                 "Horario",
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                    fontSize: 20,
+                                    color: Colors.black,
+                                    fontWeight: FontWeight.bold),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                    Card(
+                      color: Colors.green,
+                      elevation: 0.2,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(20.0),
+                      ),
+                      child: InkWell(
+                        onTap: () {
+                          // Navigator.of(context).push(MaterialPageRoute(
+                          //     builder: (context) => AnotacionesHijo(
+                          //         alumnoElegido: widget.alumnoElegido)));
+                          CentroBBDD()
+                              .getCentroAlumno(widget.alumnoElegido)
+                              .then((centro) =>
+                                  Navigator.of(context).push(MaterialPageRoute(
+                                      builder: (context) => CentroPanel(
+                                            centro: centro,
+                                            alumno: widget.alumnoElegido,
+                                          ))));
+                        },
+                        child: const Padding(
+                          padding: EdgeInsets.all(20.0),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: <Widget>[
+                              Icon(
+                                Icons.business_outlined,
+                                size: 40,
+                              ),
+                              Text(
+                                "Centro",
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                    fontSize: 20,
+                                    color: Colors.black,
+                                    fontWeight: FontWeight.bold),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                    Card(
+                      color: Colors.purple,
+                      elevation: 0.2,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(20.0),
+                      ),
+                      child: InkWell(
+                        onTap: () {
+                          // Navigator.of(context).push(MaterialPageRoute(
+                          //     builder: (context) => AnotacionesHijo(
+                          //         alumnoElegido: widget.alumnoElegido)));
+                          CentroBBDD()
+                              .getCentroAlumno(widget.alumnoElegido)
+                              .then((centro) =>
+                                  Navigator.of(context).push(MaterialPageRoute(
+                                      builder: (context) => CitasPanel(
+                                            alumno: widget.alumnoElegido,
+                                          ))));
+                        },
+                        child: const Padding(
+                          padding: EdgeInsets.all(20.0),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: <Widget>[
+                              Icon(
+                                Icons.ballot_outlined,
+                                size: 40,
+                              ),
+                              Text(
+                                "Citas",
                                 textAlign: TextAlign.center,
                                 style: TextStyle(
                                     fontSize: 20,

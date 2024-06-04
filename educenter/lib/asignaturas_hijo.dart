@@ -1,9 +1,13 @@
+// ignore_for_file: prefer_const_constructors
+
 import 'package:educenter/asignatura_hijo.dart';
 import 'package:educenter/drawer.dart';
 import 'package:educenter/models/alumno.dart';
 import 'package:educenter/models/asignatura.dart';
+import 'package:educenter/utils.dart';
 import 'package:flutter/material.dart';
 
+// ignore: must_be_immutable
 class AsignaturasHijo extends StatefulWidget {
   List<Asignatura> asignaturas;
   Alumno alumnoElegido;
@@ -14,20 +18,12 @@ class AsignaturasHijo extends StatefulWidget {
   State<AsignaturasHijo> createState() => AasignaturasHijoState();
 }
 
-Color hexToColor(String hex) {
-  hex = hex.replaceAll('#', '');
-  if (hex.length == 6) {
-    hex = 'FF$hex';
-  }
-  return Color(int.parse(hex, radix: 16));
-}
-
 class AasignaturasHijoState extends State<AsignaturasHijo> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Title"),
+        title: const Text("Title"),
       ),
       drawer: DrawerMio(),
       body: Column(
@@ -62,18 +58,13 @@ class AasignaturasHijoState extends State<AsignaturasHijo> {
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 10.0),
               child: Scrollbar(
-                child: GridView.builder(
+                child: ListView.builder(
                   physics: const AlwaysScrollableScrollPhysics(),
                   itemCount: widget.asignaturas.length,
-                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                    childAspectRatio: 1,
-                    crossAxisCount: 2,
-                    crossAxisSpacing: 4.0,
-                    mainAxisSpacing: 4.0,
-                  ),
                   itemBuilder: (BuildContext context, int index) {
                     return Card(
-                      color: hexToColor(widget.asignaturas[index].color_codigo),
+                      color: Utils.hexToColor(
+                          widget.asignaturas[index].color_codigo),
                       elevation: 0.2,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(20.0),
@@ -89,19 +80,12 @@ class AasignaturasHijoState extends State<AsignaturasHijo> {
                         },
                         child: Padding(
                           padding: const EdgeInsets.all(20.0),
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: <Widget>[
-                              Text(
-                                widget.asignaturas[index].nombre_asignatura,
-                                textAlign: TextAlign.center,
-                                style: const TextStyle(
-                                    fontSize: 20,
-                                    color: Colors.black,
-                                    fontWeight: FontWeight.bold),
-                              ),
-                            ],
+                          child: Text(
+                            widget.asignaturas[index].nombre_asignatura,
+                            style: const TextStyle(
+                                fontSize: 21,
+                                color: Colors.black,
+                                fontWeight: FontWeight.bold),
                           ),
                         ),
                       ),
