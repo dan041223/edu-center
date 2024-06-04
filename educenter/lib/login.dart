@@ -96,7 +96,7 @@ class _LoginState extends State<Login> {
                       });
                       usersBBDD().signInWithEmail(
                           "profesor@email.com",
-                          "profe",
+                          "profesor",
                           context,
                           () => {
                                 setState(() {

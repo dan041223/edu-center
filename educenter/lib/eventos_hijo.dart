@@ -479,6 +479,13 @@ class _EventosHijoState extends State<EventosHijo> {
                                                           listaProfesores:
                                                               item.profesores,
                                                         )));
+                                          } else if (item is Incidencia) {
+                                            Navigator.of(context).push(
+                                                MaterialPageRoute(
+                                                    builder: (context) =>
+                                                        IncidenciaHijo(
+                                                            incidenciaSeleccionada:
+                                                                item)));
                                           }
                                         },
                                         child: Text(

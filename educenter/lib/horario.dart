@@ -19,16 +19,62 @@ class Horario extends StatefulWidget {
 }
 
 class _HorarioState extends State<Horario> {
-  List<String> diasSemana = List.empty(growable: true);
-  List<String> horas = List.empty(growable: true);
-  @override
-  void initState() {
-    Future.delayed(const Duration(milliseconds: 1), () async {
-      diasSemana = ["Lunes", "Martes", "Miércoles", "Jueves", "Viernes"];
-      horas = await ClasesBBDD()
-          .getHorasPosiblesHorario(widget.alumnoSeleccionado.clase);
-    });
-    super.initState();
+  List<String> diasSemana = [
+    "lunes",
+    "martes",
+    "miercoles",
+    "jueves",
+    "viernes"
+  ];
+  List<String> horasSemanaIniciales = [
+    "08:00:00",
+    "09:00:00",
+    "10:00:00",
+    "11:00:00",
+    "12:00:00",
+    "13:00:00"
+  ];
+  List<String> horasSemanaFinales = [
+    "09:00:00",
+    "10:00:00",
+    "11:00:00",
+    "12:00:00",
+    "13:00:00",
+    "14:00:00"
+  ];
+
+  int getNumeroDia(String dia) {
+    switch (dia) {
+      case "lunes":
+        return 0;
+      case "martes":
+        return 1;
+      case "miercoles":
+        return 2;
+      case "jueves":
+        return 3;
+      default:
+        return 4;
+    }
+  }
+
+  List<DataRow> conseguirFilas() {
+    List<DataRow> filas = List.empty(growable: true);
+    for (var hora = 0; hora < horasSemanaIniciales.length; hora++) {
+      List<DataCell> celdasFila = List.empty(growable: true);
+      celdasFila.add(DataCell(
+          Text(horasSemanaIniciales[hora] + " - " + horasSemanaFinales[hora])));
+      for (var dia = 0; dia < diasSemana.length; dia++) {
+        for (HorarioClase valor in widget.horario) {
+          if (valor.dia_semana == diasSemana[dia] &&
+              valor.hora_inicial == horasSemanaIniciales[hora]) {
+            celdasFila.add(DataCell(Text(valor.asignatura.nombre_asignatura)));
+          }
+        }
+      }
+      filas.add(DataRow(cells: celdasFila));
+    }
+    return filas;
   }
 
   @override
@@ -43,47 +89,19 @@ class _HorarioState extends State<Horario> {
             constraints:
                 BoxConstraints(maxHeight: MediaQuery.of(context).size.height),
             child: DataTable(
-              columns: _buildColumns(),
-              rows: _buildRows(),
+              columns: [
+                DataColumn(label: Text("Horas")),
+                DataColumn(label: Text("Lunes")),
+                DataColumn(label: Text("Martes")),
+                DataColumn(label: Text("Miercoles")),
+                DataColumn(label: Text("Jueves")),
+                DataColumn(label: Text("Viernes")),
+              ],
+              rows: conseguirFilas(),
             ),
           ),
         ),
       ),
     );
-  }
-
-  List<DataColumn> _buildColumns() {
-    List<DataColumn> columns = [
-      const DataColumn(label: Text("Horas")),
-    ];
-    for (var dia in diasSemana) {
-      columns.add(DataColumn(label: Text(dia)));
-    }
-    return columns;
-  }
-
-  List<DataRow> _buildRows() {
-    List<DataRow> rows = [];
-    for (var hora in horas) {
-      List<DataCell> cells = [DataCell(Text(hora))];
-      for (var dia in diasSemana) {
-        var clase = widget.horario.firstWhere(
-          (element) =>
-              element.dia_semana == dia && element.hora_inicial == hora,
-          orElse: () => HorarioClase(
-              0,
-              "",
-              "",
-              "",
-              0,
-              Asignatura(
-                  0, 0, "", "", "", Usuario("", "", "", "", 0, 0, "", "", "")),
-              Clase(0, "", 0)),
-        );
-        cells.add(DataCell(Text(clase.asignatura.nombre_asignatura)));
-      }
-      rows.add(DataRow(cells: cells));
-    }
-    return rows;
   }
 }
