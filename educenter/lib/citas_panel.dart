@@ -1,11 +1,8 @@
 import 'package:educenter/bbdd/alumnos_bbdd.dart';
 import 'package:educenter/cita_panel.dart';
-import 'package:educenter/components/fecha_xs.dart';
 import 'package:educenter/crear_cita.dart';
 import 'package:educenter/models/alumno.dart';
 import 'package:educenter/models/cita.dart';
-import 'package:educenter/utils.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class CitasPanel extends StatefulWidget {

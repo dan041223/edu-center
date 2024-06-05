@@ -1,9 +1,8 @@
 // ignore_for_file: prefer_const_constructors_in_immutables
 
-import 'package:educenter/profesor_panel.dart';
+import 'package:educenter/paginas/padre/profesor_panel.dart';
 import 'package:educenter/utils.dart';
 import 'package:flutter/material.dart';
-import 'package:educenter/drawer.dart';
 import 'package:educenter/models/alumno.dart';
 import 'package:educenter/models/evento.dart';
 import 'package:educenter/models/usuario.dart';

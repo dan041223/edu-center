@@ -1,7 +1,8 @@
 // ignore_for_file: camel_case_types
 
-import 'package:educenter/login.dart';
-import 'package:educenter/main_menu.dart';
+import 'package:educenter/paginas/autenticacion/login.dart';
+import 'package:educenter/paginas/padre/main_menu.dart';
+import 'package:educenter/paginas/profe/main_menu_profe.dart';
 import 'package:educenter/models/usuario.dart';
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -46,13 +47,32 @@ class usersBBDD {
         ScaffoldMessenger.of(context)
             .showSnackBar(const SnackBar(content: Text("Usuario encontrado")));
         action();
-        Navigator.of(context).push(MaterialPageRoute(
-          builder: (context) => const main_menu(
-            body: Center(
-              child: Text("No tienes hijos"),
+
+        Usuario usuario = await getUsuario();
+        if (usuario.tipo_usuario == "profesor") {
+          Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (context) => MainMenuProfe(profe: usuario),
             ),
-          ),
-        ));
+          );
+        } else if (usuario.tipo_usuario == "padre_madre") {
+          Navigator.of(context).push(MaterialPageRoute(
+            builder: (context) => const main_menu(
+              body: Center(
+                child: Text("No tienes hijos en el sistema"),
+              ),
+            ),
+          ));
+        } else if (usuario.tipo_usuario == "administrador") {
+          // TODO: menu principal del administrador
+          Navigator.of(context).push(MaterialPageRoute(
+            builder: (context) => const main_menu(
+              body: Center(
+                child: Text("No tienes hijos en el sistema"),
+              ),
+            ),
+          ));
+        }
       }
     } on AuthApiException {
       ScaffoldMessenger.of(context)

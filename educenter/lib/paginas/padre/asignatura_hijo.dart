@@ -2,17 +2,13 @@
 
 import 'package:educenter/bbdd/examenes_alumno_bbdd.dart';
 import 'package:educenter/components/fecha_xs.dart';
-import 'package:educenter/drawer.dart';
 import 'package:educenter/examen_panel.dart';
 import 'package:educenter/models/asignatura.dart';
 import 'package:educenter/models/examen.dart';
-import 'package:educenter/profesor_panel.dart';
+import 'package:educenter/paginas/padre/profesor_panel.dart';
 import 'package:educenter/utils.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
-
-import 'models/alumno.dart';
+import '../../models/alumno.dart';
 
 class asignatura_hijo extends StatefulWidget {
   Alumno alumnoElegido;

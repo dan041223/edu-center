@@ -1,6 +1,6 @@
 import 'package:educenter/components/fecha_xs.dart';
 import 'package:educenter/models/incidencia.dart';
-import 'package:educenter/profesor_panel.dart';
+import 'package:educenter/paginas/padre/profesor_panel.dart';
 import 'package:educenter/utils.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';

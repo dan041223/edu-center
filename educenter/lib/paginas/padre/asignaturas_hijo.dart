@@ -1,7 +1,6 @@
 // ignore_for_file: prefer_const_constructors
 
-import 'package:educenter/asignatura_hijo.dart';
-import 'package:educenter/drawer.dart';
+import 'package:educenter/paginas/padre/asignatura_hijo.dart';
 import 'package:educenter/models/alumno.dart';
 import 'package:educenter/models/asignatura.dart';
 import 'package:educenter/utils.dart';

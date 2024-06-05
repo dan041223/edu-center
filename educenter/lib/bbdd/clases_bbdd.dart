@@ -137,4 +137,25 @@ class ClasesBBDD {
 
     return clase;
   }
+
+  Future<List<Asignatura>> getAsignaturasClase(int idClase) async {
+    var data = await usersBBDD.supabase
+        .from("asignatura")
+        .select("*")
+        .eq("id_clase", idClase);
+    List<Asignatura> asignaturas = List.empty(growable: true);
+    for (var asignatura in data) {
+      Usuario profe =
+          await ProfesoresBBDD().getProfesorDeId(asignatura["id_profesor"]);
+      Asignatura asignaturaObj = Asignatura(
+          asignatura["id_asignatura"],
+          asignatura["id_clase"],
+          asignatura["id_profesor"],
+          asignatura["nombre_asignatura"],
+          asignatura["color_codigo"],
+          profe);
+      asignaturas.add(asignaturaObj);
+    }
+    return asignaturas;
+  }
 }

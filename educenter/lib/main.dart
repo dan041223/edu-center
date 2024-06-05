@@ -1,4 +1,4 @@
-import 'package:educenter/login.dart';
+import 'package:educenter/paginas/autenticacion/login.dart';
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 

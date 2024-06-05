@@ -2,15 +2,12 @@
 
 import 'package:educenter/bbdd/examenes_alumno_bbdd.dart';
 import 'package:educenter/components/fecha_xs.dart';
-import 'package:educenter/drawer.dart';
 import 'package:educenter/models/alumno.dart';
 import 'package:educenter/models/clase.dart';
 import 'package:educenter/models/examen.dart';
 import 'package:educenter/models/usuario.dart';
 import 'package:educenter/utils.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 
 class ExamenPanel extends StatefulWidget {
   Examen examenSeleccionado;

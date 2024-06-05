@@ -1,5 +1,4 @@
 import 'package:educenter/bbdd/users_bbdd.dart';
-import 'package:educenter/signup.dart';
 import 'package:flutter/material.dart';
 
 class Login extends StatefulWidget {

@@ -1,7 +1,6 @@
 // ignore_for_file: must_be_immutable
 
 import 'package:educenter/bbdd/alumnos_bbdd.dart';
-import 'package:educenter/drawer.dart';
 import 'package:educenter/evento.dart';
 import 'package:educenter/examen_panel.dart';
 import 'package:educenter/incidencia_hijo.dart';

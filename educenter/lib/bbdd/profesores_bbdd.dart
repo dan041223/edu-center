@@ -122,20 +122,29 @@ class ProfesoresBBDD {
     return profesor;
   }
 
-  // Future<Clase> getClasesProfesor(Usuario profesor) async {
-  //   var data = await usersBBDD.supabase
-  //   .from("asignaturas")
-  //   .select("id_clase")
-  //   .eq("id_profesor", profesor.id_usuario);
+  Future<List<Clase>> getClasesProfesor(Usuario profesor) async {
+    var asignaturasBD = await usersBBDD.supabase
+        .from("asignatura")
+        .select("id_clase")
+        .eq("id_profesor", profesor.id_usuario);
 
-  //   List<int> idClasesProfesor = data.map((valor) => valor["id_clase"] as int).toList();
+    List<int> idClasesProfesor =
+        asignaturasBD.map((valor) => valor["id_clase"] as int).toSet().toList();
 
-  //   var clases = await usersBBDD.supabase
-  //   .from("clases");
+    var clases = await usersBBDD.supabase
+        .from("clases")
+        .select("*")
+        .inFilter("id_clase", idClasesProfesor);
 
-  //   List<Clase> listaClases = List.empty(growable: true);
-  //   for (var idClase in idClasesProfesor) {
+    List<Clase> listaClases = List.empty(growable: true);
+    for (var clase in clases) {
+      listaClases.add(Clase(
+        clase["id_clase"],
+        clase["nombre_clase"],
+        clase["id_centro"],
+      ));
+    }
 
-  //   }
-  // }
+    return listaClases;
+  }
 }

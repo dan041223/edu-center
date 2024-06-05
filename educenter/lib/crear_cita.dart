@@ -1,5 +1,4 @@
 import 'package:educenter/bbdd/citas_bbdd.dart';
-import 'package:educenter/citas_panel.dart';
 import 'package:educenter/models/alumno.dart';
 import 'package:educenter/utils.dart';
 import 'package:flutter/material.dart';

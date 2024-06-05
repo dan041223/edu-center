@@ -2,7 +2,7 @@ import 'package:educenter/bbdd/alumnos_bbdd.dart';
 import 'package:educenter/models/alumno.dart';
 import 'package:educenter/models/centro.dart';
 import 'package:educenter/models/usuario.dart';
-import 'package:educenter/profesor_panel.dart';
+import 'package:educenter/paginas/padre/profesor_panel.dart';
 import 'package:educenter/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -134,7 +134,7 @@ class _CentroPanelState extends State<CentroPanel> {
                     height: 20,
                   ),
                   GridView(
-                    physics: NeverScrollableScrollPhysics(),
+                    physics: const NeverScrollableScrollPhysics(),
                     shrinkWrap: true,
                     gridDelegate:
                         const SliverGridDelegateWithFixedCrossAxisCount(

@@ -1,13 +1,11 @@
 // ignore_for_file: camel_case_types
 
-import 'package:educenter/asignaturas_hijo.dart';
+import 'package:educenter/paginas/padre/asignaturas_hijo.dart';
 import 'package:educenter/bbdd/centro_bbdd.dart';
-import 'package:educenter/bbdd/clases_bbdd.dart';
-import 'package:educenter/centro_panel.dart';
+import 'package:educenter/paginas/padre/centro_panel.dart';
 import 'package:educenter/citas_panel.dart';
-import 'package:educenter/drawer.dart';
-import 'package:educenter/eventos_hijo.dart';
-import 'package:educenter/horario.dart';
+import 'package:educenter/paginas/padre/eventos_hijo.dart';
+import 'package:educenter/paginas/padre/horario.dart';
 import 'package:educenter/models/alumno.dart';
 import 'package:flutter/material.dart';
 

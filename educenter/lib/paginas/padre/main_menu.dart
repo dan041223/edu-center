@@ -3,8 +3,7 @@
 import 'package:educenter/bbdd/alumnos_bbdd.dart';
 import 'package:educenter/bbdd/padres_bbdd.dart';
 import 'package:educenter/bbdd/users_bbdd.dart';
-import 'package:educenter/child_profile.dart';
-import 'package:educenter/drawer.dart';
+import 'package:educenter/paginas/padre/child_profile.dart';
 import 'package:educenter/models/alumno.dart';
 import 'package:flutter/material.dart';
 
