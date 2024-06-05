@@ -1,6 +1,7 @@
 import 'package:educenter/bbdd/users_bbdd.dart';
 import 'package:educenter/models/alumno.dart';
 import 'package:educenter/models/asignatura.dart';
+import 'package:educenter/models/clase.dart';
 import 'package:educenter/models/usuario.dart';
 
 class ProfesoresBBDD {
@@ -120,4 +121,21 @@ class ProfesoresBBDD {
 
     return profesor;
   }
+
+  // Future<Clase> getClasesProfesor(Usuario profesor) async {
+  //   var data = await usersBBDD.supabase
+  //   .from("asignaturas")
+  //   .select("id_clase")
+  //   .eq("id_profesor", profesor.id_usuario);
+
+  //   List<int> idClasesProfesor = data.map((valor) => valor["id_clase"] as int).toList();
+
+  //   var clases = await usersBBDD.supabase
+  //   .from("clases");
+
+  //   List<Clase> listaClases = List.empty(growable: true);
+  //   for (var idClase in idClasesProfesor) {
+
+  //   }
+  // }
 }

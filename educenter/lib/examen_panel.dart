@@ -54,7 +54,6 @@ class _ExamenPanelState extends State<ExamenPanel> {
         appBar: AppBar(
             title: Text(
                 "Examen de ${widget.examenSeleccionado.asignatura.nombre_asignatura} ${widget.examenSeleccionado.clase.nombre_clase}")),
-        drawer: const DrawerMio(),
         body: Column(
           children: [
             Container(

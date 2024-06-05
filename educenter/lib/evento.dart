@@ -35,7 +35,6 @@ class _EventoPanelState extends State<EventoPanel> {
       appBar: AppBar(
         title: Text(widget.eventoSeleccionado.nombre_evento),
       ),
-      drawer: const DrawerMio(),
       body: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,

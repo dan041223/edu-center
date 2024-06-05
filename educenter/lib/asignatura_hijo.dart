@@ -59,7 +59,6 @@ class _asignatura_hijoState extends State<asignatura_hijo> {
       appBar: AppBar(
           title: Text(
               "${widget.asignaturaElegida.nombre_asignatura} - ${widget.alumnoElegido.nombre} ${widget.alumnoElegido.apellido}")),
-      drawer: const DrawerMio(),
       body: Column(
         children: [
           Container(

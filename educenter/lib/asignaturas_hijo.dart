@@ -25,7 +25,6 @@ class AasignaturasHijoState extends State<AsignaturasHijo> {
       appBar: AppBar(
         title: const Text("Title"),
       ),
-      drawer: DrawerMio(),
       body: Column(
         children: [
           Row(

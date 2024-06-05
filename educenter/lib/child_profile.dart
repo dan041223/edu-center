@@ -27,7 +27,6 @@ class _childProfileState extends State<childProfile> {
       appBar: AppBar(
         title: const Text("EduCenter"),
       ),
-      drawer: const DrawerMio(),
       body: Column(
         children: [
           Row(
@@ -151,14 +150,9 @@ class _childProfileState extends State<childProfile> {
                           // Navigator.of(context).push(MaterialPageRoute(
                           //     builder: (context) => AnotacionesHijo(
                           //         alumnoElegido: widget.alumnoElegido)));
-                          ClasesBBDD()
-                              .getHorarioClase(widget.alumnoElegido.id_clase)
-                              .then((horario) => Navigator.of(context).push(
-                                  MaterialPageRoute(
-                                      builder: (context) => Horario(
-                                          alumnoSeleccionado:
-                                              widget.alumnoElegido,
-                                          horario: horario))));
+                          Navigator.of(context).push(MaterialPageRoute(
+                              builder: (context) => Horario(
+                                  alumnoSeleccionado: widget.alumnoElegido)));
                         },
                         child: const Padding(
                           padding: EdgeInsets.all(20.0),

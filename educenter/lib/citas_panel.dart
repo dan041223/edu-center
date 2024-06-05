@@ -83,195 +83,203 @@ class _CitasPanelState extends State<CitasPanel> {
     bool esOscuro = brillo == Brightness.dark;
     return Scaffold(
       appBar: AppBar(),
-      body: Column(
-        children: [
-          Container(
-              decoration: BoxDecoration(
-                  shape: BoxShape.rectangle,
-                  color: esOscuro ? Colors.white : Colors.black12,
-                  borderRadius: const BorderRadius.all(Radius.circular(20))),
-              margin: const EdgeInsets.all(10),
-              padding: const EdgeInsets.all(25),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Container(
-                    width: 100,
-                    height: 100,
-                    clipBehavior: Clip.antiAlias,
-                    decoration: const BoxDecoration(
-                      shape: BoxShape.circle,
-                    ),
-                    child: Image.network(
-                      widget.alumno.url_foto_perfil.toString(),
-                      fit: BoxFit.cover,
-                    ),
-                  ),
-                  SizedBox(
-                    width: 20,
-                  ),
-                  Flexible(
-                    child: Text(
-                      "Citas de ${widget.alumno.nombre} ${widget.alumno.apellido}",
-                      style: TextStyle(
-                        fontSize: 25,
-                        fontWeight: FontWeight.bold,
-                        color: esOscuro ? Colors.black : Colors.white,
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            Container(
+                decoration: BoxDecoration(
+                    shape: BoxShape.rectangle,
+                    color: esOscuro ? Colors.white : Colors.black12,
+                    borderRadius: const BorderRadius.all(Radius.circular(20))),
+                margin: const EdgeInsets.all(10),
+                padding: const EdgeInsets.all(25),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Container(
+                      width: 100,
+                      height: 100,
+                      clipBehavior: Clip.antiAlias,
+                      decoration: const BoxDecoration(
+                        shape: BoxShape.circle,
+                      ),
+                      child: Image.network(
+                        widget.alumno.url_foto_perfil.toString(),
+                        fit: BoxFit.cover,
                       ),
                     ),
+                    const SizedBox(
+                      width: 20,
+                    ),
+                    Flexible(
+                      child: Text(
+                        "Citas de ${widget.alumno.nombre} ${widget.alumno.apellido}",
+                        style: TextStyle(
+                          fontSize: 25,
+                          fontWeight: FontWeight.bold,
+                          color: esOscuro ? Colors.black : Colors.white,
+                        ),
+                      ),
+                    ),
+                  ],
+                )),
+            Padding(
+              padding: const EdgeInsets.all(10.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  const Text(
+                    "No confirmadas:",
+                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                   ),
+                  const Divider(
+                    height: 20,
+                  ),
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  loading
+                      ? const Center(child: CircularProgressIndicator())
+                      : citasHijoNoConfirmadas.isNotEmpty
+                          ? ListView.builder(
+                              shrinkWrap: true,
+                              physics: const NeverScrollableScrollPhysics(),
+                              itemCount: citasHijoNoConfirmadas.length,
+                              itemBuilder: (context, index) {
+                                return Card(
+                                  child: InkWell(
+                                    onTap: () {
+                                      Navigator.of(context).push(
+                                          MaterialPageRoute(
+                                              builder: (context) => CitaPanel(
+                                                  citaSeleccionada:
+                                                      citasHijoNoConfirmadas[
+                                                          index])));
+                                    },
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(15.0),
+                                      child: Row(
+                                        children: [
+                                          const Icon(
+                                              Icons.watch_later_outlined),
+                                          const SizedBox(
+                                            width: 20,
+                                          ),
+                                          Text(citasHijoNoConfirmadas[index]
+                                              .titulo),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                );
+                              },
+                            )
+                          : Text(
+                              "${widget.alumno.nombre} no tiene citas por confirmar.",
+                            ),
+                  SizedBox(
+                    height: 20,
+                  ),
+                  const Text(
+                    "Proximas:",
+                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                  ),
+                  const Divider(
+                    height: 20,
+                  ),
+                  SizedBox(
+                    height: 10,
+                  ),
+                  loading
+                      ? Center(child: CircularProgressIndicator())
+                      : citasHijoProximas.isNotEmpty
+                          ? ListView.builder(
+                              physics: const NeverScrollableScrollPhysics(),
+                              shrinkWrap: true,
+                              itemCount: citasHijoProximas.length,
+                              itemBuilder: (context, index) {
+                                return Card(
+                                  child: InkWell(
+                                    onTap: () {
+                                      Navigator.of(context).push(
+                                          MaterialPageRoute(
+                                              builder: (context) => CitaPanel(
+                                                  citaSeleccionada:
+                                                      citasHijoProximas[
+                                                          index])));
+                                    },
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(15.0),
+                                      child: Row(
+                                        children: [
+                                          Icon(Icons.timelapse_outlined),
+                                          SizedBox(
+                                            width: 20,
+                                          ),
+                                          Text(citasHijoProximas[index].titulo),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                );
+                              },
+                            )
+                          : Text(
+                              "${widget.alumno.nombre} no tiene citas próximas.",
+                            ),
+                  SizedBox(
+                    height: 20,
+                  ),
+                  const Text(
+                    "Pasadas:",
+                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                  ),
+                  const Divider(
+                    height: 20,
+                  ),
+                  loading
+                      ? Center(child: CircularProgressIndicator())
+                      : citasHijoPasadas.isNotEmpty
+                          ? ListView.builder(
+                              physics: const NeverScrollableScrollPhysics(),
+                              shrinkWrap: true,
+                              itemCount: citasHijoPasadas.length,
+                              itemBuilder: (context, index) {
+                                return Card(
+                                  child: InkWell(
+                                    onTap: () {
+                                      Navigator.of(context).push(
+                                          MaterialPageRoute(
+                                              builder: (context) => CitaPanel(
+                                                  citaSeleccionada:
+                                                      citasHijoPasadas[
+                                                          index])));
+                                    },
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(15.0),
+                                      child: Row(
+                                        children: [
+                                          Icon(Icons.history_toggle_off_sharp),
+                                          SizedBox(
+                                            width: 20,
+                                          ),
+                                          Text(citasHijoPasadas[index].titulo),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                );
+                              },
+                            )
+                          : Text(
+                              "${widget.alumno.nombre} no tiene citas pasadas.",
+                            ),
                 ],
-              )),
-          Padding(
-            padding: const EdgeInsets.all(10.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                const Text(
-                  "No confirmadas:",
-                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                ),
-                const Divider(
-                  height: 20,
-                ),
-                SizedBox(
-                  height: 10,
-                ),
-                loading
-                    ? Center(child: CircularProgressIndicator())
-                    : citasHijoNoConfirmadas.isNotEmpty
-                        ? ListView.builder(
-                            shrinkWrap: true,
-                            itemCount: citasHijoNoConfirmadas.length,
-                            itemBuilder: (context, index) {
-                              return Card(
-                                child: InkWell(
-                                  onTap: () {
-                                    Navigator.of(context).push(
-                                        MaterialPageRoute(
-                                            builder: (context) => CitaPanel(
-                                                citaSeleccionada:
-                                                    citasHijoNoConfirmadas[
-                                                        index])));
-                                  },
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(15.0),
-                                    child: Row(
-                                      children: [
-                                        Icon(Icons.watch_later_outlined),
-                                        SizedBox(
-                                          width: 20,
-                                        ),
-                                        Text(citasHijoNoConfirmadas[index]
-                                            .titulo),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                              );
-                            },
-                          )
-                        : Text(
-                            "${widget.alumno.nombre} no tiene citas por confirmar.",
-                          ),
-                SizedBox(
-                  height: 20,
-                ),
-                const Text(
-                  "Proximas:",
-                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                ),
-                const Divider(
-                  height: 20,
-                ),
-                SizedBox(
-                  height: 10,
-                ),
-                loading
-                    ? Center(child: CircularProgressIndicator())
-                    : citasHijoProximas.isNotEmpty
-                        ? ListView.builder(
-                            shrinkWrap: true,
-                            itemCount: citasHijoProximas.length,
-                            itemBuilder: (context, index) {
-                              return Card(
-                                child: InkWell(
-                                  onTap: () {
-                                    Navigator.of(context).push(
-                                        MaterialPageRoute(
-                                            builder: (context) => CitaPanel(
-                                                citaSeleccionada:
-                                                    citasHijoProximas[index])));
-                                  },
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(15.0),
-                                    child: Row(
-                                      children: [
-                                        Icon(Icons.timelapse_outlined),
-                                        SizedBox(
-                                          width: 20,
-                                        ),
-                                        Text(citasHijoProximas[index].titulo),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                              );
-                            },
-                          )
-                        : Text(
-                            "${widget.alumno.nombre} no tiene citas próximas.",
-                          ),
-                SizedBox(
-                  height: 20,
-                ),
-                const Text(
-                  "Pasadas:",
-                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                ),
-                const Divider(
-                  height: 20,
-                ),
-                loading
-                    ? Center(child: CircularProgressIndicator())
-                    : citasHijoPasadas.isNotEmpty
-                        ? ListView.builder(
-                            shrinkWrap: true,
-                            itemCount: citasHijoPasadas.length,
-                            itemBuilder: (context, index) {
-                              return Card(
-                                child: InkWell(
-                                  onTap: () {
-                                    Navigator.of(context).push(
-                                        MaterialPageRoute(
-                                            builder: (context) => CitaPanel(
-                                                citaSeleccionada:
-                                                    citasHijoPasadas[index])));
-                                  },
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(15.0),
-                                    child: Row(
-                                      children: [
-                                        Icon(Icons.history_toggle_off_sharp),
-                                        SizedBox(
-                                          width: 20,
-                                        ),
-                                        Text(citasHijoPasadas[index].titulo),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                              );
-                            },
-                          )
-                        : Text(
-                            "${widget.alumno.nombre} no tiene citas pasadas.",
-                          ),
-              ],
-            ),
-          )
-        ],
+              ),
+            )
+          ],
+        ),
       ),
       floatingActionButton: FloatingActionButton(
         child: Icon(Icons.add),

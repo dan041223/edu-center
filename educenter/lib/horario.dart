@@ -3,46 +3,20 @@
 import 'package:educenter/bbdd/clases_bbdd.dart';
 import 'package:educenter/drawer.dart';
 import 'package:educenter/models/alumno.dart';
-import 'package:educenter/models/asignatura.dart';
-import 'package:educenter/models/clase.dart';
 import 'package:educenter/models/horario_clase.dart';
-import 'package:educenter/models/usuario.dart';
+import 'package:educenter/utils.dart';
 import 'package:flutter/material.dart';
 
 class Horario extends StatefulWidget {
   Alumno alumnoSeleccionado;
-  List<HorarioClase> horario;
-  Horario({super.key, required this.alumnoSeleccionado, required this.horario});
+
+  Horario({super.key, required this.alumnoSeleccionado});
 
   @override
   State<Horario> createState() => _HorarioState();
 }
 
 class _HorarioState extends State<Horario> {
-  List<String> diasSemana = [
-    "lunes",
-    "martes",
-    "miercoles",
-    "jueves",
-    "viernes"
-  ];
-  List<String> horasSemanaIniciales = [
-    "08:00:00",
-    "09:00:00",
-    "10:00:00",
-    "11:00:00",
-    "12:00:00",
-    "13:00:00"
-  ];
-  List<String> horasSemanaFinales = [
-    "09:00:00",
-    "10:00:00",
-    "11:00:00",
-    "12:00:00",
-    "13:00:00",
-    "14:00:00"
-  ];
-
   int getNumeroDia(String dia) {
     switch (dia) {
       case "lunes":
@@ -60,14 +34,15 @@ class _HorarioState extends State<Horario> {
 
   List<DataRow> conseguirFilas() {
     List<DataRow> filas = List.empty(growable: true);
-    for (var hora = 0; hora < horasSemanaIniciales.length; hora++) {
+    for (var hora = 0; hora < Utils.horasSemanaIniciales.length; hora++) {
       List<DataCell> celdasFila = List.empty(growable: true);
-      celdasFila.add(DataCell(
-          Text(horasSemanaIniciales[hora] + " - " + horasSemanaFinales[hora])));
-      for (var dia = 0; dia < diasSemana.length; dia++) {
-        for (HorarioClase valor in widget.horario) {
-          if (valor.dia_semana == diasSemana[dia] &&
-              valor.hora_inicial == horasSemanaIniciales[hora]) {
+      celdasFila.add(DataCell(Text(Utils.horasSemanaIniciales[hora] +
+          " - " +
+          Utils.horasSemanaFinales[hora])));
+      for (var dia = 0; dia < Utils.diasSemana.length; dia++) {
+        for (HorarioClase valor in horario) {
+          if (valor.dia_semana == Utils.diasSemana[dia] &&
+              valor.hora_inicial == Utils.horasSemanaIniciales[hora]) {
             celdasFila.add(DataCell(Text(valor.asignatura.nombre_asignatura)));
           }
         }
@@ -77,31 +52,43 @@ class _HorarioState extends State<Horario> {
     return filas;
   }
 
+  List<HorarioClase> horario = [];
+
+  @override
+  void initState() {
+    super.initState();
+    Future.delayed(const Duration(milliseconds: 1), () async {
+      horario = await ClasesBBDD()
+          .getHorarioClase(widget.alumnoSeleccionado.id_clase);
+      setState(() {});
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(),
-      drawer: const DrawerMio(),
-      body: SingleChildScrollView(
-        scrollDirection: Axis.horizontal,
-        child: SingleChildScrollView(
-          child: ConstrainedBox(
-            constraints:
-                BoxConstraints(maxHeight: MediaQuery.of(context).size.height),
-            child: DataTable(
-              columns: [
-                DataColumn(label: Text("Horas")),
-                DataColumn(label: Text("Lunes")),
-                DataColumn(label: Text("Martes")),
-                DataColumn(label: Text("Miercoles")),
-                DataColumn(label: Text("Jueves")),
-                DataColumn(label: Text("Viernes")),
-              ],
-              rows: conseguirFilas(),
-            ),
-          ),
-        ),
-      ),
+      body: horario.length > 0
+          ? SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: SingleChildScrollView(
+                child: ConstrainedBox(
+                  constraints: BoxConstraints(
+                      maxHeight: MediaQuery.of(context).size.height),
+                  child: DataTable(
+                    columns: [
+                      DataColumn(label: Text("Horas")),
+                      DataColumn(label: Text("Lunes")),
+                      DataColumn(label: Text("Martes")),
+                      DataColumn(label: Text("Miercoles")),
+                      DataColumn(label: Text("Jueves")),
+                      DataColumn(label: Text("Viernes")),
+                    ],
+                    rows: conseguirFilas(),
+                  ),
+                ),
+              ))
+          : Expanded(child: Center(child: CircularProgressIndicator())),
     );
   }
 }
