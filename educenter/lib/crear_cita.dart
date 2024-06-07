@@ -1,24 +1,54 @@
 import 'package:educenter/bbdd/citas_bbdd.dart';
+import 'package:educenter/bbdd/profesores_bbdd.dart';
 import 'package:educenter/models/alumno.dart';
+import 'package:educenter/models/usuario.dart';
 import 'package:educenter/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_datetime_picker_plus/flutter_datetime_picker_plus.dart';
 
 class CrearCita extends StatefulWidget {
+  Alumno? alumnoSeleccionado;
   Color colorTitulo = Colors.white;
   Color colorDescripcion = Colors.white;
   Color colorFecha = Colors.white;
   DateTime? fechaPropuesta;
-  Alumno alumno;
-  CrearCita({super.key, required this.alumno});
+  Alumno? alumno;
+  List<Alumno>? alumnosDeTutor;
+  Usuario? tutor;
+  CrearCita({super.key, this.alumno, this.alumnosDeTutor, this.tutor});
 
   @override
   State<CrearCita> createState() => _CrearCitaState();
 }
 
 class _CrearCitaState extends State<CrearCita> {
+  dynamic elementoSeleccionado;
+  List<DropdownMenuItem> dropDownItems = List.empty(growable: true);
+  bool loading = true;
   TextEditingController controllerTitulo = TextEditingController();
   TextEditingController controllerDescripcion = TextEditingController();
+  @override
+  void initState() {
+    Future.delayed(
+      Duration(milliseconds: 1),
+      () async {
+        if (widget.tutor != null) {
+          widget.alumnosDeTutor =
+              await ProfesoresBBDD().getAlumnosClaseTutor(widget.tutor!);
+          widget.alumnosDeTutor!.forEach((alumno) {
+            dropDownItems.add(DropdownMenuItem(
+                value: alumno,
+                child: Text("${alumno.nombre} ${alumno.apellido}")));
+          });
+          setState(() {
+            loading = false;
+          });
+        }
+      },
+    );
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -33,6 +63,25 @@ class _CrearCitaState extends State<CrearCita> {
                   "Creacion de cita",
                   style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
                 ),
+                loading
+                    ? const Padding(
+                        padding: EdgeInsets.all(10.0),
+                        child: Center(
+                          child: CircularProgressIndicator(),
+                        ),
+                      )
+                    : DropdownButton(
+                        isExpanded: true,
+                        hint: const Text("Alumnos..."),
+                        items: dropDownItems,
+                        value: elementoSeleccionado,
+                        onChanged: (value) {
+                          setState(() {
+                            widget.alumnoSeleccionado = value;
+                            elementoSeleccionado = value;
+                          });
+                        },
+                      ),
                 TextField(
                   controller: controllerTitulo,
                   decoration: InputDecoration(
@@ -152,12 +201,20 @@ class _CrearCitaState extends State<CrearCita> {
 
   comprobarCampos(String text, String text2, DateTime? fechaPropuesta,
       BuildContext context) async {
-    if (text.isEmpty || text2.isEmpty || fechaPropuesta == null) {
+    if (text.isEmpty ||
+        text2.isEmpty ||
+        fechaPropuesta == null ||
+        widget.alumnoSeleccionado == null) {
+      ScaffoldMessenger.of(context).clearSnackBars();
       ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text("No están rellenos todos los campos")));
     } else {
-      await CitasBBDD().crearCita(controllerTitulo.text,
-          controllerDescripcion.text, fechaPropuesta, widget.alumno);
+      await CitasBBDD().crearCitaProfesor(
+          controllerTitulo.text,
+          controllerDescripcion.text,
+          fechaPropuesta,
+          widget.alumnoSeleccionado!,
+          widget.tutor!);
       Navigator.pop(context);
       ScaffoldMessenger.of(context)
           .showSnackBar(const SnackBar(content: Text("Cita creada")));

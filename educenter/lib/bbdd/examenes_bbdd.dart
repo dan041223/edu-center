@@ -1,7 +1,9 @@
 import 'package:educenter/bbdd/profesores_bbdd.dart';
 import 'package:educenter/bbdd/users_bbdd.dart';
+import 'package:educenter/models/alumno.dart';
 import 'package:educenter/models/asignatura.dart';
 import 'package:educenter/models/clase.dart';
+import 'package:educenter/models/examen.dart';
 import 'package:educenter/models/usuario.dart';
 
 class ExamenesBBDD {
@@ -81,5 +83,27 @@ class ExamenesBBDD {
         Clase(clase["id_clase"], clase["nombre_clase"], clase["id_centro"]);
 
     return claseObjeto;
+  }
+
+  editarExamen(
+      Examen examen,
+      String? descripcion,
+      String? comentario,
+      String string,
+      DateTime fechaPropuesta,
+      Alumno alumno,
+      Usuario user,
+      int trimestre,
+      String nota) async {
+    await usersBBDD.supabase.from("examenes").update({
+      "descripcion": descripcion,
+      "fecha_examen": fechaPropuesta.toIso8601String(),
+      "trimestre": trimestre
+    }).eq("id_examen", examen.id_examen);
+
+    await usersBBDD.supabase
+        .from("examen_alumno")
+        .update({"calificacion": nota, "observaciones": comentario}).eq(
+            "id_examen", examen.id_examen);
   }
 }

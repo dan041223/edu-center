@@ -2,8 +2,9 @@
 
 import 'package:educenter/paginas/autenticacion/login.dart';
 import 'package:educenter/paginas/padre/main_menu.dart';
-import 'package:educenter/paginas/profe/main_menu_profe.dart';
+import 'package:educenter/paginas/profe/clases_profe.dart';
 import 'package:educenter/models/usuario.dart';
+import 'package:educenter/paginas/profe/main_menu_profe.dart';
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -108,5 +109,25 @@ class usersBBDD {
         data["email_contacto"]);
 
     return usuario;
+  }
+
+  Future<Usuario> getUserPorId(String idPadre) async {
+    var data = await usersBBDD.supabase
+        .from("usuarios")
+        .select("*")
+        .eq("id_usuario", idPadre)
+        .single();
+
+    return Usuario(
+      data["id_usuario"],
+      data["nombre"],
+      data["apellido"],
+      data["dni"],
+      data["id_clase"],
+      data["id_centro"],
+      data["tipo_usuario"],
+      data["url_foto_perfil"],
+      data["email_contacto"],
+    );
   }
 }

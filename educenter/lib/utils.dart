@@ -55,6 +55,17 @@ class Utils {
     return '$hour:$minute';
   }
 
+  static String stringToTipoIncidencia(String tipoString) {
+    switch (tipoString) {
+      case "Expulsión":
+        return "expulsion";
+      case "Falta de asistencia":
+        return "falta_asistencia";
+      default:
+        return "falta_grave";
+    }
+  }
+
   static List<String> diasSemana = [
     "lunes",
     "martes",
@@ -79,5 +90,11 @@ class Utils {
     "12:00:00",
     "13:00:00",
     "14:00:00"
+  ];
+
+  static List<String> tiposIncidencia = [
+    "Expulsión",
+    "Falta de asistencia",
+    "Falta grave"
   ];
 }

@@ -11,6 +11,7 @@ dependencies:
   flutter:
     sdk: flutter
   flutter_datetime_picker_plus: ^2.2.0
+  numberpicker: ^2.1.2
   supabase_flutter: ^2.5.1
   table_calendar: ^3.1.1
   url_launcher: ^6.2.6

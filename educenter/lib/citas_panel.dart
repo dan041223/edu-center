@@ -1,13 +1,16 @@
 import 'package:educenter/bbdd/alumnos_bbdd.dart';
+import 'package:educenter/bbdd/profesores_bbdd.dart';
 import 'package:educenter/cita_panel.dart';
 import 'package:educenter/crear_cita.dart';
 import 'package:educenter/models/alumno.dart';
 import 'package:educenter/models/cita.dart';
+import 'package:educenter/models/usuario.dart';
 import 'package:flutter/material.dart';
 
 class CitasPanel extends StatefulWidget {
-  Alumno alumno;
-  CitasPanel({super.key, required this.alumno});
+  Alumno? alumno;
+  Usuario? tutor;
+  CitasPanel({super.key, this.alumno, this.tutor});
 
   @override
   State<CitasPanel> createState() => _CitasPanelState();
@@ -52,18 +55,24 @@ List<Cita> getCitasNoConfirmadas(List<Cita> citasHijo) {
 }
 
 class _CitasPanelState extends State<CitasPanel> {
-  List<Cita> citasHijo = List.empty(growable: true);
-  List<Cita> citasHijoProximas = List.empty(growable: true);
-  List<Cita> citasHijoPasadas = List.empty(growable: true);
-  List<Cita> citasHijoNoConfirmadas = List.empty(growable: true);
+  List<Cita> citas = List.empty(growable: true);
+  List<Cita> citasProximas = List.empty(growable: true);
+  List<Cita> citasPasadas = List.empty(growable: true);
+  List<Cita> citasNoConfirmadas = List.empty(growable: true);
   bool loading = true;
   @override
   void initState() {
     Future.delayed(const Duration(milliseconds: 1), () async {
-      citasHijo = await AlumnosBBDD().getCitasAlumno(widget.alumno);
-      citasHijoProximas = getCitasProximas(citasHijo);
-      citasHijoPasadas = getCitasPasadas(citasHijo);
-      citasHijoNoConfirmadas = getCitasNoConfirmadas(citasHijo);
+      citas = widget.alumno != null
+          ? await AlumnosBBDD().getCitasAlumno(widget.alumno!)
+          : widget.tutor != null
+              ? await ProfesoresBBDD().getCitasTutor(widget.tutor!)
+              : [];
+      if (citas.isEmpty) return;
+
+      citasProximas = getCitasProximas(citas);
+      citasPasadas = getCitasPasadas(citas);
+      citasNoConfirmadas = getCitasNoConfirmadas(citas);
       if (!mounted) {
         return;
       }
@@ -101,7 +110,9 @@ class _CitasPanelState extends State<CitasPanel> {
                         shape: BoxShape.circle,
                       ),
                       child: Image.network(
-                        widget.alumno.url_foto_perfil.toString(),
+                        widget.alumno?.url_foto_perfil.toString() ??
+                            widget.tutor?.url_foto_perfil.toString() ??
+                            "",
                         fit: BoxFit.cover,
                       ),
                     ),
@@ -110,7 +121,11 @@ class _CitasPanelState extends State<CitasPanel> {
                     ),
                     Flexible(
                       child: Text(
-                        "Citas de ${widget.alumno.nombre} ${widget.alumno.apellido}",
+                        widget.alumno != null
+                            ? "Citas de ${widget.alumno!.nombre} ${widget.alumno!.apellido}"
+                            : widget.tutor != null
+                                ? "Citas de ${widget.tutor!.nombre} ${widget.tutor!.apellido}"
+                                : "",
                         style: TextStyle(
                           fontSize: 25,
                           fontWeight: FontWeight.bold,
@@ -138,11 +153,11 @@ class _CitasPanelState extends State<CitasPanel> {
                   ),
                   loading
                       ? const Center(child: CircularProgressIndicator())
-                      : citasHijoNoConfirmadas.isNotEmpty
+                      : citasNoConfirmadas.isNotEmpty
                           ? ListView.builder(
                               shrinkWrap: true,
                               physics: const NeverScrollableScrollPhysics(),
-                              itemCount: citasHijoNoConfirmadas.length,
+                              itemCount: citasNoConfirmadas.length,
                               itemBuilder: (context, index) {
                                 return Card(
                                   child: InkWell(
@@ -151,7 +166,7 @@ class _CitasPanelState extends State<CitasPanel> {
                                           MaterialPageRoute(
                                               builder: (context) => CitaPanel(
                                                   citaSeleccionada:
-                                                      citasHijoNoConfirmadas[
+                                                      citasNoConfirmadas[
                                                           index])));
                                     },
                                     child: Padding(
@@ -163,8 +178,8 @@ class _CitasPanelState extends State<CitasPanel> {
                                           const SizedBox(
                                             width: 20,
                                           ),
-                                          Text(citasHijoNoConfirmadas[index]
-                                              .titulo),
+                                          Text(
+                                              citasNoConfirmadas[index].titulo),
                                         ],
                                       ),
                                     ),
@@ -173,7 +188,11 @@ class _CitasPanelState extends State<CitasPanel> {
                               },
                             )
                           : Text(
-                              "${widget.alumno.nombre} no tiene citas por confirmar.",
+                              widget.alumno != null
+                                  ? "${widget.alumno!.nombre} no tiene citas por confirmar."
+                                  : widget.tutor != null
+                                      ? "${widget.tutor!.nombre} no tiene citas por confirmar."
+                                      : "",
                             ),
                   SizedBox(
                     height: 20,
@@ -190,11 +209,11 @@ class _CitasPanelState extends State<CitasPanel> {
                   ),
                   loading
                       ? Center(child: CircularProgressIndicator())
-                      : citasHijoProximas.isNotEmpty
+                      : citasProximas.isNotEmpty
                           ? ListView.builder(
                               physics: const NeverScrollableScrollPhysics(),
                               shrinkWrap: true,
-                              itemCount: citasHijoProximas.length,
+                              itemCount: citasProximas.length,
                               itemBuilder: (context, index) {
                                 return Card(
                                   child: InkWell(
@@ -203,8 +222,7 @@ class _CitasPanelState extends State<CitasPanel> {
                                           MaterialPageRoute(
                                               builder: (context) => CitaPanel(
                                                   citaSeleccionada:
-                                                      citasHijoProximas[
-                                                          index])));
+                                                      citasProximas[index])));
                                     },
                                     child: Padding(
                                       padding: const EdgeInsets.all(15.0),
@@ -214,7 +232,7 @@ class _CitasPanelState extends State<CitasPanel> {
                                           SizedBox(
                                             width: 20,
                                           ),
-                                          Text(citasHijoProximas[index].titulo),
+                                          Text(citasProximas[index].titulo),
                                         ],
                                       ),
                                     ),
@@ -223,7 +241,11 @@ class _CitasPanelState extends State<CitasPanel> {
                               },
                             )
                           : Text(
-                              "${widget.alumno.nombre} no tiene citas próximas.",
+                              widget.alumno != null
+                                  ? "${widget.alumno!.nombre} no tiene citas próximas."
+                                  : widget.tutor != null
+                                      ? "${widget.tutor!.nombre} no tiene citas próximas."
+                                      : "",
                             ),
                   SizedBox(
                     height: 20,
@@ -237,11 +259,11 @@ class _CitasPanelState extends State<CitasPanel> {
                   ),
                   loading
                       ? Center(child: CircularProgressIndicator())
-                      : citasHijoPasadas.isNotEmpty
+                      : citasPasadas.isNotEmpty
                           ? ListView.builder(
                               physics: const NeverScrollableScrollPhysics(),
                               shrinkWrap: true,
-                              itemCount: citasHijoPasadas.length,
+                              itemCount: citasPasadas.length,
                               itemBuilder: (context, index) {
                                 return Card(
                                   child: InkWell(
@@ -250,8 +272,7 @@ class _CitasPanelState extends State<CitasPanel> {
                                           MaterialPageRoute(
                                               builder: (context) => CitaPanel(
                                                   citaSeleccionada:
-                                                      citasHijoPasadas[
-                                                          index])));
+                                                      citasPasadas[index])));
                                     },
                                     child: Padding(
                                       padding: const EdgeInsets.all(15.0),
@@ -261,7 +282,7 @@ class _CitasPanelState extends State<CitasPanel> {
                                           SizedBox(
                                             width: 20,
                                           ),
-                                          Text(citasHijoPasadas[index].titulo),
+                                          Text(citasPasadas[index].titulo),
                                         ],
                                       ),
                                     ),
@@ -270,7 +291,11 @@ class _CitasPanelState extends State<CitasPanel> {
                               },
                             )
                           : Text(
-                              "${widget.alumno.nombre} no tiene citas pasadas.",
+                              widget.alumno != null
+                                  ? "${widget.alumno!.nombre} no tiene citas pasadas."
+                                  : widget.tutor != null
+                                      ? "${widget.tutor!.nombre} no tiene citas pasadas."
+                                      : "",
                             ),
                 ],
               ),
@@ -284,6 +309,7 @@ class _CitasPanelState extends State<CitasPanel> {
           Navigator.of(context).push(MaterialPageRoute(
               builder: (context) => CrearCita(
                     alumno: widget.alumno,
+                    tutor: widget.tutor,
                   )));
         },
       ),

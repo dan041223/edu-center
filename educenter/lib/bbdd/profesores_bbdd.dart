@@ -1,6 +1,8 @@
+import 'package:educenter/bbdd/alumnos_bbdd.dart';
 import 'package:educenter/bbdd/users_bbdd.dart';
 import 'package:educenter/models/alumno.dart';
 import 'package:educenter/models/asignatura.dart';
+import 'package:educenter/models/cita.dart';
 import 'package:educenter/models/clase.dart';
 import 'package:educenter/models/usuario.dart';
 
@@ -146,5 +148,85 @@ class ProfesoresBBDD {
     }
 
     return listaClases;
+  }
+
+  Future<List<Cita>> getCitasTutor(Usuario tutor) async {
+    var data = await usersBBDD.supabase
+        .from("citas")
+        .select("*")
+        .eq("id_profesor", tutor.id_usuario);
+
+    List<Cita> listaCitasAlumno = List.empty(growable: true);
+
+    for (var cita in data) {
+      Alumno alumno = await AlumnosBBDD().getAlumno(cita["id_alumno"]);
+      Cita citaObjeto = Cita(
+          cita["id_cita"],
+          cita["id_alumno"],
+          cita["id_profesor"],
+          cita["fecha_padre"] != null
+              ? DateTime.parse(cita["fecha_padre"])
+              : null,
+          cita["fecha_tutor"] != null
+              ? DateTime.parse(cita["fecha_tutor"])
+              : null,
+          cita["titulo"],
+          cita["descripcion"],
+          tutor,
+          alumno);
+      listaCitasAlumno.add(citaObjeto);
+    }
+
+    return listaCitasAlumno;
+  }
+
+  Future<List<Alumno>> getAlumnosClaseTutor(Usuario tutor) async {
+    Clase clase = await getClaseDeTutor(tutor);
+
+    var alumnos = await usersBBDD.supabase
+        .from("alumnos")
+        .select("*")
+        .eq("id_clase", clase.id_clase);
+
+    List<Alumno> alumnosTutor = List.empty(growable: true);
+
+    for (var alumno in alumnos) {
+      Alumno alumnoObj = Alumno(
+        alumno["id_alumno"],
+        alumno["nombre"],
+        alumno["apellido"],
+        DateTime.parse(alumno["fecha_nacimiento"]),
+        alumno["id_clase"],
+        clase,
+        alumno["url_foto_perfil"],
+        [],
+      );
+      alumnosTutor.add(alumnoObj);
+    }
+    return alumnosTutor;
+  }
+
+  Future<Clase> getClaseDeTutor(Usuario tutor) async {
+    var data = await usersBBDD.supabase
+        .from("usuarios")
+        .select("id_clase_tutor")
+        .eq("id_usuario", tutor.id_usuario)
+        .single();
+
+    int id = data["id_clase_tutor"];
+
+    var clase = await usersBBDD.supabase
+        .from("clases")
+        .select("*")
+        .eq("id_clase", id)
+        .single();
+
+    Clase claseObj = Clase(
+      clase["id_clase"],
+      clase["nombre_clase"],
+      clase["id_centro"],
+    );
+
+    return claseObj;
   }
 }

@@ -31,4 +31,15 @@ class CitasBBDD {
       "descripcion": descripcion
     });
   }
+
+  crearCitaProfesor(String titulo, String descripcion, DateTime fechaPropuesta,
+      Alumno alumno, Usuario user) async {
+    await usersBBDD.supabase.from("citas").insert({
+      "id_alumno": alumno.id_alumno,
+      "id_profesor": user.id_usuario,
+      "fecha_tutor": fechaPropuesta.toIso8601String(),
+      "titulo": titulo,
+      "descripcion": descripcion
+    });
+  }
 }

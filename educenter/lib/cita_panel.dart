@@ -39,6 +39,7 @@ class _CitaPanelState extends State<CitaPanel> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Container(
+                width: double.infinity,
                 decoration: BoxDecoration(
                     shape: BoxShape.rectangle,
                     color: esOscuro ? Colors.white : Colors.black12,
@@ -143,15 +144,22 @@ class _CitaPanelState extends State<CitaPanel> {
                                                 SizedBox(
                                                   width: 20,
                                                 ),
-                                                Text(
-                                                  widget.citaSeleccionada
-                                                      .fecha_padre
-                                                      .toString()
-                                                      .split(" ")
-                                                      .first,
-                                                  style: TextStyle(
-                                                      fontWeight:
-                                                          FontWeight.bold),
+                                                Flexible(
+                                                  child: Text(
+                                                    widget.citaSeleccionada
+                                                                .fecha_padre !=
+                                                            null
+                                                        ? widget
+                                                            .citaSeleccionada
+                                                            .fecha_padre
+                                                            .toString()
+                                                            .split(" ")
+                                                            .first
+                                                        : "Fecha no especificada",
+                                                    style: TextStyle(
+                                                        fontWeight:
+                                                            FontWeight.bold),
+                                                  ),
                                                 )
                                               ],
                                             ),
@@ -167,16 +175,23 @@ class _CitaPanelState extends State<CitaPanel> {
                                                 SizedBox(
                                                   width: 20,
                                                 ),
-                                                Text(
-                                                  Utils.formatTimeString(widget
-                                                      .citaSeleccionada
-                                                      .fecha_padre
-                                                      .toString()
-                                                      .split(" ")
-                                                      .last),
-                                                  style: TextStyle(
-                                                      fontWeight:
-                                                          FontWeight.bold),
+                                                Flexible(
+                                                  child: Text(
+                                                    widget.citaSeleccionada
+                                                                .fecha_padre !=
+                                                            null
+                                                        ? Utils.formatTimeString(
+                                                            widget
+                                                                .citaSeleccionada
+                                                                .fecha_padre
+                                                                .toString()
+                                                                .split(" ")
+                                                                .last)
+                                                        : "Hora no especificada",
+                                                    style: TextStyle(
+                                                        fontWeight:
+                                                            FontWeight.bold),
+                                                  ),
                                                 )
                                               ],
                                             ),
@@ -376,8 +391,8 @@ class _CitaPanelState extends State<CitaPanel> {
                                       MainAxisAlignment.spaceEvenly,
                                   children: [
                                     Container(
-                                        width: 100,
-                                        height: 100,
+                                        width: 90,
+                                        height: 90,
                                         clipBehavior: Clip.antiAlias,
                                         decoration: const BoxDecoration(
                                           shape: BoxShape.circle,
@@ -397,7 +412,7 @@ class _CitaPanelState extends State<CitaPanel> {
                                                 Icons.person,
                                               )),
                                     const SizedBox(
-                                      width: 20,
+                                      height: 5,
                                     ),
                                     Flexible(
                                       child: Text(
@@ -428,8 +443,8 @@ class _CitaPanelState extends State<CitaPanel> {
                                   child: Column(
                                     children: [
                                       Container(
-                                          width: 100,
-                                          height: 100,
+                                          width: 90,
+                                          height: 90,
                                           clipBehavior: Clip.antiAlias,
                                           decoration: const BoxDecoration(
                                             shape: BoxShape.circle,
@@ -448,6 +463,9 @@ class _CitaPanelState extends State<CitaPanel> {
                                               : const Icon(
                                                   Icons.person,
                                                 )),
+                                      const SizedBox(
+                                        height: 5,
+                                      ),
                                       Flexible(
                                         child: Text(
                                           "${widget.citaSeleccionada.tutor.nombre} ${widget.citaSeleccionada.tutor.apellido}",
