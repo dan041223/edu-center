@@ -1,5 +1,6 @@
 // ignore_for_file: camel_case_types
 
+import 'package:educenter/paginas/admin/main_menu_admin.dart';
 import 'package:educenter/paginas/autenticacion/login.dart';
 import 'package:educenter/paginas/padre/main_menu.dart';
 import 'package:educenter/paginas/profe/clases_profe.dart';
@@ -44,6 +45,8 @@ class usersBBDD {
           await supabase.auth.signInWithPassword(email: email, password: pass);
       session = res.session;
       user = res.user;
+      print(res.session?.accessToken.toString());
+
       if (session != null && user != null && context != null) {
         ScaffoldMessenger.of(context)
             .showSnackBar(const SnackBar(content: Text("Usuario encontrado")));
@@ -66,13 +69,11 @@ class usersBBDD {
           ));
         } else if (usuario.tipo_usuario == "administrador") {
           // TODO: menu principal del administrador
-          Navigator.of(context).push(MaterialPageRoute(
-            builder: (context) => const main_menu(
-              body: Center(
-                child: Text("No tienes hijos en el sistema"),
-              ),
+          Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (context) => const MainMenuAdmin(),
             ),
-          ));
+          );
         }
       }
     } on AuthApiException {
@@ -129,5 +130,26 @@ class usersBBDD {
       data["url_foto_perfil"],
       data["email_contacto"],
     );
+  }
+
+  Future<void> deleteUser(String userId) async {
+    final response = await supabase.rpc('delete_user', params: {
+      'user_id': userId,
+    });
+
+    if (response.error != null) {
+      print('Error: ${response.error.message}');
+    } else {
+      print('Usuario eliminado exitosamente');
+    }
+  }
+
+  borrarUsuario(Usuario profe) async {
+    await usersBBDD.supabase.auth.admin.deleteUser(profe.id_usuario);
+    await usersBBDD.supabase
+        .from("usuarios")
+        .delete()
+        .eq("id_usuario", profe.id_usuario)
+        .select();
   }
 }

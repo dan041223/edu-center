@@ -1,9 +1,13 @@
+// ignore_for_file: avoid_function_literals_in_foreach_calls
+
 import 'package:educenter/bbdd/alumnos_bbdd.dart';
 import 'package:educenter/bbdd/users_bbdd.dart';
 import 'package:educenter/models/alumno.dart';
 import 'package:educenter/models/asignatura.dart';
 import 'package:educenter/models/clase.dart';
+import 'package:educenter/models/evento.dart';
 import 'package:educenter/models/usuario.dart';
+import 'package:educenter/utils.dart';
 
 class EventosBBDD {
   // ignore: non_constant_identifier_names
@@ -73,5 +77,62 @@ class EventosBBDD {
       listaProfesores.add(profesor);
     }
     return listaProfesores;
+  }
+
+  Future crearEvento(
+      Usuario profe,
+      String color,
+      String ubicacion,
+      String tipo_evento,
+      List<Clase> clasesSeleccionadas,
+      String nombre,
+      String descripcion,
+      DateTime fechaInicioPropuesta,
+      DateTime fechaFinPropuesta) async {
+    var data = await usersBBDD.supabase
+        .from("evento")
+        .insert({
+          "nombre_evento": nombre,
+          "descripcion_evento": descripcion,
+          "tipo_evento": Utils.stringToTipoEvento(tipo_evento),
+          "fecha_inicio": fechaInicioPropuesta.toIso8601String(),
+          "fecha_fin": fechaFinPropuesta.toIso8601String(),
+          "ubicacion": ubicacion,
+          "color_evento": color
+        })
+        .select()
+        .single();
+    List<Alumno> alumnosDeClases = List.empty(growable: true);
+    for (var clase in clasesSeleccionadas) {
+      List<Alumno> alumnos = await AlumnosBBDD().getAlumnosClase(clase);
+      alumnosDeClases.addAll(alumnos);
+    }
+
+    Evento evento = Evento(
+        data["id_evento"],
+        nombre,
+        descripcion,
+        tipo_evento,
+        fechaInicioPropuesta,
+        fechaFinPropuesta,
+        ubicacion,
+        [profe],
+        alumnosDeClases,
+        color);
+    await agregarAlumnosAEvento(alumnosDeClases, evento);
+    await agregarProfesorAEvento(evento, profe);
+  }
+
+  Future agregarProfesorAEvento(Evento evento, Usuario profe) async {
+    await usersBBDD.supabase.from("profesor_evento").insert(
+        {"id_evento": evento.id_evento, "id_profesor": profe.id_usuario});
+  }
+
+  Future agregarAlumnosAEvento(
+      List<Alumno> alumnosDeClases, Evento evento) async {
+    alumnosDeClases.forEach((alumno) async {
+      await usersBBDD.supabase.from("alumnos_evento").insert(
+          {"id_evento": evento.id_evento, "id_alumno": alumno.id_alumno});
+    });
   }
 }

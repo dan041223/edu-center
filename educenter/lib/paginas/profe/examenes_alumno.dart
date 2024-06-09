@@ -81,12 +81,13 @@ class _ExamenesAlumnoState extends State<ExamenesAlumno> {
                           decoration: const BoxDecoration(
                             shape: BoxShape.circle,
                           ),
-                          child: Image.network(
-                            widget.alumno.url_foto_perfil?.toString() ??
-                                widget.alumno.url_foto_perfil?.toString() ??
-                                "",
-                            fit: BoxFit.cover,
-                          ),
+                          child: widget.alumno.url_foto_perfil != null
+                              ? Image.network(
+                                  widget.alumno.url_foto_perfil!.toString(),
+                                  fit: BoxFit.cover,
+                                )
+                              : Icon(Icons.person,
+                                  color: Colors.black, size: 80),
                         ),
                         Flexible(
                           child: Text(

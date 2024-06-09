@@ -1,6 +1,7 @@
 // ignore_for_file: must_be_immutable
 
 import 'package:educenter/bbdd/alumnos_bbdd.dart';
+import 'package:educenter/bbdd/profesores_bbdd.dart';
 import 'package:educenter/evento.dart';
 import 'package:educenter/examen_panel.dart';
 import 'package:educenter/incidencia_hijo.dart';
@@ -9,24 +10,29 @@ import 'package:educenter/models/asignatura.dart';
 import 'package:educenter/models/evento.dart';
 import 'package:educenter/models/examen.dart';
 import 'package:educenter/models/incidencia.dart';
+import 'package:educenter/models/usuario.dart';
+import 'package:educenter/paginas/profe/agregar_evento.dart';
+import 'package:educenter/paginas/profe/agregar_examen.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_expandable_fab/flutter_expandable_fab.dart';
 import 'package:table_calendar/table_calendar.dart';
 
-class EventosHijo extends StatefulWidget {
-  Alumno alumnoElegido;
-  EventosHijo({super.key, required this.alumnoElegido});
+class Calendario extends StatefulWidget {
+  DateTime fechaHoy = DateTime.now();
+  Alumno? alumnoElegido;
+  Usuario? profe;
+  Calendario({super.key, this.alumnoElegido, this.profe});
 
   @override
-  State<EventosHijo> createState() => _EventosHijoState();
+  State<Calendario> createState() => _CalendarioState();
 }
 
-class _EventosHijoState extends State<EventosHijo> {
+class _CalendarioState extends State<Calendario> {
   bool eventosBool = true;
   bool examenesBool = true;
   bool incidenciasBool = true;
-  List<Object> examenesEventosIncidenciasDelDiaSeleccionado =
-      List.empty(growable: true);
-  List<Object> examenesEventosIncidenciasDelAlumno = List.empty(growable: true);
+  List<Object> calendarioItemsDelDiaSeleccionado = List.empty(growable: true);
+  List<Object> calendarioItems = List.empty(growable: true);
   List<Object> listaEventosObjeto = List.empty(growable: true);
   List<Object> listaExamenesObjeto = List.empty(growable: true);
   List<Object> listaIncidenciasObjeto = List.empty(growable: true);
@@ -39,31 +45,61 @@ class _EventosHijoState extends State<EventosHijo> {
   void initState() {
     super.initState();
     Future.delayed(const Duration(milliseconds: 1), () async {
-      final results = await Future.wait([
-        AlumnosBBDD().getListaEventosDeAlumno(widget.alumnoElegido),
-        AlumnosBBDD().getListaExamenesDeAlumno(widget.alumnoElegido),
-        AlumnosBBDD().getListaIncidenciasDeAlumno(widget.alumnoElegido),
-      ]);
-
-      listaIncidenciasObjeto = results[2];
-      listaExamenesObjeto = results[1];
-      listaEventosObjeto = results[0];
-
-      examenesEventosIncidenciasDelAlumno.addAll(listaIncidenciasObjeto);
-      examenesEventosIncidenciasDelAlumno.addAll(listaExamenesObjeto);
-      examenesEventosIncidenciasDelAlumno.addAll(listaEventosObjeto);
+      if (widget.alumnoElegido != null) {
+        await getItemCalendarioAlumno(widget.alumnoElegido!);
+      } else if (widget.profe != null) {
+        await getItemCalendarioProfe(widget.profe!);
+      }
+      if (!mounted) {
+        return;
+      }
+      if (!mounted) {
+        return;
+      }
       setState(() {
         loading = false;
       });
     });
   }
 
-  List<Object> _getEvents(Alumno alumnoElegido) {
+  Future getItemCalendarioAlumno(Alumno alumno) async {
+    final results = await Future.wait([
+      AlumnosBBDD().getListaEventosDeAlumno(alumno),
+      AlumnosBBDD().getListaExamenesDeAlumno(alumno),
+      AlumnosBBDD().getListaIncidenciasDeAlumno(alumno),
+    ]);
+
+    listaIncidenciasObjeto = results[2];
+    listaExamenesObjeto = results[1];
+    listaEventosObjeto = results[0];
+
+    calendarioItems.addAll(listaIncidenciasObjeto);
+    calendarioItems.addAll(listaExamenesObjeto);
+    calendarioItems.addAll(listaEventosObjeto);
+  }
+
+  Future getItemCalendarioProfe(Usuario profe) async {
+    final results = await Future.wait([
+      ProfesoresBBDD().getListaEventos(profe),
+      ProfesoresBBDD().getListaExamenes(profe),
+      ProfesoresBBDD().getListaIncidencias(profe),
+    ]);
+
+    listaIncidenciasObjeto = results[2];
+    listaExamenesObjeto = results[1];
+    listaEventosObjeto = results[0];
+
+    calendarioItems.addAll(listaIncidenciasObjeto);
+    calendarioItems.addAll(listaExamenesObjeto);
+    calendarioItems.addAll(listaEventosObjeto);
+  }
+
+  List<Object> _getEvents() {
     List<Object> eventosDeHoy = List.empty(growable: true);
     List<Object> examenesDeHoy = List.empty(growable: true);
     List<Object> incidentesDeHoy = List.empty(growable: true);
 
-    examenesEventosIncidenciasDelAlumno = List.empty(growable: true);
+    calendarioItems = List.empty(growable: true);
 
     if (eventosBool) {
       for (var evento in listaEventosObjeto) {
@@ -82,14 +118,14 @@ class _EventosHijoState extends State<EventosHijo> {
         examenesDeHoy.add(examen);
       }
     }
-    examenesEventosIncidenciasDelAlumno.addAll(eventosDeHoy);
-    examenesEventosIncidenciasDelAlumno.addAll(examenesDeHoy);
-    examenesEventosIncidenciasDelAlumno.addAll(incidentesDeHoy);
+    calendarioItems.addAll(eventosDeHoy);
+    calendarioItems.addAll(examenesDeHoy);
+    calendarioItems.addAll(incidentesDeHoy);
 
-    return examenesEventosIncidenciasDelAlumno;
+    return calendarioItems;
   }
 
-  List<Object> _getEventsForDay(DateTime day, Alumno alumnoElegido) {
+  List<Object> _getEventsForDay(DateTime day) {
     List<Object> eventosDeHoy = List.empty(growable: true);
     List<Object> examenesDeHoy = List.empty(growable: true);
     List<Object> incidentesDeHoy = List.empty(growable: true);
@@ -154,6 +190,33 @@ class _EventosHijoState extends State<EventosHijo> {
             ],
           ),
         ),
+        floatingActionButtonLocation: ExpandableFab.location,
+        floatingActionButton: ExpandableFab(
+          openButtonBuilder:
+              DefaultFloatingActionButtonBuilder(child: const Icon(Icons.add)),
+          children: [
+            FloatingActionButton.small(
+              heroTag: null,
+              child: const Icon(Icons.format_list_numbered_sharp),
+              onPressed: () {
+                Navigator.of(context).push(MaterialPageRoute(
+                  builder: (context) => AgregarExamen(profe: widget.profe!),
+                ));
+              },
+            ),
+            FloatingActionButton.small(
+              heroTag: null,
+              child: const Icon(Icons.calendar_month_outlined),
+              onPressed: () {
+                Navigator.of(context).push(MaterialPageRoute(
+                  builder: (context) => AgregarEvento(
+                    profesor: widget.profe!,
+                  ),
+                ));
+              },
+            ),
+          ],
+        ),
         body: TabBarView(
           children: [
             loading
@@ -170,16 +233,14 @@ class _EventosHijoState extends State<EventosHijo> {
                                   if (eventosBool) {
                                     setState(() {
                                       eventosBool = false;
-                                      examenesEventosIncidenciasDelDiaSeleccionado =
-                                          _getEventsForDay(_focusedDay,
-                                              widget.alumnoElegido);
+                                      calendarioItemsDelDiaSeleccionado =
+                                          _getEventsForDay(_focusedDay);
                                     });
                                   } else {
                                     setState(() {
                                       eventosBool = true;
-                                      examenesEventosIncidenciasDelDiaSeleccionado =
-                                          _getEventsForDay(_focusedDay,
-                                              widget.alumnoElegido);
+                                      calendarioItemsDelDiaSeleccionado =
+                                          _getEventsForDay(_focusedDay);
                                     });
                                   }
                                 }),
@@ -190,16 +251,14 @@ class _EventosHijoState extends State<EventosHijo> {
                                 if (examenesBool) {
                                   setState(() {
                                     examenesBool = false;
-                                    examenesEventosIncidenciasDelDiaSeleccionado =
-                                        _getEventsForDay(
-                                            _focusedDay, widget.alumnoElegido);
+                                    calendarioItemsDelDiaSeleccionado =
+                                        _getEventsForDay(_focusedDay);
                                   });
                                 } else {
                                   setState(() {
                                     examenesBool = true;
-                                    examenesEventosIncidenciasDelDiaSeleccionado =
-                                        _getEventsForDay(
-                                            _focusedDay, widget.alumnoElegido);
+                                    calendarioItemsDelDiaSeleccionado =
+                                        _getEventsForDay(_focusedDay);
                                   });
                                 }
                               },
@@ -211,26 +270,30 @@ class _EventosHijoState extends State<EventosHijo> {
                                   if (incidenciasBool) {
                                     setState(() {
                                       incidenciasBool = false;
-                                      examenesEventosIncidenciasDelDiaSeleccionado =
-                                          _getEventsForDay(_focusedDay,
-                                              widget.alumnoElegido);
+                                      calendarioItemsDelDiaSeleccionado =
+                                          _getEventsForDay(_focusedDay);
                                     });
                                   } else {
                                     setState(() {
                                       incidenciasBool = true;
-                                      examenesEventosIncidenciasDelDiaSeleccionado =
-                                          _getEventsForDay(_focusedDay,
-                                              widget.alumnoElegido);
+                                      calendarioItemsDelDiaSeleccionado =
+                                          _getEventsForDay(_focusedDay);
                                     });
                                   }
                                 }),
                           ]),
                       TableCalendar(
+                        locale: "es_ES",
+                        availableCalendarFormats: const {
+                          CalendarFormat.month: 'Mes',
+                          CalendarFormat.twoWeeks: '2 semanas',
+                          CalendarFormat.week: 'Semana',
+                        },
                         calendarStyle: const CalendarStyle(),
                         startingDayOfWeek: StartingDayOfWeek.monday,
                         firstDay: DateTime.utc(2010, 10, 16),
                         lastDay: DateTime.utc(2030, 3, 14),
-                        focusedDay: DateTime.now(),
+                        focusedDay: _focusedDay,
                         selectedDayPredicate: (day) {
                           return isSameDay(_selectedDay, day);
                         },
@@ -238,9 +301,8 @@ class _EventosHijoState extends State<EventosHijo> {
                           setState(() {
                             _selectedDay = selectedDay;
                             _focusedDay = focusedDay;
-                            examenesEventosIncidenciasDelDiaSeleccionado =
-                                _getEventsForDay(
-                                    selectedDay, widget.alumnoElegido);
+                            calendarioItemsDelDiaSeleccionado =
+                                _getEventsForDay(selectedDay);
                           });
                         },
                         calendarFormat: _calendarFormat,
@@ -253,28 +315,24 @@ class _EventosHijoState extends State<EventosHijo> {
                           _focusedDay = focusedDay;
                         },
                         eventLoader: (day) {
-                          return _getEventsForDay(day, widget.alumnoElegido);
+                          return _getEventsForDay(day);
                         },
                       ),
                       const SizedBox(
                         height: 8,
                       ),
                       Expanded(
-                        child: examenesEventosIncidenciasDelDiaSeleccionado
-                                .isEmpty
+                        child: calendarioItemsDelDiaSeleccionado.isEmpty
                             ? const Center(
                                 child: Text(
                                     'No hay eventos en el día seleccionado'))
                             : ListView.builder(
                                 itemCount:
-                                    examenesEventosIncidenciasDelDiaSeleccionado
-                                        .length,
+                                    calendarioItemsDelDiaSeleccionado.length,
                                 itemBuilder: (context, index) {
                                   var item =
-                                      examenesEventosIncidenciasDelDiaSeleccionado[
-                                          index];
-                                  String nombreEventoIncidenciaExamen =
-                                      "prueba";
+                                      calendarioItemsDelDiaSeleccionado[index];
+                                  String nombreEventoIncidenciaExamen = "";
 
                                   // Comprobar el tipo del elemento y asignar la fecha correspondiente
                                   if (item is Evento) {
@@ -335,13 +393,59 @@ class _EventosHijoState extends State<EventosHijo> {
                                       },
                                       child: Padding(
                                         padding: const EdgeInsets.all(16.0),
-                                        child: Row(children: [
-                                          Text(
-                                            nombreEventoIncidenciaExamen,
-                                            style:
-                                                const TextStyle(fontSize: 18),
-                                          )
-                                        ]),
+                                        child: Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              item is Examen
+                                                  ? const Icon(Icons
+                                                      .format_list_numbered_sharp)
+                                                  : item is Evento
+                                                      ? const Icon(Icons
+                                                          .calendar_month_outlined)
+                                                      : item is Incidencia
+                                                          ? const Icon(Icons
+                                                              .crisis_alert)
+                                                          : Container(),
+                                              const SizedBox(width: 10),
+                                              Flexible(
+                                                child: Text(
+                                                  nombreEventoIncidenciaExamen,
+                                                  style: const TextStyle(
+                                                      fontSize: 18),
+                                                ),
+                                              ),
+                                              const SizedBox(width: 10),
+                                              Column(
+                                                children: [
+                                                  Text(
+                                                    item is Examen
+                                                        ? item.fecha_examen
+                                                            .toString()
+                                                            .split(" ")
+                                                            .first
+                                                        : item is Evento
+                                                            ? item.fecha_inicio
+                                                                .toString()
+                                                                .split(" ")
+                                                                .first
+                                                            : item is Incidencia
+                                                                ? item
+                                                                    .fecha_incidencia
+                                                                    .toString()
+                                                                    .split(" ")
+                                                                    .first
+                                                                : "",
+                                                    style: const TextStyle(
+                                                        fontSize: 15,
+                                                        fontWeight:
+                                                            FontWeight.bold),
+                                                  ),
+                                                  const Icon(Icons
+                                                      .calendar_month_outlined),
+                                                ],
+                                              ),
+                                            ]),
                                       ),
                                     ),
                                   );
@@ -364,14 +468,14 @@ class _EventosHijoState extends State<EventosHijo> {
                                   if (eventosBool) {
                                     setState(() {
                                       eventosBool = false;
-                                      examenesEventosIncidenciasDelDiaSeleccionado =
-                                          _getEvents(widget.alumnoElegido);
+                                      calendarioItemsDelDiaSeleccionado =
+                                          _getEvents();
                                     });
                                   } else {
                                     setState(() {
                                       eventosBool = true;
-                                      examenesEventosIncidenciasDelDiaSeleccionado =
-                                          _getEvents(widget.alumnoElegido);
+                                      calendarioItemsDelDiaSeleccionado =
+                                          _getEvents();
                                     });
                                   }
                                 }),
@@ -382,14 +486,14 @@ class _EventosHijoState extends State<EventosHijo> {
                                 if (examenesBool) {
                                   setState(() {
                                     examenesBool = false;
-                                    examenesEventosIncidenciasDelDiaSeleccionado =
-                                        _getEvents(widget.alumnoElegido);
+                                    calendarioItemsDelDiaSeleccionado =
+                                        _getEvents();
                                   });
                                 } else {
                                   setState(() {
                                     examenesBool = true;
-                                    examenesEventosIncidenciasDelDiaSeleccionado =
-                                        _getEvents(widget.alumnoElegido);
+                                    calendarioItemsDelDiaSeleccionado =
+                                        _getEvents();
                                   });
                                 }
                               },
@@ -401,30 +505,28 @@ class _EventosHijoState extends State<EventosHijo> {
                                   if (incidenciasBool) {
                                     setState(() {
                                       incidenciasBool = false;
-                                      examenesEventosIncidenciasDelDiaSeleccionado =
-                                          _getEvents(widget.alumnoElegido);
+                                      calendarioItemsDelDiaSeleccionado =
+                                          _getEvents();
                                     });
                                   } else {
                                     setState(() {
                                       incidenciasBool = true;
-                                      examenesEventosIncidenciasDelDiaSeleccionado =
-                                          _getEvents(widget.alumnoElegido);
+                                      calendarioItemsDelDiaSeleccionado =
+                                          _getEvents();
                                     });
                                   }
                                 }),
                           ]),
                       Expanded(
-                        child: examenesEventosIncidenciasDelAlumno.isEmpty
+                        child: calendarioItems.isEmpty
                             ? Center(
-                                child: Text(
-                                    '${widget.alumnoElegido.nombre} ${widget.alumnoElegido.apellido} no tiene eventos próximos'))
+                                child: Text(widget.alumnoElegido != null
+                                    ? '${widget.alumnoElegido!.nombre} ${widget.alumnoElegido!.apellido} no tiene eventos próximos'
+                                    : "No tienes eventos próximos"))
                             : ListView.builder(
-                                itemCount:
-                                    examenesEventosIncidenciasDelAlumno.length,
+                                itemCount: calendarioItems.length,
                                 itemBuilder: (context, index) {
-                                  var item =
-                                      examenesEventosIncidenciasDelAlumno[
-                                          index];
+                                  var item = calendarioItems[index];
                                   String nombreEventoExamen = "prueba";
 
                                   // Comprobar el tipo del elemento y asignar la fecha correspondiente
@@ -487,9 +589,65 @@ class _EventosHijoState extends State<EventosHijo> {
                                                                 item)));
                                           }
                                         },
-                                        child: Text(
-                                          nombreEventoExamen,
-                                          style: const TextStyle(fontSize: 18),
+                                        child: Padding(
+                                          padding: const EdgeInsets.all(16.0),
+                                          child: Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment
+                                                      .spaceBetween,
+                                              children: [
+                                                item is Examen
+                                                    ? const Icon(Icons
+                                                        .format_list_numbered_sharp)
+                                                    : item is Evento
+                                                        ? const Icon(Icons
+                                                            .calendar_month_outlined)
+                                                        : item is Incidencia
+                                                            ? const Icon(Icons
+                                                                .crisis_alert)
+                                                            : Container(),
+                                                const SizedBox(width: 10),
+                                                Flexible(
+                                                  child: Text(
+                                                    nombreEventoExamen,
+                                                    style: const TextStyle(
+                                                        fontSize: 18),
+                                                  ),
+                                                ),
+                                                const SizedBox(width: 10),
+                                                Column(
+                                                  children: [
+                                                    Text(
+                                                      item is Examen
+                                                          ? item.fecha_examen
+                                                              .toString()
+                                                              .split(" ")
+                                                              .first
+                                                          : item is Evento
+                                                              ? item
+                                                                  .fecha_inicio
+                                                                  .toString()
+                                                                  .split(" ")
+                                                                  .first
+                                                              : item
+                                                                      is Incidencia
+                                                                  ? item
+                                                                      .fecha_incidencia
+                                                                      .toString()
+                                                                      .split(
+                                                                          " ")
+                                                                      .first
+                                                                  : "",
+                                                      style: const TextStyle(
+                                                          fontSize: 15,
+                                                          fontWeight:
+                                                              FontWeight.bold),
+                                                    ),
+                                                    const Icon(Icons
+                                                        .calendar_month_outlined),
+                                                  ],
+                                                ),
+                                              ]),
                                         ),
                                       ),
                                     ),

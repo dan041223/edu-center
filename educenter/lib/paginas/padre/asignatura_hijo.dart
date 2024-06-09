@@ -120,10 +120,16 @@ class _asignatura_hijoState extends State<asignatura_hijo> {
                               decoration: const BoxDecoration(
                                 shape: BoxShape.circle,
                               ),
-                              child: Image.network(
-                                'https://st2.depositphotos.com/1025740/5398/i/950/depositphotos_53989307-stock-photo-profesora.jpg',
-                                fit: BoxFit.cover,
-                              ),
+                              child: widget.asignaturaElegida.profesor
+                                          .url_foto_perfil !=
+                                      null
+                                  ? Image.network(
+                                      widget.asignaturaElegida.profesor
+                                          .url_foto_perfil
+                                          .toString(),
+                                      fit: BoxFit.cover,
+                                    )
+                                  : const Icon(Icons.person),
                             ),
                             SizedBox(
                               height: 10,

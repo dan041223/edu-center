@@ -97,21 +97,30 @@ class _main_menuState extends State<main_menu> {
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceAround,
                                 children: [
-                                  Container(
-                                    width: 80,
-                                    height: 80,
-                                    clipBehavior: Clip.antiAlias,
-                                    decoration: const BoxDecoration(
-                                      shape: BoxShape.circle,
-                                    ),
-                                    child: Image.network(
-                                      'https://media.istockphoto.com/id/1399611777/es/foto/retrato-de-un-ni%C3%B1o-sonriente-de-pelo-casta%C3%B1o-mirando-a-la-c%C3%A1mara-ni%C3%B1o-feliz-con-buenos-dientes.jpg?s=612x612&w=0&k=20&c=OZZF4QU3PJvEuDHB8Q4ttDKuUhjtJax-GeZZQJFrOXo=',
-                                      fit: BoxFit.cover,
-                                    ),
-                                  ),
+                                  hijosPadre[index].url_foto_perfil == null
+                                      ? Icon(
+                                          Icons.person,
+                                          size: 80,
+                                        )
+                                      : Container(
+                                          width: 80,
+                                          height: 80,
+                                          clipBehavior: Clip.antiAlias,
+                                          decoration: const BoxDecoration(
+                                            shape: BoxShape.circle,
+                                          ),
+                                          child: Image.network(
+                                            hijosPadre[index]
+                                                .url_foto_perfil
+                                                .toString(),
+                                            fit: BoxFit.cover,
+                                          ),
+                                        ),
                                   Text(
                                     "${hijosPadre[index].nombre} ${hijosPadre[index].apellido}",
-                                    style: const TextStyle(fontSize: 15),
+                                    style: const TextStyle(
+                                      fontSize: 20,
+                                    ),
                                   )
                                 ],
                               ),

@@ -68,7 +68,6 @@ class _CitasPanelState extends State<CitasPanel> {
           : widget.tutor != null
               ? await ProfesoresBBDD().getCitasTutor(widget.tutor!)
               : [];
-      if (citas.isEmpty) return;
 
       citasProximas = getCitasProximas(citas);
       citasPasadas = getCitasPasadas(citas);
@@ -103,19 +102,22 @@ class _CitasPanelState extends State<CitasPanel> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Container(
-                      width: 100,
-                      height: 100,
-                      clipBehavior: Clip.antiAlias,
-                      decoration: const BoxDecoration(
-                        shape: BoxShape.circle,
-                      ),
-                      child: Image.network(
-                        widget.alumno?.url_foto_perfil.toString() ??
-                            widget.tutor?.url_foto_perfil.toString() ??
-                            "",
-                        fit: BoxFit.cover,
-                      ),
-                    ),
+                        width: 100,
+                        height: 100,
+                        clipBehavior: Clip.antiAlias,
+                        decoration: const BoxDecoration(
+                          shape: BoxShape.circle,
+                        ),
+                        child: widget.alumno?.url_foto_perfil != null
+                            ? Image.network(
+                                widget.alumno!.url_foto_perfil!.toString(),
+                                fit: BoxFit.cover,
+                              )
+                            : Icon(
+                                Icons.person,
+                                size: 85,
+                                color: Colors.black,
+                              )),
                     const SizedBox(
                       width: 20,
                     ),

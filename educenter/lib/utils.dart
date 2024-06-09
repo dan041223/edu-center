@@ -11,6 +11,10 @@ class Utils {
     return Color(int.parse(hex, radix: 16));
   }
 
+  static String colorToString(Color color) {
+    return '#${color.value.toRadixString(16)}';
+  }
+
   static String capitalize(String texto) {
     return "${texto[0].toUpperCase()}${texto.substring(1).toLowerCase()}";
   }
@@ -97,4 +101,27 @@ class Utils {
     "Falta de asistencia",
     "Falta grave"
   ];
+
+  static List<String> tiposEvento = [
+    "Excursión",
+    "Reunión",
+    "Viaje",
+    "Obra de teatro",
+    "Exposición"
+  ];
+
+  static String stringToTipoEvento(String tipoString) {
+    switch (tipoString) {
+      case "Excursión":
+        return "excursion";
+      case "Reunión":
+        return "reunion";
+      case "Viaje":
+        return "viaje";
+      case "Obra de teatro":
+        return "obra_teatro";
+      default:
+        return "exposicion";
+    }
+  }
 }

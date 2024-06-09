@@ -75,19 +75,19 @@ class _AlumnoPerfilState extends State<AlumnoPerfil> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Container(
-                        width: 100,
-                        height: 100,
-                        clipBehavior: Clip.antiAlias,
-                        decoration: const BoxDecoration(
-                          shape: BoxShape.circle,
-                        ),
-                        child: Image.network(
-                          widget.alumno.url_foto_perfil?.toString() ??
-                              widget.alumno.url_foto_perfil?.toString() ??
-                              "",
-                          fit: BoxFit.cover,
-                        ),
-                      ),
+                          width: 100,
+                          height: 100,
+                          clipBehavior: Clip.antiAlias,
+                          decoration: const BoxDecoration(
+                            shape: BoxShape.circle,
+                          ),
+                          child: widget.alumno.url_foto_perfil != null
+                              ? Image.network(
+                                  widget.alumno.url_foto_perfil!.toString(),
+                                  fit: BoxFit.cover,
+                                )
+                              : Icon(Icons.person,
+                                  color: Colors.black, size: 80)),
                       const SizedBox(
                         width: 20,
                       ),

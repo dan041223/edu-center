@@ -1,6 +1,7 @@
 import 'package:educenter/paginas/autenticacion/login.dart';
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:intl/date_symbol_data_local.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -8,13 +9,18 @@ Future<void> main() async {
   await Supabase.initialize(
     url: 'https://kudmswbqgstalgnayidv.supabase.co',
     anonKey:
-        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imt1ZG1zd2JxZ3N0YWxnbmF5aWR2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3MTc2NjkyMTQsImV4cCI6MjAzMzI0NTIxNH0.wR6O6mFovd51NrSoRgXWnbpLnYfzaSTVx1mMaUHGMqs',
+        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imt1ZG1zd2JxZ3N0YWxnbmF5aWR2Iiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTcxNzY2OTIxNCwiZXhwIjoyMDMzMjQ1MjE0fQ.QOlxc2haawVV-xX_FQzf7y5pgIXKrIeTtm4_tSNMvk4',
   );
-  runApp(MaterialApp(
-    home: Scaffold(
-      body: Center(child: Login()),
-    ),
-    theme: ThemeData(useMaterial3: true, brightness: Brightness.dark),
-    debugShowCheckedModeBanner: false,
-  ));
+
+  initializeDateFormatting('es_ES', null).then((_) => runApp(MaterialApp(
+        home: Scaffold(
+          body: Center(child: Login()),
+        ),
+        theme: ThemeData(
+            useMaterial3: true,
+            colorSchemeSeed: Colors.lightBlue,
+            brightness: Brightness.dark),
+        debugShowCheckedModeBanner: false,
+      )));
+  ;
 }

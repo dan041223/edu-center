@@ -1,10 +1,17 @@
 import 'package:educenter/bbdd/alumnos_bbdd.dart';
+import 'package:educenter/bbdd/clases_bbdd.dart';
+import 'package:educenter/bbdd/eventos_bbdd.dart';
+import 'package:educenter/bbdd/examenes_bbdd.dart';
 import 'package:educenter/bbdd/users_bbdd.dart';
 import 'package:educenter/models/alumno.dart';
 import 'package:educenter/models/asignatura.dart';
 import 'package:educenter/models/cita.dart';
 import 'package:educenter/models/clase.dart';
+import 'package:educenter/models/evento.dart';
+import 'package:educenter/models/examen.dart';
+import 'package:educenter/models/incidencia.dart';
 import 'package:educenter/models/usuario.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 class ProfesoresBBDD {
   Future<bool> profesorEsTutorDeAlumno(Usuario profesor, Alumno alumno) async {
@@ -61,14 +68,16 @@ class ProfesoresBBDD {
     for (var asignatura in data) {
       Usuario profesor =
           await getProfesorDeAsignatura(asignatura["id_asignatura"]);
-
+      Clase clase =
+          await ClasesBBDD().getClaseAsignatura(asignatura["id_asignatura"]);
       Asignatura asignaturaObjeto = Asignatura(
           asignatura["id_asignatura"],
           asignatura["id_clase"],
           asignatura["id_profesor"],
           asignatura["nombre_asignatura"],
           asignatura["color_codigo"],
-          profesor);
+          profesor,
+          clase);
       listaAsignaturas.add(asignaturaObjeto);
     }
 
@@ -229,4 +238,148 @@ class ProfesoresBBDD {
 
     return claseObj;
   }
+
+  Future<List<Evento>> getListaEventos(Usuario profe) async {
+    List<Evento> listaEventos = List.empty(growable: true);
+    var eventosBD = await usersBBDD.supabase
+        .from("profesor_evento")
+        .select("id_evento")
+        .eq("id_profesor", profe.id_usuario);
+
+    List<int> idsEventos =
+        eventosBD.map((item) => item["id_evento"] as int).toList();
+
+    var eventosData = await usersBBDD.supabase
+        .from("evento")
+        .select("*")
+        .inFilter("id_evento", idsEventos);
+
+    for (var eventosMap in eventosData) {
+      List<Usuario> listaProfesores =
+          await EventosBBDD().getListaProfesoresEvento(eventosMap["id_evento"]);
+      List<Alumno> listaAlumnos =
+          await EventosBBDD().getListaAlumnosEvento(eventosMap["id_evento"]);
+
+      Evento evento = Evento(
+          eventosMap["id_evento"],
+          eventosMap["nombre_evento"],
+          eventosMap["descripcion_evento"],
+          eventosMap["tipo_evento"],
+          DateTime.parse(eventosMap["fecha_inicio"]),
+          DateTime.parse(eventosMap["fecha_fin"]),
+          eventosMap["ubicacion"],
+          listaProfesores,
+          listaAlumnos,
+          eventosMap["color_evento"]);
+
+      listaEventos.add(evento);
+    }
+
+    return listaEventos;
+  }
+
+  Future<List<Examen>> getListaExamenes(Usuario profe) async {
+    List<Examen> listaExamenes = List.empty(growable: true);
+    var examenesBD = await usersBBDD.supabase
+        .from("examenes")
+        .select("id_examen")
+        .eq("id_profesor", profe.id_usuario);
+
+    List<int> idsExamenes =
+        examenesBD.map((item) => item["id_examen"] as int).toList();
+
+    var examenesData = await usersBBDD.supabase
+        .from("examenes")
+        .select("*")
+        .inFilter("id_examen", idsExamenes);
+
+    for (var examenesMap in examenesData) {
+      Asignatura asignatura =
+          await ExamenesBBDD().getAsignaturaExamen(examenesMap["id_examen"]);
+
+      Clase clase =
+          await ExamenesBBDD().getClaseExamen(examenesMap["id_examen"]);
+
+      Examen examen = Examen(
+          examenesMap["id_examen"],
+          examenesMap["id_asignatura"],
+          examenesMap["id_profesor"],
+          examenesMap["id_clase"],
+          DateTime.parse(examenesMap["fecha_examen"]),
+          examenesMap["trimestre"],
+          asignatura,
+          profe,
+          clase,
+          examenesMap["descripcion"]);
+
+      listaExamenes.add(examen);
+    }
+
+    return listaExamenes;
+  }
+
+  Future<List<Incidencia>> getListaIncidencias(Usuario profe) async {
+    List<Incidencia> listaIncidencias = List.empty(growable: true);
+    var incidenciasBD = await usersBBDD.supabase
+        .from("incidencias")
+        .select("*")
+        .eq("id_profesor", profe.id_usuario);
+
+    for (var incidencia in incidenciasBD) {
+      Alumno alumno = await AlumnosBBDD().getAlumno(incidencia["id_alumno"]);
+      Incidencia incidenciaObjeto = Incidencia(
+          incidencia["id_incidencia"],
+          incidencia["tipo_incidencia"],
+          incidencia["titulo_incidencia"],
+          incidencia["descripcion"],
+          incidencia["id_alumno"],
+          incidencia["id_profesor"],
+          incidencia["justificante_url"],
+          incidencia["justificacion"],
+          incidencia["justificante_nombre"],
+          DateTime.parse(incidencia["fecha_incidencia"]),
+          alumno,
+          profe);
+      listaIncidencias.add(incidenciaObjeto);
+    }
+
+    return listaIncidencias;
+  }
+
+  Future cambiarAsignaturasProfe(
+      Usuario profesor, List<Asignatura> listaAsignaturasSeleccionadas) async {
+    // await desvincularAsignaturasProfe(profesor);
+    await usersBBDD.supabase
+        .from("asignatura")
+        .update({"id_profesor": profesor.id_usuario}).inFilter(
+            "id_asignatura", listaAsignaturasSeleccionadas);
+  }
+
+  Future modificarProfesor(String nombre, String apellido, String dni,
+      String email, Usuario profesor) async {
+    await usersBBDD.supabase.from("usuarios").update({
+      "nombre": nombre,
+      "apellido": apellido,
+      "dni": dni,
+      "email_contacto": email
+    }).eq("id_usuario", profesor.id_usuario);
+  }
+
+  Future crearProfesor(
+      String nombre,
+      String apellido,
+      String dni,
+      String emailContacto,
+      String emailUsuario,
+      Clase? claseSeleccionada) async {
+    await usersBBDD.supabase.auth.admin.createUser(
+        AdminUserAttributes(email: emailUsuario, password: "claveTemporal"));
+  }
+
+  // Future desvincularAsignaturasProfe(Usuario profesor) async {
+  //   await usersBBDD.supabase
+  //       .from("asignatura")
+  //       .update({"id_profesor": profesor.id_usuario}).eq(
+  //           "id_profesor", profesor.id_usuario);
+  // }
 }

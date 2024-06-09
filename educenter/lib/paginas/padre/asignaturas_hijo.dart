@@ -36,10 +36,12 @@ class AasignaturasHijoState extends State<AsignaturasHijo> {
                 decoration: const BoxDecoration(
                   shape: BoxShape.circle,
                 ),
-                child: Image.network(
-                  'https://media.istockphoto.com/id/1399611777/es/foto/retrato-de-un-ni%C3%B1o-sonriente-de-pelo-casta%C3%B1o-mirando-a-la-c%C3%A1mara-ni%C3%B1o-feliz-con-buenos-dientes.jpg?s=612x612&w=0&k=20&c=OZZF4QU3PJvEuDHB8Q4ttDKuUhjtJax-GeZZQJFrOXo=',
-                  fit: BoxFit.cover,
-                ),
+                child: widget.alumnoElegido.url_foto_perfil != null
+                    ? Image.network(
+                        widget.alumnoElegido.url_foto_perfil.toString(),
+                        fit: BoxFit.cover,
+                      )
+                    : const Icon(Icons.person),
               ),
               Text(
                 "${widget.alumnoElegido.nombre} ${widget.alumnoElegido.apellido}",

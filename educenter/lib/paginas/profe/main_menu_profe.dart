@@ -1,6 +1,7 @@
+import 'package:educenter/bbdd/users_bbdd.dart';
 import 'package:educenter/citas_panel.dart';
 import 'package:educenter/models/usuario.dart';
-import 'package:educenter/paginas/padre/eventos_hijo.dart';
+import 'package:educenter/calendario.dart';
 import 'package:educenter/paginas/profe/clases_profe.dart';
 import 'package:flutter/material.dart';
 
@@ -15,59 +16,97 @@ class MainMenuProfe extends StatefulWidget {
 class _MainMenuProfeState extends State<MainMenuProfe> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text("Menú")),
-      body: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Column(
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+    return PopScope(
+      canPop: false,
+      onPopInvoked: (didPop) {
+        ScaffoldMessenger.of(context).clearSnackBars();
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Container(
-                  width: 80,
-                  height: 80,
-                  clipBehavior: Clip.antiAlias,
-                  decoration: const BoxDecoration(
-                    shape: BoxShape.circle,
-                  ),
-                  child: Image.network(
-                    widget.profe.url_foto_perfil.toString(),
-                    fit: BoxFit.cover,
-                  ),
-                ),
-                Text(
-                  "${widget.profe.nombre} ${widget.profe.apellido}",
-                  style: const TextStyle(fontSize: 25),
+                Text('Para volver atrás debes cerrar sesión.'),
+                SizedBox(width: 10),
+                Icon(
+                  Icons.logout,
+                  color: Colors.black,
                 )
               ],
             ),
-            const Divider(height: 20),
-            GridView(
-              shrinkWrap: true,
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                childAspectRatio: 1,
-                crossAxisCount: 2,
-                crossAxisSpacing: 4.0,
-                mainAxisSpacing: 4.0,
-              ),
-              physics: const NeverScrollableScrollPhysics(),
-              children: [
-                botonMenuProfe("Clases", Icons.abc, () {
-                  Navigator.of(context).push(MaterialPageRoute(
-                      builder: (context) => ClasesProfe(profe: widget.profe)));
-                }, Colors.amber),
-                botonMenuProfe("Calendario", Icons.calendar_month_outlined, () {
-                  // Navigator.of(context).push(MaterialPageRoute(
-                  //     builder: (context) => EventosHijo(profe: widget.profe)));
-                }, Colors.red),
-                botonMenuProfe("Citas", Icons.ballot_outlined, () {
-                  Navigator.of(context).push(MaterialPageRoute(
-                      builder: (context) => CitasPanel(tutor: widget.profe)));
-                }, Colors.purple),
-              ],
-            ),
+          ),
+        );
+      },
+      child: Scaffold(
+        appBar: AppBar(
+          title: const Text("EduCenter"),
+          leading: Container(),
+          actions: [
+            IconButton(
+                onPressed: () {
+                  usersBBDD().signOut(context);
+                },
+                icon: const Icon(
+                  Icons.logout,
+                  size: 26,
+                ))
           ],
+        ),
+        body: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Column(
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  Container(
+                    width: 80,
+                    height: 80,
+                    clipBehavior: Clip.antiAlias,
+                    decoration: const BoxDecoration(
+                      shape: BoxShape.circle,
+                    ),
+                    child: Image.network(
+                      widget.profe.url_foto_perfil.toString(),
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                  Text(
+                    "${widget.profe.nombre} ${widget.profe.apellido}",
+                    style: const TextStyle(fontSize: 25),
+                  )
+                ],
+              ),
+              const Divider(height: 20),
+              GridView(
+                shrinkWrap: true,
+                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                  childAspectRatio: 1,
+                  crossAxisCount: 2,
+                  crossAxisSpacing: 4.0,
+                  mainAxisSpacing: 4.0,
+                ),
+                physics: const NeverScrollableScrollPhysics(),
+                children: [
+                  botonMenuProfe("Clases", Icons.abc, () {
+                    Navigator.of(context).push(MaterialPageRoute(
+                        builder: (context) =>
+                            ClasesProfe(profe: widget.profe)));
+                  }, Colors.amber),
+                  botonMenuProfe("Calendario", Icons.calendar_month_outlined,
+                      () {
+                    Navigator.of(context).push(MaterialPageRoute(
+                        builder: (context) => Calendario(
+                              profe: widget.profe,
+                            )));
+                  }, Colors.red),
+                  botonMenuProfe("Citas", Icons.ballot_outlined, () {
+                    Navigator.of(context).push(MaterialPageRoute(
+                        builder: (context) => CitasPanel(tutor: widget.profe)));
+                  }, Colors.purple),
+                ],
+              ),
+            ],
+          ),
         ),
       ),
     );

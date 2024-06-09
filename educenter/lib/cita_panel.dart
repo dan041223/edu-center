@@ -360,7 +360,7 @@ class _CitaPanelState extends State<CitaPanel> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    "Asistentes:",
+                    "Alumno y tutor:",
                     style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                   ),
                   Divider(
@@ -379,7 +379,7 @@ class _CitaPanelState extends State<CitaPanel> {
                       Column(
                         children: [
                           Text(
-                            "Hijo",
+                            "Alumno",
                             style: TextStyle(fontWeight: FontWeight.bold),
                           ),
                           Expanded(

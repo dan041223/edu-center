@@ -33,6 +33,7 @@ class _ClasesProfeState extends State<ClasesProfe> {
         asignaturas!.addAll(asignaturasPorClase.where(
             (element) => element.id_profesor == widget.profe.id_usuario));
       }
+      if (!mounted) return;
       setState(() {});
     });
     super.initState();

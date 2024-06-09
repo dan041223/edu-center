@@ -1,6 +1,9 @@
+import 'package:educenter/bbdd/users_bbdd.dart';
 import 'package:educenter/components/fecha_xs.dart';
 import 'package:educenter/models/incidencia.dart';
+import 'package:educenter/models/usuario.dart';
 import 'package:educenter/paginas/padre/profesor_panel.dart';
+import 'package:educenter/paginas/profe/alumno_perfil.dart';
 import 'package:educenter/utils.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
@@ -8,6 +11,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
 class IncidenciaHijo extends StatefulWidget {
+  Usuario? user;
   Incidencia incidenciaSeleccionada;
 
   IncidenciaHijo({super.key, required this.incidenciaSeleccionada});
@@ -23,6 +27,18 @@ class _IncidenciaHijoState extends State<IncidenciaHijo> {
     if (result != null) {
       file = result.files.first;
     }
+  }
+
+  @override
+  void initState() {
+    Future.delayed(
+      Duration(milliseconds: 1),
+      () async {
+        widget.user = await usersBBDD().getUsuario();
+        setState(() {});
+      },
+    );
+    super.initState();
   }
 
   @override
@@ -99,51 +115,95 @@ class _IncidenciaHijoState extends State<IncidenciaHijo> {
           const Padding(
             padding: EdgeInsets.only(top: 12.0),
             child: Text(
-              "Profesores:",
+              "Profesor y alumno:",
               style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
             ),
           ),
           const Divider(
             height: 20,
           ),
-          Card(
-            child: InkWell(
-              onTap: () {
-                Navigator.of(context).push(MaterialPageRoute(
-                  builder: (context) => ProfesorPanel(
-                    profesor: widget.incidenciaSeleccionada.profesor,
-                    alumno: widget.incidenciaSeleccionada.alumno,
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              Card(
+                child: InkWell(
+                  onTap: widget.user != null &&
+                          widget.user!.tipo_usuario == "padre_madre"
+                      ? () {
+                          Navigator.of(context).push(MaterialPageRoute(
+                            builder: (context) => ProfesorPanel(
+                              profesor: widget.incidenciaSeleccionada.profesor,
+                              alumno: widget.incidenciaSeleccionada.alumno,
+                            ),
+                          ));
+                        }
+                      : () {},
+                  child: Padding(
+                    padding: const EdgeInsets.all(20.0),
+                    child: Column(
+                      children: [
+                        Container(
+                          width: 120,
+                          height: 120,
+                          clipBehavior: Clip.antiAlias,
+                          decoration: const BoxDecoration(
+                            shape: BoxShape.circle,
+                          ),
+                          child: widget.incidenciaSeleccionada.profesor
+                                      .url_foto_perfil !=
+                                  null
+                              ? Image.network(
+                                  widget.incidenciaSeleccionada.profesor
+                                      .url_foto_perfil
+                                      .toString(),
+                                  fit: BoxFit.cover,
+                                )
+                              : const Icon(Icons.person),
+                        ),
+                        const SizedBox(height: 10),
+                        Text(
+                          "${widget.incidenciaSeleccionada.profesor.nombre} ${widget.incidenciaSeleccionada.profesor.apellido}",
+                          style: const TextStyle(fontWeight: FontWeight.bold),
+                        ),
+                      ],
+                    ),
                   ),
-                ));
-              },
-              child: Padding(
-                padding: const EdgeInsets.all(20.0),
-                child: Column(
-                  children: [
-                    Container(
-                      width: 120,
-                      height: 120,
-                      clipBehavior: Clip.antiAlias,
-                      decoration: const BoxDecoration(
-                        shape: BoxShape.circle,
-                      ),
-                      child: Image.network(
-                        'https://st2.depositphotos.com/1025740/5398/i/950/depositphotos_53989307-stock-photo-profesora.jpg',
-                        fit: BoxFit.cover,
-                      ),
-                    ),
-                    SizedBox(
-                      height: 10,
-                    ),
-                    Text(
-                      "${widget.incidenciaSeleccionada.profesor.nombre} ${widget.incidenciaSeleccionada.profesor.apellido}",
-                      style: const TextStyle(fontWeight: FontWeight.bold),
-                    ),
-                  ],
                 ),
               ),
-            ),
-          ),
+              Card(
+                child: Padding(
+                  padding: const EdgeInsets.all(20.0),
+                  child: Column(
+                    children: [
+                      Container(
+                        width: 120,
+                        height: 120,
+                        clipBehavior: Clip.antiAlias,
+                        decoration: const BoxDecoration(
+                          shape: BoxShape.circle,
+                        ),
+                        child: widget.incidenciaSeleccionada.alumno
+                                    .url_foto_perfil !=
+                                null
+                            ? Image.network(
+                                widget.incidenciaSeleccionada.alumno
+                                    .url_foto_perfil
+                                    .toString(),
+                                fit: BoxFit.cover,
+                              )
+                            : const Icon(Icons.person),
+                      ),
+                      const SizedBox(height: 10),
+                      Text(
+                        "${widget.incidenciaSeleccionada.alumno.nombre} ${widget.incidenciaSeleccionada.alumno.apellido}",
+                        style: const TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          )
           // ElevatedButton.icon(
           //     onPressed: picksinglefile,
           //     style: const ButtonStyle(

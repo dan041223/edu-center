@@ -4,7 +4,7 @@ import 'package:educenter/paginas/padre/asignaturas_hijo.dart';
 import 'package:educenter/bbdd/centro_bbdd.dart';
 import 'package:educenter/paginas/padre/centro_panel.dart';
 import 'package:educenter/citas_panel.dart';
-import 'package:educenter/paginas/padre/eventos_hijo.dart';
+import 'package:educenter/calendario.dart';
 import 'package:educenter/paginas/padre/horario.dart';
 import 'package:educenter/models/alumno.dart';
 import 'package:flutter/material.dart';
@@ -37,10 +37,12 @@ class _childProfileState extends State<childProfile> {
                 decoration: const BoxDecoration(
                   shape: BoxShape.circle,
                 ),
-                child: Image.network(
-                  'https://media.istockphoto.com/id/1399611777/es/foto/retrato-de-un-ni%C3%B1o-sonriente-de-pelo-casta%C3%B1o-mirando-a-la-c%C3%A1mara-ni%C3%B1o-feliz-con-buenos-dientes.jpg?s=612x612&w=0&k=20&c=OZZF4QU3PJvEuDHB8Q4ttDKuUhjtJax-GeZZQJFrOXo=',
-                  fit: BoxFit.cover,
-                ),
+                child: widget.alumnoElegido.url_foto_perfil != null
+                    ? Image.network(
+                        widget.alumnoElegido.url_foto_perfil.toString(),
+                        fit: BoxFit.cover,
+                      )
+                    : const Icon(Icons.person),
               ),
               Text(
                 "${widget.alumnoElegido.nombre} ${widget.alumnoElegido.apellido}",
@@ -111,7 +113,7 @@ class _childProfileState extends State<childProfile> {
                       child: InkWell(
                         onTap: () {
                           Navigator.of(context).push(MaterialPageRoute(
-                              builder: (context) => EventosHijo(
+                              builder: (context) => Calendario(
                                     alumnoElegido: widget.alumnoElegido,
                                   )));
                         },

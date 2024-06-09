@@ -7,10 +7,14 @@ environment:
   sdk: '>=3.3.0 <4.0.0'
 
 dependencies:
+  confirm_dialog: ^1.0.3
   file_picker: ^8.0.3
   flutter:
     sdk: flutter
+  flutter_colorpicker: ^1.1.0
   flutter_datetime_picker_plus: ^2.2.0
+  flutter_expandable_fab: ^2.0.0
+  multi_dropdown: ^2.1.4
   numberpicker: ^2.1.2
   supabase_flutter: ^2.5.1
   table_calendar: ^3.1.1

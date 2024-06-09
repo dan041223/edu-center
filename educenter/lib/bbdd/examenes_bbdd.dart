@@ -1,3 +1,5 @@
+import 'package:educenter/bbdd/alumnos_bbdd.dart';
+import 'package:educenter/bbdd/clases_bbdd.dart';
 import 'package:educenter/bbdd/profesores_bbdd.dart';
 import 'package:educenter/bbdd/users_bbdd.dart';
 import 'package:educenter/models/alumno.dart';
@@ -22,7 +24,7 @@ class ExamenesBBDD {
         .eq("id_asignatura", idAsignatura)
         .single();
 
-    Usuario profesor = await ProfesoresBBDD()
+    Usuario? profesor = await ProfesoresBBDD()
         .getProfesorDeAsignatura(asignatura["id_asignatura"]);
     Asignatura asignaturaObjeto = Asignatura(
         asignatura["id_asignatura"],
@@ -85,7 +87,16 @@ class ExamenesBBDD {
     return claseObjeto;
   }
 
-  editarExamen(
+  Future editarExamen(Examen examen, String? descripcion,
+      DateTime fechaPropuesta, Usuario user, int trimestre) async {
+    await usersBBDD.supabase.from("examenes").update({
+      "descripcion": descripcion,
+      "fecha_examen": fechaPropuesta.toIso8601String(),
+      "trimestre": trimestre
+    }).eq("id_examen", examen.id_examen);
+  }
+
+  Future editarExamenAlumno(
       Examen examen,
       String? descripcion,
       String? comentario,
@@ -95,15 +106,65 @@ class ExamenesBBDD {
       Usuario user,
       int trimestre,
       String nota) async {
-    await usersBBDD.supabase.from("examenes").update({
-      "descripcion": descripcion,
-      "fecha_examen": fechaPropuesta.toIso8601String(),
-      "trimestre": trimestre
-    }).eq("id_examen", examen.id_examen);
+    await usersBBDD.supabase
+        .from("examenes")
+        .update({
+          "descripcion": descripcion,
+          "fecha_examen": fechaPropuesta.toIso8601String(),
+          "trimestre": trimestre
+        })
+        .eq("id_examen", examen.id_examen)
+        .eq("id_alumno", alumno.id_alumno);
 
     await usersBBDD.supabase
         .from("examen_alumno")
         .update({"calificacion": nota, "observaciones": comentario}).eq(
             "id_examen", examen.id_examen);
+  }
+
+  Future crearExamen(
+      String descripcion,
+      int trimestre,
+      Clase claseSeleccionada,
+      Asignatura asignaturaSeleccionada,
+      DateTime fechaPropuesta,
+      Usuario profe) async {
+    var data = await usersBBDD.supabase
+        .from("examenes")
+        .insert({
+          "id_asignatura": asignaturaSeleccionada.id_asignatura,
+          "id_profesor": profe.id_usuario,
+          "id_clase": claseSeleccionada.id_clase,
+          "fecha_examen": fechaPropuesta.toIso8601String(),
+          "trimestre": trimestre,
+          "descripcion": descripcion,
+        })
+        .select("*")
+        .single();
+
+    Examen examen = Examen(
+        data["id_examen"],
+        asignaturaSeleccionada.id_asignatura,
+        profe.id_usuario,
+        claseSeleccionada.id_clase,
+        fechaPropuesta,
+        trimestre,
+        asignaturaSeleccionada,
+        profe,
+        claseSeleccionada,
+        descripcion);
+
+    await asignarExamenAlumnosClase(
+        examen.id_examen, claseSeleccionada, asignaturaSeleccionada);
+  }
+
+  Future asignarExamenAlumnosClase(
+      int id_examen, Clase clase, Asignatura asignatura) async {
+    List<Alumno> alumnos = await AlumnosBBDD().getAlumnosClase(clase);
+    for (var alumno in alumnos) {
+      await usersBBDD.supabase
+          .from("examen_alumno")
+          .insert({"id_examen": id_examen, "id_alumno": alumno.id_alumno});
+    }
   }
 }

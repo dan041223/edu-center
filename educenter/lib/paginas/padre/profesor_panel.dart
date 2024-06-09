@@ -1,26 +1,49 @@
 // ignore_for_file: must_be_immutable
 
+import 'package:educenter/bbdd/centro_bbdd.dart';
+import 'package:educenter/bbdd/clases_bbdd.dart';
 import 'package:educenter/bbdd/profesores_bbdd.dart';
 import 'package:educenter/models/alumno.dart';
 import 'package:educenter/models/asignatura.dart';
+import 'package:educenter/models/centro.dart';
+import 'package:educenter/models/clase.dart';
 import 'package:educenter/models/usuario.dart';
+import 'package:educenter/paginas/admin/editar_profesor.dart';
+import 'package:educenter/utils.dart';
 import 'package:flutter/material.dart';
+import 'package:multi_dropdown/multiselect_dropdown.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class ProfesorPanel extends StatefulWidget {
+  Centro? centro;
+  Usuario? admin;
   Usuario profesor;
   Alumno? alumno;
-  ProfesorPanel({super.key, required this.profesor, this.alumno});
+  ProfesorPanel(
+      {super.key,
+      required this.profesor,
+      this.alumno,
+      this.admin,
+      this.centro});
 
   @override
   State<ProfesorPanel> createState() => _ProfesorPanelState();
 }
 
 class _ProfesorPanelState extends State<ProfesorPanel> {
+  bool loading = true;
+  List<Asignatura> asignaturasCentro = List.empty(growable: true);
+  List<Clase> clasesCentro = List.empty(growable: true);
   bool esTutor = false;
   List<Asignatura> asignaturasProfeDeAlumno = List.empty(growable: true);
   List<Asignatura> asignaturasProfe = List.empty(growable: true);
-  @override
+  // PARA HACER UN MULTISELECTDROPDOWN DE
+  // bool modoEdicionAsignaturas = false;
+  // List<Asignatura> listaAsignaturasSeleccionadas = List.empty(growable: true);
+  // List<ValueItem> listaAsignaturasDropdown = List.empty(growable: true);
+  // List<ValueItem> listaAsignaturasDropdownSeleccionadas =
+  //     List.empty(growable: true);
+  // @override
   void initState() {
     super.initState();
     Future.delayed(const Duration(milliseconds: 1), () async {
@@ -32,12 +55,36 @@ class _ProfesorPanelState extends State<ProfesorPanel> {
                   .getAsignaturasProfeDeAlumno(widget.alumno!, widget.profesor)
             }
           : esTutor = false;
+      loading = false;
+      // widget.centro != null
+      //     ? asignaturasCentro =
+      //         await CentroBBDD().getAsignaturasCentro(widget.centro!)
+      //     : null;
+      // widget.centro != null
+      //     ? asignaturasCentro.forEach((asignatura) {
+      //         if (asignatura.id_profesor == null) {
+      //           listaAsignaturasDropdown.add(ValueItem(
+      //               label:
+      //                   "${asignatura.clase!.nombre_clase} ${asignatura.nombre_asignatura}",
+      //               value: asignatura));
+      //         }
+      //       })
+      //     : null;
       asignaturasProfe =
           await ProfesoresBBDD().getAsignaturasProfesor(widget.profesor);
+      // PARA OPCIONES PRESELECCIONADAS
+      // asignaturasProfe.forEach((asignatura) {
+      //   listaAsignaturasDropdownSeleccionadas.add(ValueItem(
+      //       label: asignatura.clase!.nombre_clase.toString(),
+      //       value: asignatura));
+      // });
+
       if (!mounted) {
         return;
       }
-      setState(() {});
+      setState(() {
+        loading = false;
+      });
     });
   }
 
@@ -47,6 +94,19 @@ class _ProfesorPanelState extends State<ProfesorPanel> {
     bool esOscuro = brillo == Brightness.dark;
     return Scaffold(
       appBar: AppBar(),
+      floatingActionButton: widget.admin != null
+          ? FloatingActionButton(
+              onPressed: () {
+                Navigator.of(context).push(MaterialPageRoute(
+                  builder: (context) => EditarProfesor(
+                    profesor: widget.profesor,
+                    centro: widget.centro!,
+                  ),
+                ));
+              },
+              child: Icon(Icons.edit),
+            )
+          : Container(),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -131,24 +191,30 @@ class _ProfesorPanelState extends State<ProfesorPanel> {
                   Flexible(
                     child: Padding(
                       padding: const EdgeInsets.only(bottom: 15.0),
-                      child: ListView.builder(
-                        physics: const NeverScrollableScrollPhysics(),
-                        shrinkWrap: true,
-                        itemCount: widget.alumno != null
-                            ? (asignaturasProfeDeAlumno.isEmpty
-                                ? 1
-                                : asignaturasProfeDeAlumno.length)
-                            : asignaturasProfe.length,
-                        itemBuilder: (context, index) {
-                          return ListTile(
-                            title: Text(widget.alumno != null
-                                ? (asignaturasProfeDeAlumno.isNotEmpty
-                                    ? "- ${asignaturasProfeDeAlumno[index].nombre_asignatura}"
-                                    : "No imparte asignaturas a ${widget.alumno!.nombre}")
-                                : "- ${asignaturasProfe[index].nombre_asignatura}"),
-                          );
-                        },
-                      ),
+                      child: loading
+                          ? Center(
+                              child: CircularProgressIndicator(),
+                            )
+                          : ListView.builder(
+                              physics: const NeverScrollableScrollPhysics(),
+                              shrinkWrap: true,
+                              itemCount: widget.alumno != null
+                                  ? (asignaturasProfeDeAlumno.isEmpty
+                                      ? 1
+                                      : asignaturasProfeDeAlumno.length)
+                                  : asignaturasProfe.length,
+                              itemBuilder: (context, index) {
+                                return ListTile(
+                                    title: Text(widget.alumno != null
+                                        ? (asignaturasProfeDeAlumno.isNotEmpty
+                                            ? "- ${asignaturasProfeDeAlumno[index].nombre_asignatura}"
+                                            : "No imparte asignaturas a ${widget.alumno!.nombre}")
+                                        : asignaturasProfe[index].clase != null
+                                            ? "- ${asignaturasProfe[index].clase!.nombre_clase} ${asignaturasProfe[index].nombre_asignatura}"
+                                            : asignaturasProfe[index]
+                                                .nombre_asignatura));
+                              },
+                            ),
                     ),
                   ),
                   const Text(

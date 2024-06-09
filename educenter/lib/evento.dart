@@ -10,7 +10,7 @@ import 'package:url_launcher/url_launcher.dart';
 
 class EventoPanel extends StatefulWidget {
   final Evento eventoSeleccionado;
-  final Alumno alumnoSeleccionado;
+  final Alumno? alumnoSeleccionado;
   final List<Usuario> listaProfesores;
   final List<Alumno> listaAlumnos;
 
@@ -51,20 +51,12 @@ class _EventoPanelState extends State<EventoPanel> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              "${widget.alumnoSeleccionado.nombre} ${widget.alumnoSeleccionado.apellido}",
-                              style: const TextStyle(
-                                  fontSize: 15, fontWeight: FontWeight.bold),
-                            ),
-                            Text(
-                              widget.eventoSeleccionado.nombre_evento,
-                              style: const TextStyle(
-                                  fontSize: 25, fontWeight: FontWeight.bold),
-                            ),
-                          ],
+                        Text(
+                          widget.alumnoSeleccionado != null
+                              ? "${widget.alumnoSeleccionado!.nombre} ${widget.alumnoSeleccionado!.apellido}"
+                              : "",
+                          style: const TextStyle(
+                              fontSize: 15, fontWeight: FontWeight.bold),
                         ),
                         Column(
                           children: [
@@ -76,7 +68,7 @@ class _EventoPanelState extends State<EventoPanel> {
                               style: const TextStyle(
                                   fontSize: 15, fontWeight: FontWeight.bold),
                             ),
-                            const Icon(Icons.calendar_month),
+                            const Icon(Icons.calendar_month_outlined),
                             Text(
                               widget.eventoSeleccionado.fecha_fin
                                   .toString()
@@ -90,6 +82,18 @@ class _EventoPanelState extends State<EventoPanel> {
                             ),
                           ],
                         )
+                      ],
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Flexible(
+                          child: Text(
+                            widget.eventoSeleccionado.nombre_evento,
+                            style: const TextStyle(
+                                fontSize: 25, fontWeight: FontWeight.bold),
+                          ),
+                        ),
                       ],
                     ),
                     widget.eventoSeleccionado.descripcion_evento != ""

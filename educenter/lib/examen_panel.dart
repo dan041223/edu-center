@@ -8,12 +8,14 @@ import 'package:educenter/models/clase.dart';
 import 'package:educenter/models/examen.dart';
 import 'package:educenter/models/usuario.dart';
 import 'package:educenter/paginas/profe/editar_examen.dart';
+import 'package:educenter/paginas/profe/editar_examen_alumno.dart';
 import 'package:educenter/utils.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 
 class ExamenPanel extends StatefulWidget {
   Examen examenSeleccionado;
-  Alumno alumnoSeleccionado;
+  Alumno? alumnoSeleccionado;
   Usuario profesorSeleccionado;
   bool? editor = false;
   Clase claseExamen;
@@ -41,11 +43,15 @@ class _ExamenPanelState extends State<ExamenPanel> {
     Future.delayed(const Duration(milliseconds: 1), () async {
       if (!mounted) return;
       widget.user = await usersBBDD().getUsuario();
-      notaExamen = await ExamenesAlumnoBBDD().getNotaExamenAlumno(
-          widget.alumnoSeleccionado, widget.examenSeleccionado);
-      observacionesProfeAlumnoExamen = await ExamenesAlumnoBBDD()
-          .getObservacionesExamenAlumno(
-              widget.alumnoSeleccionado, widget.examenSeleccionado);
+
+      if (widget.alumnoSeleccionado != null) {
+        notaExamen = await ExamenesAlumnoBBDD().getNotaExamenAlumno(
+            widget.alumnoSeleccionado!, widget.examenSeleccionado);
+        observacionesProfeAlumnoExamen = await ExamenesAlumnoBBDD()
+            .getObservacionesExamenAlumno(
+                widget.alumnoSeleccionado!, widget.examenSeleccionado);
+      }
+
       setState(() {
         loading = false;
       });
@@ -55,199 +61,245 @@ class _ExamenPanelState extends State<ExamenPanel> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-            title: Text(
-                "Examen de ${widget.examenSeleccionado.asignatura.nombre_asignatura} ${widget.examenSeleccionado.clase.nombre_clase}")),
-        body: SingleChildScrollView(
-          child: Column(
-            children: [
-              Container(
-                  decoration: BoxDecoration(
-                      shape: BoxShape.rectangle,
-                      color: Utils.hexToColor(
-                          widget.examenSeleccionado.asignatura.color_codigo),
-                      borderRadius:
-                          const BorderRadius.all(Radius.circular(20))),
-                  margin: const EdgeInsets.all(10),
-                  padding: const EdgeInsets.all(25),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Column(
+      floatingActionButton: loading
+          ? Container()
+          : widget.user != null && widget.user!.tipo_usuario != "profesor"
+              ? Container()
+              : widget.alumnoSeleccionado != null
+                  ? FloatingActionButton(
+                      onPressed: () {
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (context) => EditarExamenAlumno(
+                              alumno: widget.alumnoSeleccionado!,
+                              examen: widget.examenSeleccionado,
+                              user: widget.profesorSeleccionado,
+                              notaExamen: notaExamen,
+                              comentarioAlumno: observacionesProfeAlumnoExamen,
+                            ),
+                          ),
+                        );
+                      },
+                      child: const Icon(Icons.edit),
+                    )
+                  : FloatingActionButton(
+                      onPressed: () {
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (context) => EditarExamen(
+                              examen: widget.examenSeleccionado,
+                              user: widget.profesorSeleccionado,
+                            ),
+                          ),
+                        );
+                      },
+                      child: const Icon(Icons.edit),
+                    ),
+      appBar: AppBar(
+          title: Text(
+              "Examen de ${widget.examenSeleccionado.asignatura.nombre_asignatura} ${widget.examenSeleccionado.clase.nombre_clase}")),
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            Container(
+                decoration: BoxDecoration(
+                    shape: BoxShape.rectangle,
+                    color: Utils.hexToColor(
+                        widget.examenSeleccionado.asignatura.color_codigo),
+                    borderRadius: const BorderRadius.all(Radius.circular(20))),
+                margin: const EdgeInsets.all(10),
+                padding: const EdgeInsets.all(25),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          widget.alumnoSeleccionado != null
+                              ? "${widget.alumnoSeleccionado!.nombre} ${widget.alumnoSeleccionado!.apellido}"
+                              : "${widget.profesorSeleccionado.nombre} ${widget.profesorSeleccionado.apellido}",
+                          style: const TextStyle(
+                              fontSize: 15, fontWeight: FontWeight.bold),
+                        ),
+                        fechaXS(
+                            widget.examenSeleccionado.fecha_examen.toString(),
+                            Colors.white)
+                      ],
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Flexible(
+                          child: Text(
+                            widget.examenSeleccionado.asignatura
+                                .nombre_asignatura,
+                            style: const TextStyle(
+                                fontSize: 25, fontWeight: FontWeight.bold),
+                          ),
+                        ),
+                      ],
+                    ),
+                    widget.examenSeleccionado.descripcion != null &&
+                            widget.examenSeleccionado.descripcion!.isNotEmpty
+                        ? Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text(
-                                "${widget.alumnoSeleccionado.nombre} ${widget.alumnoSeleccionado.apellido}",
-                                style: const TextStyle(
-                                    fontSize: 15, fontWeight: FontWeight.bold),
+                              const SizedBox(
+                                height: 20,
+                              ),
+                              const Text(
+                                "A tener en cuenta...",
+                                style: TextStyle(
+                                    fontSize: 18, fontWeight: FontWeight.bold),
+                              ),
+                              const SizedBox(
+                                height: 10,
                               ),
                               Text(
-                                widget.examenSeleccionado.asignatura
-                                    .nombre_asignatura,
+                                widget.examenSeleccionado.descripcion!,
                                 style: const TextStyle(
-                                    fontSize: 25, fontWeight: FontWeight.bold),
+                                    fontWeight: FontWeight.bold),
                               ),
                             ],
+                          )
+                        : Container()
+                  ],
+                )),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 10.0),
+              child: GridView(
+                physics: const NeverScrollableScrollPhysics(),
+                shrinkWrap: true,
+                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                  childAspectRatio: 1,
+                  crossAxisCount: 2,
+                  crossAxisSpacing: 4.0,
+                  mainAxisSpacing: 4.0,
+                ),
+                children: [
+                  Card(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      children: [
+                        Container(
+                          width: 100,
+                          height: 100,
+                          clipBehavior: Clip.antiAlias,
+                          decoration: const BoxDecoration(
+                            shape: BoxShape.circle,
                           ),
-                          fechaXS(
-                              widget.examenSeleccionado.fecha_examen.toString(),
-                              Colors.white)
-                        ],
-                      ),
-                      widget.examenSeleccionado.descripcion != null &&
-                              widget.examenSeleccionado.descripcion != ""
-                          ? Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                const SizedBox(
-                                  height: 20,
-                                ),
-                                const Text(
-                                  "A tener en cuenta...",
-                                  style: TextStyle(
+                          child: widget.profesorSeleccionado.url_foto_perfil !=
+                                  null
+                              ? Image.network(
+                                  widget.profesorSeleccionado.url_foto_perfil
+                                      .toString(),
+                                  fit: BoxFit.cover,
+                                )
+                              : const Icon(Icons.person),
+                        ),
+                        Text(
+                          "${widget.profesorSeleccionado.nombre} ${widget.profesorSeleccionado.apellido}",
+                          style: const TextStyle(fontWeight: FontWeight.bold),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Card(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      children: [
+                        Text(
+                          widget.examenSeleccionado.trimestre.toString(),
+                          style: const TextStyle(
+                            fontSize: 80,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        const Text(
+                          "Trimestre",
+                          style: TextStyle(fontWeight: FontWeight.bold),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            widget.alumnoSeleccionado != null
+                ? Container(
+                    decoration: BoxDecoration(
+                        shape: BoxShape.rectangle,
+                        color: Utils.hexToColor(
+                            widget.examenSeleccionado.asignatura.color_codigo),
+                        borderRadius:
+                            const BorderRadius.all(Radius.circular(20))),
+                    margin: const EdgeInsets.all(10),
+                    padding: const EdgeInsets.all(25),
+                    child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              const Text(
+                                "Nota:",
+                                style: TextStyle(
+                                    fontSize: 40, fontWeight: FontWeight.bold),
+                              ),
+                              loading
+                                  ? const CircularProgressIndicator()
+                                  : Text(
+                                      notaExamen == "N/A" ||
+                                              notaExamen == "null"
+                                          ? "-/10"
+                                          : "$notaExamen/10",
+                                      style: const TextStyle(
+                                          fontSize: 50,
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                            ],
+                          ),
+                          const SizedBox(
+                            height: 20,
+                          ),
+                          observacionesProfeAlumnoExamen == "N/A" ||
+                                  observacionesProfeAlumnoExamen == "null" ||
+                                  observacionesProfeAlumnoExamen.isEmpty
+                              ? Container()
+                              : Text(
+                                  "¿Que tal lo ha hecho ${widget.alumnoSeleccionado!.nombre}?",
+                                  style: const TextStyle(
                                       fontSize: 18,
                                       fontWeight: FontWeight.bold),
                                 ),
-                                const SizedBox(
+                          observacionesProfeAlumnoExamen == "N/A" ||
+                                  observacionesProfeAlumnoExamen == "null"
+                              ? Container()
+                              : const SizedBox(
                                   height: 10,
                                 ),
-                                Text(
-                                  widget.examenSeleccionado.descripcion!,
+                          observacionesProfeAlumnoExamen == "N/A" ||
+                                  observacionesProfeAlumnoExamen == "null" ||
+                                  observacionesProfeAlumnoExamen.isEmpty
+                              ? Text(
+                                  "Sin observaciones",
                                   style: const TextStyle(
+                                      fontSize: 15,
                                       fontWeight: FontWeight.bold),
-                                ),
-                              ],
-                            )
-                          : Container()
-                    ],
-                  )),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                child: GridView(
-                  physics: NeverScrollableScrollPhysics(),
-                  shrinkWrap: true,
-                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                    childAspectRatio: 1,
-                    crossAxisCount: 2,
-                    crossAxisSpacing: 4.0,
-                    mainAxisSpacing: 4.0,
-                  ),
-                  children: [
-                    Card(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
-                        children: [
-                          Container(
-                            width: 100,
-                            height: 100,
-                            clipBehavior: Clip.antiAlias,
-                            decoration: const BoxDecoration(
-                              shape: BoxShape.circle,
-                            ),
-                            child: Image.network(
-                              'https://st2.depositphotos.com/1025740/5398/i/950/depositphotos_53989307-stock-photo-profesora.jpg',
-                              fit: BoxFit.cover,
-                            ),
-                          ),
-                          Text(
-                            "${widget.profesorSeleccionado.nombre} ${widget.profesorSeleccionado.apellido}",
-                            style: const TextStyle(fontWeight: FontWeight.bold),
-                          ),
-                        ],
-                      ),
-                    ),
-                    Card(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
-                        children: [
-                          Text(
-                            widget.examenSeleccionado.trimestre.toString(),
-                            style: const TextStyle(
-                              fontSize: 80,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          const Text(
-                            "Trimestre",
-                            style: TextStyle(fontWeight: FontWeight.bold),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              Container(
-                  decoration: BoxDecoration(
-                      shape: BoxShape.rectangle,
-                      color: Utils.hexToColor(
-                          widget.examenSeleccionado.asignatura.color_codigo),
-                      borderRadius:
-                          const BorderRadius.all(Radius.circular(20))),
-                  margin: const EdgeInsets.all(10),
-                  padding: const EdgeInsets.all(25),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          const Text(
-                            "Nota:",
-                            style: TextStyle(
-                                fontSize: 40, fontWeight: FontWeight.bold),
-                          ),
-                          loading
-                              ? CircularProgressIndicator()
+                                )
                               : Text(
-                                  "$notaExamen/10",
+                                  observacionesProfeAlumnoExamen,
                                   style: const TextStyle(
-                                      fontSize: 50,
+                                      fontSize: 15,
                                       fontWeight: FontWeight.bold),
-                                ),
-                        ],
-                      ),
-                      const SizedBox(
-                        height: 20,
-                      ),
-                      Text(
-                        "¿Que tal lo ha hecho ${widget.alumnoSeleccionado.nombre}?",
-                        style: const TextStyle(
-                            fontSize: 18, fontWeight: FontWeight.bold),
-                      ),
-                      const SizedBox(
-                        height: 10,
-                      ),
-                      Text(
-                        observacionesProfeAlumnoExamen,
-                        style: const TextStyle(
-                            fontSize: 15, fontWeight: FontWeight.bold),
-                      )
-                    ],
-                  ))
-            ],
-          ),
+                                )
+                        ]),
+                  )
+                : Container(),
+          ],
         ),
-        floatingActionButton: loading
-            ? Container()
-            : widget.user != null && widget.user!.tipo_usuario != "profesor"
-                ? Container()
-                : FloatingActionButton(
-                    onPressed: () {
-                      Navigator.of(context).push(MaterialPageRoute(
-                          builder: (context) => EditarExamen(
-                                alumno: widget.alumnoSeleccionado,
-                                examen: widget.examenSeleccionado,
-                                user: widget.profesorSeleccionado,
-                                notaExamen: notaExamen,
-                                comentarioAlumno:
-                                    observacionesProfeAlumnoExamen,
-                              )));
-                    },
-                    child: Icon(Icons.edit),
-                  ));
+      ),
+    );
   }
 }
