@@ -114,7 +114,9 @@ class _CrearProfesorState extends State<CrearProfesor> {
                             hint: const Text("Clases..."),
                             isExpanded: true,
                             items: itemsDropDown,
+                            value: claseSeleccionada,
                             onChanged: (value) {
+                              setState(() {});
                               claseSeleccionada = value;
                             },
                           ),
@@ -131,7 +133,7 @@ class _CrearProfesorState extends State<CrearProfesor> {
                         controladorEmailUsuario.text,
                         context);
                   },
-                  child: Text("Modificar"))
+                  child: Text("Crear"))
             ],
           ),
         ),
@@ -151,11 +153,11 @@ class _CrearProfesorState extends State<CrearProfesor> {
       ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text("No están rellenos todos los campos")));
     } else {
-      await ProfesoresBBDD()
-          .crearProfesor(nombre, apellido, dni, email, claseSeleccionada);
+      await ProfesoresBBDD().crearProfesor(nombre, apellido, dni, emailContacto,
+          emailUsuario, claseSeleccionada, widget.centro);
       Navigator.pop(context);
       ScaffoldMessenger.of(context)
-          .showSnackBar(const SnackBar(content: Text("Profesor modificado")));
+          .showSnackBar(const SnackBar(content: Text("Profesor creado")));
     }
   }
 }

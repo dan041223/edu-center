@@ -76,7 +76,8 @@ class usersBBDD {
           );
         }
       }
-    } on AuthApiException {
+    } catch (AuthApiException) {
+      print(AuthApiException);
       ScaffoldMessenger.of(context)
           .showSnackBar(const SnackBar(content: Text("Usuario incorrecto")));
     }

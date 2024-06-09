@@ -59,6 +59,12 @@ class Utils {
     return '$hour:$minute';
   }
 
+  static String formatTimeOfDay(TimeOfDay time) {
+    final String hour = time.hour.toString().padLeft(2, '0');
+    final String minute = time.minute.toString().padLeft(2, '0');
+    return '$hour:$minute:00';
+  }
+
   static String stringToTipoIncidencia(String tipoString) {
     switch (tipoString) {
       case "Expulsión":

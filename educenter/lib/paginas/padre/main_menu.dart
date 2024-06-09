@@ -27,7 +27,7 @@ class _main_menuState extends State<main_menu> {
   void initState() {
     super.initState();
     Future.delayed(const Duration(milliseconds: 1), () async {
-      hijosPadre = await padresBBDD().getHijosDePadre();
+      hijosPadre = await padresBBDD().getHijosDeUser();
       numHijos = hijosPadre.length;
       if (!mounted) return;
 

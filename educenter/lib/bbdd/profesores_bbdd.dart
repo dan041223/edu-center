@@ -5,6 +5,7 @@ import 'package:educenter/bbdd/examenes_bbdd.dart';
 import 'package:educenter/bbdd/users_bbdd.dart';
 import 'package:educenter/models/alumno.dart';
 import 'package:educenter/models/asignatura.dart';
+import 'package:educenter/models/centro.dart';
 import 'package:educenter/models/cita.dart';
 import 'package:educenter/models/clase.dart';
 import 'package:educenter/models/evento.dart';
@@ -371,9 +372,47 @@ class ProfesoresBBDD {
       String dni,
       String emailContacto,
       String emailUsuario,
-      Clase? claseSeleccionada) async {
-    await usersBBDD.supabase.auth.admin.createUser(
-        AdminUserAttributes(email: emailUsuario, password: "claveTemporal"));
+      Clase? claseSeleccionada,
+      Centro centro) async {
+    UserResponse data =
+        await usersBBDD.supabase.auth.admin.createUser(AdminUserAttributes(
+      email: emailUsuario,
+      password: "claveTemporal",
+      emailConfirm: true,
+    ));
+    await usersBBDD.supabase.from("usuarios").insert({
+      "id_usuario": data.user!.id,
+      "nombre": nombre,
+      "apellido": apellido,
+      "dni": dni,
+      "email_contacto": emailContacto,
+      "id_clase_tutor": claseSeleccionada?.id_clase,
+      "id_centro": centro.id_centro,
+      "tipo_usuario": "profesor"
+    });
+  }
+
+  Future<Usuario?> getTutorClase(Clase clase) async {
+    var data = await usersBBDD.supabase
+        .from("usuarios")
+        .select("*")
+        .eq("id_clase_tutor", clase.id_clase);
+
+    if (data.isEmpty) {
+      return null;
+    }
+    Usuario? usuario = Usuario(
+      data[0]["id_usuario"],
+      data[0]["nombre"],
+      data[0]["apellido"],
+      data[0]["dni"],
+      data[0]["id_clase"],
+      data[0]["id_centro"],
+      data[0]["tipo_usuario"],
+      data[0]["url_foto_perfil"],
+      data[0]["email_contacto"],
+    );
+    return usuario;
   }
 
   // Future desvincularAsignaturasProfe(Usuario profesor) async {

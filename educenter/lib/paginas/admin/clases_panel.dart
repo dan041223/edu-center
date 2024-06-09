@@ -1,8 +1,11 @@
 import 'package:confirm_dialog/confirm_dialog.dart';
 import 'package:educenter/bbdd/centro_bbdd.dart';
+import 'package:educenter/bbdd/clases_bbdd.dart';
 import 'package:educenter/bbdd/users_bbdd.dart';
 import 'package:educenter/models/centro.dart';
 import 'package:educenter/models/clase.dart';
+import 'package:educenter/paginas/admin/clase_panel.dart';
+import 'package:educenter/paginas/admin/crear_clase.dart';
 import 'package:flutter/material.dart';
 
 class ClasesPanel extends StatefulWidget {
@@ -37,7 +40,13 @@ class _ClasesPanelState extends State<ClasesPanel> {
     return Scaffold(
       appBar: AppBar(),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {},
+        onPressed: () {
+          Navigator.of(context).push(MaterialPageRoute(
+            builder: (context) => CrearClase(
+              centro: widget.centro,
+            ),
+          ));
+        },
         child: Icon(Icons.add),
       ),
       body: SingleChildScrollView(
@@ -72,32 +81,48 @@ class _ClasesPanelState extends State<ClasesPanel> {
                     return Card(
                       child: Padding(
                         padding: EdgeInsets.all(20),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(clasesCentro[index].nombre_clase),
-                            IconButton(
-                                onPressed: () async {
-                                  if (await confirm(context,
-                                      title: const Text(
-                                          "¿Estas seguro de querer borrar esta clase?"),
-                                      textCancel: const Text("Mantener"),
-                                      textOK: const Text("Eliminar"),
-                                      content: Container())) {
-                                    try {} catch (e) {
-                                      // ignore: use_build_context_synchronously
-                                      ScaffoldMessenger.of(context)
-                                          .showSnackBar(const SnackBar(
-                                              content: Text(
-                                                  "No se ha podido eliminar ya que posee datos asociados")));
-                                    }
-                                  } else {}
-                                },
-                                icon: Icon(
-                                  Icons.delete,
-                                  color: Colors.red,
-                                ))
-                          ],
+                        child: InkWell(
+                          onTap: () {
+                            Navigator.of(context).push(MaterialPageRoute(
+                              builder: (context) => ClasePanel(
+                                  clase: clasesCentro[index],
+                                  centro: widget.centro),
+                            ));
+                          },
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(clasesCentro[index].nombre_clase),
+                              IconButton(
+                                  onPressed: () async {
+                                    if (await confirm(context,
+                                        title: const Text(
+                                            "¿Estas seguro de querer borrar esta clase?"),
+                                        textCancel: const Text("Mantener"),
+                                        textOK: const Text("Eliminar"),
+                                        content: Container())) {
+                                      try {
+                                        await ClasesBBDD()
+                                            .deleteClase(clasesCentro[index]);
+                                        ScaffoldMessenger.of(context)
+                                            .showSnackBar(const SnackBar(
+                                                content: Text(
+                                                    "Clase eliminada correctamente")));
+                                      } catch (e) {
+                                        // ignore: use_build_context_synchronously
+                                        ScaffoldMessenger.of(context)
+                                            .showSnackBar(const SnackBar(
+                                                content: Text(
+                                                    "No se ha podido eliminar ya que posee datos asociados")));
+                                      }
+                                    } else {}
+                                  },
+                                  icon: Icon(
+                                    Icons.delete,
+                                    color: Colors.red,
+                                  ))
+                            ],
+                          ),
                         ),
                       ),
                     );

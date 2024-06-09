@@ -1,7 +1,9 @@
 import 'package:educenter/bbdd/centro_bbdd.dart';
 import 'package:educenter/bbdd/users_bbdd.dart';
 import 'package:educenter/models/centro.dart';
+import 'package:educenter/models/usuario.dart';
 import 'package:educenter/paginas/admin/clases_panel.dart';
+import 'package:educenter/paginas/admin/padres_centro_panel.dart';
 import 'package:educenter/paginas/admin/profesores_panel.dart';
 import 'package:educenter/paginas/padre/centro_panel.dart';
 import 'package:flutter/material.dart';
@@ -14,6 +16,7 @@ class MainMenuAdmin extends StatefulWidget {
 }
 
 class _MainMenuAdminState extends State<MainMenuAdmin> {
+  Usuario? user;
   bool loading = true;
   late Centro centro;
   @override
@@ -21,6 +24,7 @@ class _MainMenuAdminState extends State<MainMenuAdmin> {
     Future.delayed(
       Duration(milliseconds: 1),
       () async {
+        user = await usersBBDD().getUsuario();
         centro = await CentroBBDD().getMiCentro();
         setState(() {
           loading = false;
@@ -107,6 +111,31 @@ class _MainMenuAdminState extends State<MainMenuAdmin> {
                       ),
                     ),
                     Card(
+                      color: Colors.blue,
+                      child: InkWell(
+                        onTap: () {
+                          Navigator.of(context).push(MaterialPageRoute(
+                            builder: (context) => PadresCentroPanel(
+                              centro: centro,
+                            ),
+                          ));
+                        },
+                        child: const Column(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            Icon(
+                              Icons.person,
+                              size: 75,
+                            ),
+                            Text(
+                              "Padres",
+                              style: TextStyle(fontWeight: FontWeight.bold),
+                            )
+                          ],
+                        ),
+                      ),
+                    ),
+                    Card(
                       color: Colors.red,
                       child: InkWell(
                         onTap: () {
@@ -137,6 +166,7 @@ class _MainMenuAdminState extends State<MainMenuAdmin> {
                         onTap: () {
                           Navigator.of(context).push(MaterialPageRoute(
                             builder: (context) => CentroPanel(
+                              user: user,
                               centro: centro,
                             ),
                           ));

@@ -2,15 +2,17 @@ import 'package:educenter/bbdd/alumnos_bbdd.dart';
 import 'package:educenter/models/alumno.dart';
 import 'package:educenter/models/centro.dart';
 import 'package:educenter/models/usuario.dart';
+import 'package:educenter/paginas/admin/editar_centro.dart';
 import 'package:educenter/paginas/padre/profesor_panel.dart';
 import 'package:educenter/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class CentroPanel extends StatefulWidget {
+  Usuario? user;
   Alumno? alumno;
   Centro centro;
-  CentroPanel({super.key, required this.centro, this.alumno});
+  CentroPanel({super.key, required this.centro, this.alumno, this.user});
 
   @override
   State<CentroPanel> createState() => _CentroPanelState();
@@ -32,6 +34,16 @@ class _CentroPanelState extends State<CentroPanel> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(),
+      floatingActionButton: widget.user != null
+          ? FloatingActionButton(
+              onPressed: () {
+                Navigator.of(context).push(MaterialPageRoute(
+                  builder: (context) => EditarCentro(centro: widget.centro),
+                ));
+              },
+              child: Icon(Icons.edit),
+            )
+          : Container(),
       body: Padding(
         padding: const EdgeInsets.all(12.0),
         child: SingleChildScrollView(
@@ -210,6 +222,44 @@ class _CentroPanelState extends State<CentroPanel> {
                                 ),
                                 Text(
                                   "Ver ubicación en Maps...",
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                    fontSize: 20,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                      Card(
+                        elevation: 0.2,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(20.0),
+                        ),
+                        child: InkWell(
+                          onTap: () {
+                            Uri googleUrl =
+                                Uri.parse('tel:${widget.centro.telefono}');
+                            launchUrl(googleUrl);
+
+                            // Navigator.of(context).push(MaterialPageRoute(
+                            //     builder: (context) => AsignaturasHijo(
+                            //           asignaturas: asignaturas,
+                            //           alumnoElegido: widget.alumnoElegido,
+                            //         )));
+                          },
+                          child: const Padding(
+                            padding: EdgeInsets.all(10.0),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              children: [
+                                Icon(
+                                  Icons.phone,
+                                  size: 40,
+                                ),
+                                Text(
+                                  "Llamar...",
                                   textAlign: TextAlign.center,
                                   style: TextStyle(
                                     fontSize: 20,

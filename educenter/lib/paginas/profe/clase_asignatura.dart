@@ -1,15 +1,27 @@
 import 'package:educenter/bbdd/alumnos_bbdd.dart';
 import 'package:educenter/models/alumno.dart';
 import 'package:educenter/models/asignatura.dart';
+import 'package:educenter/models/centro.dart';
 import 'package:educenter/models/clase.dart';
+import 'package:educenter/models/usuario.dart';
+import 'package:educenter/paginas/admin/alumno_perfil_admin.dart';
+import 'package:educenter/paginas/admin/editar_asignatura.dart';
 import 'package:educenter/paginas/profe/alumno_perfil.dart';
 import 'package:educenter/utils.dart';
 import 'package:flutter/material.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 class ClaseAsignatura extends StatefulWidget {
+  Centro? centro;
+  Usuario? usuario;
   Clase clase;
   Asignatura asignatura;
-  ClaseAsignatura({super.key, required this.clase, required this.asignatura});
+  ClaseAsignatura(
+      {super.key,
+      required this.clase,
+      required this.asignatura,
+      this.usuario,
+      required this.centro});
 
   @override
   State<ClaseAsignatura> createState() => _ClaseAsignaturaState();
@@ -26,9 +38,12 @@ class _ClaseAsignaturaState extends State<ClaseAsignatura> {
 
       alumnos = await AlumnosBBDD().getAlumnosClase(widget.clase);
 
-      loading = false;
-
-      setState(() {});
+      if (!mounted) {
+        return;
+      }
+      setState(() {
+        loading = false;
+      });
     });
     super.initState();
   }
@@ -37,6 +52,21 @@ class _ClaseAsignaturaState extends State<ClaseAsignatura> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(),
+        floatingActionButton: loading
+            ? Container()
+            : widget.usuario != null &&
+                    widget.usuario!.tipo_usuario == "administrador"
+                ? FloatingActionButton(
+                    onPressed: () {
+                      Navigator.of(context).push(MaterialPageRoute(
+                        builder: (context) => EditarAsignatura(
+                            asignatura: widget.asignatura,
+                            centro: widget.centro!),
+                      ));
+                    },
+                    child: Icon(Icons.edit),
+                  )
+                : Container(),
         body: loading
             ? const Center(child: CircularProgressIndicator())
             : Column(
@@ -78,15 +108,25 @@ class _ClaseAsignaturaState extends State<ClaseAsignatura> {
                       return Card(
                         child: InkWell(
                           onTap: () {
-                            AlumnosBBDD()
-                                .getAlumno(alumnos[index].id_alumno)
-                                .then((alumno) => Navigator.of(context).push(
-                                    MaterialPageRoute(
-                                        builder: (context) => AlumnoPerfil(
-                                            profesor:
-                                                widget.asignatura.profesor,
-                                            alumno: alumno,
-                                            asignatura: widget.asignatura))));
+                            widget.usuario != null &&
+                                    widget.usuario!.tipo_usuario ==
+                                        "administrador"
+                                ? Navigator.of(context).push(MaterialPageRoute(
+                                    builder: (context) => AlumnoPerfilAdmin(
+                                      alumno: alumnos[index],
+                                      centro: widget.centro!,
+                                    ),
+                                  ))
+                                : AlumnosBBDD()
+                                    .getAlumno(alumnos[index].id_alumno)
+                                    .then((alumno) => Navigator.of(context)
+                                        .push(MaterialPageRoute(
+                                            builder: (context) => AlumnoPerfil(
+                                                profesor:
+                                                    widget.asignatura.profesor,
+                                                alumno: alumno,
+                                                asignatura:
+                                                    widget.asignatura))));
                           },
                           child: Padding(
                             padding: const EdgeInsets.all(12),

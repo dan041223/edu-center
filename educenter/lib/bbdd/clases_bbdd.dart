@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:educenter/bbdd/centro_bbdd.dart';
 import 'package:educenter/bbdd/profesores_bbdd.dart';
 import 'package:educenter/bbdd/users_bbdd.dart';
@@ -234,5 +236,115 @@ class ClasesBBDD {
       }
     }
     return clasesSinTutor;
+  }
+
+  Future<List<Usuario>> getProfesoresNoTutores(Centro centro) async {
+    var data = await usersBBDD.supabase
+        .from("usuarios")
+        .select("*")
+        .isFilter("id_clase_tutor", null)
+        .eq("tipo_usuario", "profesor");
+
+    List<Usuario> usuarios = List.empty(growable: true);
+
+    for (var usuario in data) {
+      Usuario usuarioObj = Usuario(
+        usuario["id_usuario"],
+        usuario["nombre"],
+        usuario["apellido"],
+        usuario["dni"],
+        usuario["id_clase"],
+        usuario["id_centro"],
+        usuario["tipo_usuario"],
+        usuario["url_foto_perfil"],
+        usuario["email_contacto"],
+      );
+      usuarios.add(usuarioObj);
+    }
+    return usuarios;
+  }
+
+  Future crearClase(
+      String nombre, Usuario? profeSeleccionado, Centro centro) async {
+    var data = await usersBBDD.supabase
+        .from("clases")
+        .insert({"nombre_clase": nombre, "id_centro": centro.id_centro})
+        .select()
+        .single();
+    Clase clase = Clase(
+      data["id_clase"],
+      data["nombre_clase"],
+      data["id_centro"],
+    );
+    profeSeleccionado != null
+        ? await usersBBDD.supabase
+            .from("usuarios")
+            .update({"id_clase_tutor": clase.id_clase}).eq(
+                "id_usuario", profeSeleccionado.id_usuario)
+        : null;
+  }
+
+  Future editarClase(String nombre, Usuario? tutorPreSeleccionado,
+      Usuario? tutorSeleccionado, Centro centro, Clase clase) async {
+    await usersBBDD.supabase
+        .from("clases")
+        .update({"nombre_clase": nombre, "id_centro": centro.id_centro}).eq(
+            "id_clase", clase.id_clase);
+
+    tutorSeleccionado != null
+        ? await usersBBDD.supabase
+            .from("usuarios")
+            .update({"id_clase_tutor": clase.id_clase}).eq(
+                "id_usuario", tutorSeleccionado.id_usuario)
+        : null;
+
+    tutorSeleccionado != null && tutorPreSeleccionado != null
+        ? await usersBBDD.supabase
+            .from("usuarios")
+            .update({"id_clase_tutor": null}).eq(
+                "id_usuario", tutorPreSeleccionado.id_usuario)
+        : null;
+  }
+
+  crearAsignatura(String nombreAsignatura, Usuario profesor,
+      String colorSeleccionado, Clase clase) async {
+    await usersBBDD.supabase.from("asignatura").insert({
+      "id_profesor": profesor.id_usuario,
+      "nombre_asignatura": nombreAsignatura,
+      "color_codigo": colorSeleccionado,
+      "id_clase": clase.id_clase,
+    });
+  }
+
+  Future deleteAsignatura(Asignatura asignatura) async {
+    await usersBBDD.supabase
+        .from("asignatura")
+        .delete()
+        .eq("id_asignatura", asignatura.id_asignatura);
+  }
+
+  Future editarAsignatura(Asignatura asignatura, String nombreAsignatura,
+      Usuario? profesor, String colorToString) async {
+    profesor == null
+        ? await usersBBDD.supabase.from("asignatura").update({
+            "nombre_asignatura": nombreAsignatura,
+            "color_codigo": colorToString,
+          }).eq("id_asignatura", asignatura.id_asignatura)
+        : await usersBBDD.supabase.from("asignatura").update({
+            "id_profesor": profesor.id_usuario,
+            "nombre_asignatura": nombreAsignatura,
+            "color_codigo": colorToString,
+          }).eq("id_asignatura", asignatura.id_asignatura);
+  }
+
+  Future deleteClase(Clase clase) async {
+    await usersBBDD.supabase
+        .from("usuarios")
+        .update({"id_clase_tutor": null}).eq("id_usuario", clase.id_clase);
+
+    await usersBBDD.supabase
+        .from("clases")
+        .delete()
+        .eq("id_clase", clase.id_clase);
   }
 }

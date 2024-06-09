@@ -142,4 +142,50 @@ class CentroBBDD {
     }
     return asignaturas;
   }
+
+  Future getPadresCentro(Centro centro) async {
+    var data = await usersBBDD.supabase
+        .from("usuarios")
+        .select("*")
+        .eq("id_centro", centro.id_centro)
+        .eq("tipo_usuario", "padre_madre");
+
+    List<Usuario> padresCentro = List.empty(growable: true);
+
+    for (var padreMadre in data) {
+      Usuario padreMadreObj = Usuario(
+        padreMadre["id_usuario"],
+        padreMadre["nombre"],
+        padreMadre["apellido"],
+        padreMadre["dni"],
+        padreMadre["id_clase"],
+        padreMadre["id_centro"],
+        padreMadre["tipo_usuario"],
+        padreMadre["url_foto_perfil"],
+        padreMadre["email_contacto"],
+      );
+      padresCentro.add(padreMadreObj);
+    }
+    return padresCentro;
+  }
+
+  Future editarCentro(
+      String nombre,
+      String direccion,
+      String email,
+      TimeOfDay horarioAperturaActual,
+      TimeOfDay horarioCierreActual,
+      Centro centro,
+      String telefono,
+      String colorSeleccionado) async {
+    await usersBBDD.supabase.from("centro").update({
+      "nombre_centro": nombre,
+      "direccion_centro": direccion,
+      "email_centro": email,
+      "telefono": int.parse(telefono),
+      "horario_centro_inicio": Utils.formatTimeOfDay(horarioAperturaActual),
+      "horario_centro_fin": Utils.formatTimeOfDay(horarioCierreActual),
+      "color": colorSeleccionado,
+    }).eq("id_centro", centro.id_centro);
+  }
 }

@@ -276,4 +276,45 @@ class AlumnosBBDD {
     }
     return listaPadres;
   }
+
+  Future deleteAlumno(int id_alumno) async {
+    await usersBBDD.supabase
+        .from("alumnos")
+        .delete()
+        .eq("id_alumno", id_alumno);
+  }
+
+  Future crearAlumno(String nombre, String apellido, DateTime fechaNacimiento,
+      Clase clase) async {
+    await usersBBDD.supabase.from("alumnos").insert({
+      "nombre": nombre,
+      "apellido": apellido,
+      "fecha_nacimiento": fechaNacimiento.toIso8601String(),
+      "id_clase": clase.id_clase
+    });
+  }
+
+  Future agregarPadres(List<Usuario> padresSeleccionados, Alumno alumno) async {
+    padresSeleccionados.forEach((padre) async {
+      await usersBBDD.supabase
+          .from("padres_alumnos")
+          .insert({"id_padre": padre.id_usuario, "id_hijo": alumno.id_alumno});
+    });
+  }
+
+  Future editarAlumno(String nombre, String apellido, DateTime fechaNacimiento,
+      Clase? clase, Alumno alumno) async {
+    clase?.id_clase != null
+        ? await usersBBDD.supabase.from("alumnos").update({
+            "nombre": nombre,
+            "apellido": apellido,
+            "fecha_nacimiento": fechaNacimiento.toIso8601String(),
+            "id_clase": clase!.id_clase,
+          }).eq("id_alumno", alumno.id_alumno)
+        : await usersBBDD.supabase.from("alumnos").update({
+            "nombre": nombre,
+            "apellido": apellido,
+            "fecha_nacimiento": fechaNacimiento.toIso8601String(),
+          }).eq("id_alumno", alumno.id_alumno);
+  }
 }

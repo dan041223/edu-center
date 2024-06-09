@@ -3,30 +3,27 @@ import 'package:educenter/bbdd/centro_bbdd.dart';
 import 'package:educenter/bbdd/users_bbdd.dart';
 import 'package:educenter/models/centro.dart';
 import 'package:educenter/models/usuario.dart';
-import 'package:educenter/paginas/padre/profesor_panel.dart';
-import 'package:educenter/paginas/profe/crear_profesor.dart';
+import 'package:educenter/paginas/admin/agregar_padre.dart';
+import 'package:educenter/paginas/admin/padre_panel_admin.dart';
 import 'package:flutter/material.dart';
 
-class ProfesoresPanel extends StatefulWidget {
+class PadresCentroPanel extends StatefulWidget {
   Centro centro;
-  ProfesoresPanel({super.key, required this.centro});
+  PadresCentroPanel({super.key, required this.centro});
 
   @override
-  State<ProfesoresPanel> createState() => _ProfesoresPanelState();
+  State<PadresCentroPanel> createState() => _PadresCentroPanelState();
 }
 
-class _ProfesoresPanelState extends State<ProfesoresPanel> {
-  Usuario? admin;
+class _PadresCentroPanelState extends State<PadresCentroPanel> {
   bool loading = true;
-  List<Usuario> profesoresCentro = List.empty(growable: true);
+  List<Usuario> listaPadresCentro = List.empty(growable: true);
   @override
   void initState() {
     Future.delayed(
       Duration(milliseconds: 1),
       () async {
-        admin = await usersBBDD().getUsuario();
-        profesoresCentro =
-            await CentroBBDD().getProfesoresCentro(widget.centro);
+        listaPadresCentro = await CentroBBDD().getPadresCentro(widget.centro);
         setState(() {
           loading = false;
         });
@@ -44,12 +41,10 @@ class _ProfesoresPanelState extends State<ProfesoresPanel> {
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           Navigator.of(context).push(MaterialPageRoute(
-            builder: (context) => CrearProfesor(
-              centro: widget.centro,
-            ),
+            builder: (context) => AgregarPadre(centro: widget.centro),
           ));
         },
-        child: Icon(Icons.person_add_alt_1),
+        child: Icon(Icons.add),
       ),
       body: SingleChildScrollView(
         child: Column(
@@ -63,7 +58,7 @@ class _ProfesoresPanelState extends State<ProfesoresPanel> {
               margin: const EdgeInsets.all(10),
               padding: const EdgeInsets.all(25),
               child: Text(
-                "Profesores del centro",
+                "Padres del centro",
                 style: TextStyle(
                   color: esOscuro ? Colors.black : Colors.white,
                   fontSize: 25,
@@ -75,23 +70,23 @@ class _ProfesoresPanelState extends State<ProfesoresPanel> {
                 ? Center(
                     child: CircularProgressIndicator(),
                   )
-                : profesoresCentro.isEmpty
+                : listaPadresCentro.isEmpty
                     ? Center(
-                        child: Text("El centro no posee profesores"),
+                        child: Text("El centro no posee padres registrados"),
                       )
                     : ListView.builder(
                         shrinkWrap: true,
                         physics: NeverScrollableScrollPhysics(),
-                        itemCount: profesoresCentro.length,
+                        itemCount: listaPadresCentro.length,
                         itemBuilder: (context, index) {
                           return Card(
                             child: InkWell(
                               onTap: () {
                                 Navigator.of(context).push(MaterialPageRoute(
-                                  builder: (context) => ProfesorPanel(
-                                      centro: widget.centro,
-                                      admin: admin,
-                                      profesor: profesoresCentro[index]),
+                                  builder: (context) => PadrePanelAdmin(
+                                    padre: listaPadresCentro[index],
+                                    centro: widget.centro,
+                                  ),
                                 ));
                               },
                               child: Row(
@@ -107,14 +102,14 @@ class _ProfesoresPanelState extends State<ProfesoresPanel> {
                                         decoration: const BoxDecoration(
                                           shape: BoxShape.circle,
                                         ),
-                                        child: profesoresCentro[index]
+                                        child: listaPadresCentro[index]
                                                         .url_foto_perfil !=
                                                     null &&
-                                                profesoresCentro[index]
+                                                listaPadresCentro[index]
                                                         .url_foto_perfil !=
                                                     ""
                                             ? Image.network(
-                                                profesoresCentro[index]
+                                                listaPadresCentro[index]
                                                     .url_foto_perfil!,
                                                 fit: BoxFit.cover,
                                               )
@@ -127,7 +122,7 @@ class _ProfesoresPanelState extends State<ProfesoresPanel> {
                                   ),
                                   Flexible(
                                     child: Text(
-                                      "${profesoresCentro[index].nombre} ${profesoresCentro[index].apellido}",
+                                      "${listaPadresCentro[index].nombre} ${listaPadresCentro[index].apellido}",
                                       style: TextStyle(
                                         color: esOscuro
                                             ? Colors.white
@@ -148,7 +143,7 @@ class _ProfesoresPanelState extends State<ProfesoresPanel> {
                                             content: Container())) {
                                           try {
                                             await usersBBDD().deleteUser(
-                                                profesoresCentro[index]
+                                                listaPadresCentro[index]
                                                     .id_usuario);
                                             ScaffoldMessenger.of(context)
                                                 .showSnackBar(const SnackBar(
