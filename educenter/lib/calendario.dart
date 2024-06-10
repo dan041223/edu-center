@@ -191,32 +191,35 @@ class _CalendarioState extends State<Calendario> {
           ),
         ),
         floatingActionButtonLocation: ExpandableFab.location,
-        floatingActionButton: ExpandableFab(
-          openButtonBuilder:
-              DefaultFloatingActionButtonBuilder(child: const Icon(Icons.add)),
-          children: [
-            FloatingActionButton.small(
-              heroTag: null,
-              child: const Icon(Icons.format_list_numbered_sharp),
-              onPressed: () {
-                Navigator.of(context).push(MaterialPageRoute(
-                  builder: (context) => AgregarExamen(profe: widget.profe!),
-                ));
-              },
-            ),
-            FloatingActionButton.small(
-              heroTag: null,
-              child: const Icon(Icons.calendar_month_outlined),
-              onPressed: () {
-                Navigator.of(context).push(MaterialPageRoute(
-                  builder: (context) => AgregarEvento(
-                    profesor: widget.profe!,
+        floatingActionButton: widget.profe != null
+            ? ExpandableFab(
+                openButtonBuilder: DefaultFloatingActionButtonBuilder(
+                    child: const Icon(Icons.add)),
+                children: [
+                  FloatingActionButton.small(
+                    heroTag: null,
+                    child: const Icon(Icons.format_list_numbered_sharp),
+                    onPressed: () {
+                      Navigator.of(context).push(MaterialPageRoute(
+                        builder: (context) =>
+                            AgregarExamen(profe: widget.profe!),
+                      ));
+                    },
                   ),
-                ));
-              },
-            ),
-          ],
-        ),
+                  FloatingActionButton.small(
+                    heroTag: null,
+                    child: const Icon(Icons.calendar_month_outlined),
+                    onPressed: () {
+                      Navigator.of(context).push(MaterialPageRoute(
+                        builder: (context) => AgregarEvento(
+                          profesor: widget.profe!,
+                        ),
+                      ));
+                    },
+                  ),
+                ],
+              )
+            : Container(),
         body: TabBarView(
           children: [
             loading
