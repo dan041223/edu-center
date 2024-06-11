@@ -106,15 +106,11 @@ class ExamenesBBDD {
       Usuario user,
       int trimestre,
       String nota) async {
-    await usersBBDD.supabase
-        .from("examenes")
-        .update({
-          "descripcion": descripcion,
-          "fecha_examen": fechaPropuesta.toIso8601String(),
-          "trimestre": trimestre
-        })
-        .eq("id_examen", examen.id_examen)
-        .eq("id_alumno", alumno.id_alumno);
+    await usersBBDD.supabase.from("examenes").update({
+      "descripcion": descripcion,
+      "fecha_examen": fechaPropuesta.toIso8601String(),
+      "trimestre": trimestre
+    }).eq("id_examen", examen.id_examen);
 
     await usersBBDD.supabase
         .from("examen_alumno")

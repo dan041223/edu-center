@@ -55,189 +55,242 @@ class _EditarExamenAlumnoState extends State<EditarExamenAlumno> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(),
+      backgroundColor: Colors.white, // Fondo blanco
+      appBar: AppBar(
+        backgroundColor: Colors.blue,
+        title: const Text('Editor de examen'),
+      ),
       body: SingleChildScrollView(
         child: Padding(
-          padding: const EdgeInsets.all(12.0),
+          padding: const EdgeInsets.all(25.0),
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const Text(
-                "Editor de examen",
-                style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
+              const Icon(
+                Icons.assignment,
+                size: 100,
+                color: Colors.blue, // Color azul principal
               ),
-              Card(
-                  child: Padding(
-                padding: EdgeInsets.all(8.0),
-                child: TextField(
-                  controller: controllerDescripcionExamen,
-                  maxLines: 3, //or null
-                  decoration: const InputDecoration(
-                    label: Text(
-                      "Descripcion examen*",
-                    ),
+              const SizedBox(height: 20),
+              const Center(
+                child: Text(
+                  "Editor de examen",
+                  style: TextStyle(
+                    fontSize: 40,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.blue, // Color azul principal
                   ),
                 ),
-              )),
-              const SizedBox(
-                height: 20,
               ),
+              const SizedBox(height: 30),
               Card(
-                  child: Padding(
-                padding: EdgeInsets.all(8.0),
-                child: TextField(
-                  controller: controllerComentarioAlumno,
-                  maxLines: 3, //or null
-                  decoration: InputDecoration(
-                    label: Text(
-                      "Comentario acerca de ${widget.alumno.nombre}*",
-                    ),
-                  ),
+                elevation: 8.0,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(20.0),
                 ),
-              )),
-              SizedBox(
-                height: 20,
-              ),
-              Text(
-                "Nota examen:*",
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-              ),
-              const SizedBox(
-                height: 10,
-              ),
-              Card(
-                  child: Padding(
-                      padding: EdgeInsets.all(8.0),
-                      child: DecimalNumberPicker(
-                        axis: Axis.horizontal,
-                        value: widget.notaElegida == null
-                            ? 0
-                            : widget.notaElegida!,
-                        minValue: 0,
-                        maxValue: 10,
-                        decimalPlaces: 2,
-                        onChanged: (value) =>
-                            setState(() => widget.notaElegida = value),
-                      ))),
-              SizedBox(
-                height: 20,
-              ),
-              Text(
-                "Trimestre:*",
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-              ),
-              const SizedBox(
-                height: 10,
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Expanded(
-                    child: Card(
+                child: Padding(
+                  padding: const EdgeInsets.all(20.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      TextField(
+                        controller: controllerDescripcionExamen,
+                        maxLines: 3,
+                        decoration: const InputDecoration(
+                          labelText: "Descripción del examen*",
+                          border: OutlineInputBorder(),
+                        ),
+                      ),
+                      const SizedBox(height: 20),
+                      TextField(
+                        controller: controllerComentarioAlumno,
+                        maxLines: 3,
+                        decoration: InputDecoration(
+                          labelText:
+                              "Comentario acerca de ${widget.alumno.nombre}*",
+                          border: OutlineInputBorder(),
+                        ),
+                      ),
+                      const SizedBox(height: 20),
+                      const Text(
+                        "Nota del examen*",
+                        style: TextStyle(
+                            fontSize: 20, fontWeight: FontWeight.bold),
+                      ),
+                      const SizedBox(height: 10),
+                      Card(
+                        elevation: 4.0,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(20.0),
+                        ),
                         child: Padding(
-                            padding: EdgeInsets.all(8.0),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                NumberPicker(
+                          padding: const EdgeInsets.all(8.0),
+                          child: DecimalNumberPicker(
+                            axis: Axis.horizontal,
+                            value: widget.notaElegida == null
+                                ? 0
+                                : widget.notaElegida!,
+                            minValue: 0,
+                            maxValue: 10,
+                            decimalPlaces: 2,
+                            onChanged: (value) =>
+                                setState(() => widget.notaElegida = value),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 20),
+                      const Text(
+                        "Trimestre*",
+                        style: TextStyle(
+                            fontSize: 20, fontWeight: FontWeight.bold),
+                      ),
+                      const SizedBox(height: 10),
+                      Card(
+                        elevation: 4.0,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(20.0),
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Flexible(
+                                child: NumberPicker(
                                   axis: Axis.horizontal,
                                   minValue: 1,
                                   maxValue: 3,
                                   value: widget.examen.trimestre,
                                   onChanged: (value) => setState(
                                       () => widget.examen.trimestre = value),
-                                )
-                              ],
-                            ))),
-                  ),
-                ],
-              ),
-              Card(
-                child: InkWell(
-                  onTap: () {
-                    DatePicker.showDateTimePicker(
-                      context,
-                      showTitleActions: true,
-                      minTime: DateTime.now(),
-                      maxTime: DateTime(DateTime.now().year + 2, 1, 1),
-                      currentTime: DateTime.now(),
-                      locale: LocaleType.es,
-                      onConfirm: (time) async {
-                        setState(() {
-                          widget.fechaPropuesta = time;
-                        });
-                      },
-                    );
-                  },
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.all(12.0),
-                        child: Row(
-                          children: [
-                            Icon(
-                              Icons.calendar_month_outlined,
-                            ),
-                            SizedBox(
-                              width: 20,
-                            ),
-                            Text(
-                              // ignore: unnecessary_null_comparison
-                              widget.fechaPropuesta != null
-                                  ? widget.fechaPropuesta
-                                      .toString()
-                                      .split(" ")
-                                      .first
-                                  : "No se ha seleccionado una fecha*",
-                              style: TextStyle(fontWeight: FontWeight.bold),
-                            )
-                          ],
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
                       ),
-                      Padding(
-                        padding: const EdgeInsets.all(12.0),
-                        child: Row(
-                          children: [
-                            const Icon(
-                              Icons.watch_later_outlined,
-                            ),
-                            const SizedBox(
-                              width: 20,
-                            ),
-                            Text(
-                              // ignore: unnecessary_null_comparison
-                              widget.fechaPropuesta != null
-                                  ? Utils.formatTimeString(widget.fechaPropuesta
-                                      .toString()
-                                      .split(" ")
-                                      .last)
-                                  : "No se ha seleccionado hora*",
-                              style:
-                                  const TextStyle(fontWeight: FontWeight.bold),
-                            )
-                          ],
+                      const SizedBox(height: 20),
+                      const Text(
+                        "Fecha del examen*",
+                        style: TextStyle(
+                            fontSize: 20, fontWeight: FontWeight.bold),
+                      ),
+                      const SizedBox(height: 10),
+                      Card(
+                        elevation: 4.0,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(20.0),
                         ),
+                        child: InkWell(
+                          onTap: () {
+                            DatePicker.showDateTimePicker(
+                              context,
+                              showTitleActions: true,
+                              minTime: DateTime.now(),
+                              maxTime: DateTime(DateTime.now().year + 2, 1, 1),
+                              currentTime: DateTime.now(),
+                              locale: LocaleType.es,
+                              onConfirm: (time) async {
+                                setState(() {
+                                  widget.fechaPropuesta = time;
+                                });
+                              },
+                            );
+                          },
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.all(12.0),
+                                child: Row(
+                                  children: [
+                                    Icon(
+                                      Icons.calendar_today,
+                                      color: Colors.blue,
+                                    ),
+                                    const SizedBox(
+                                      width: 20,
+                                    ),
+                                    Flexible(
+                                      child: Text(
+                                        // ignore: unnecessary_null_comparison
+                                        widget.fechaPropuesta != null
+                                            ? widget.fechaPropuesta
+                                                .toString()
+                                                .split(" ")
+                                                .first
+                                            : "No se ha seleccionado una fecha*",
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.bold),
+                                      ),
+                                    )
+                                  ],
+                                ),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.all(12.0),
+                                child: Row(
+                                  children: [
+                                    const Icon(
+                                      Icons.watch_later,
+                                      color: Colors.blue,
+                                    ),
+                                    const SizedBox(
+                                      width: 20,
+                                    ),
+                                    Flexible(
+                                      child: Text(
+                                        // ignore: unnecessary_null_comparison
+                                        widget.fechaPropuesta != null
+                                            ? Utils.formatTimeString(widget
+                                                .fechaPropuesta
+                                                .toString()
+                                                .split(" ")
+                                                .last)
+                                            : "No se ha seleccionado hora*",
+                                        style: const TextStyle(
+                                            fontWeight: FontWeight.bold),
+                                      ),
+                                    )
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 20),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          ElevatedButton(
+                            onPressed: () {
+                              comprobarCampos(
+                                controllerDescripcionExamen.text,
+                                controllerComentarioAlumno.text,
+                                widget.notaElegida,
+                                widget.fechaPropuesta,
+                                context,
+                              );
+                            },
+                            child: const Text("Editar examen"),
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.blue,
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 50,
+                                vertical: 15,
+                              ),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(20.0),
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
                     ],
                   ),
                 ),
               ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  TextButton(
-                      onPressed: () async {
-                        comprobarCampos(
-                            controllerDescripcionExamen.text,
-                            controllerComentarioAlumno.text,
-                            widget.notaElegida,
-                            widget.fechaPropuesta,
-                            context);
-                      },
-                      child: Text("Editar examen"))
-                ],
-              )
             ],
           ),
         ),

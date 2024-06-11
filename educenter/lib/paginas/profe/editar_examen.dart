@@ -35,142 +35,186 @@ class _EditarExamenState extends State<EditarExamen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(),
+      backgroundColor: Colors.white, // Fondo blanco
+      appBar: AppBar(
+        backgroundColor: Colors.blue,
+        title: const Text('Editor de examen'),
+      ),
       body: SingleChildScrollView(
         child: Padding(
-          padding: const EdgeInsets.all(12.0),
+          padding: const EdgeInsets.all(25.0),
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const Text(
-                "Editor de examen",
-                style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
+              const Icon(
+                Icons.edit,
+                size: 100,
+                color: Colors.blue, // Color azul principal
               ),
-              Card(
-                  child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: TextField(
-                  controller: controllerDescripcionExamen,
-                  maxLines: 3, //or null
-                  decoration: const InputDecoration(
-                    label: Text(
-                      "Descripcion examen*",
-                    ),
+              const SizedBox(height: 20),
+              const Center(
+                child: Text(
+                  "Editor de examen",
+                  style: TextStyle(
+                    fontSize: 40,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.blue, // Color azul principal
                   ),
                 ),
-              )),
-              const SizedBox(
-                height: 20,
               ),
-              const Text(
-                "Trimestre:*",
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-              ),
-              const SizedBox(
-                height: 10,
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Expanded(
-                    child: Card(
-                        child: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                NumberPicker(
-                                  axis: Axis.horizontal,
-                                  minValue: 1,
-                                  maxValue: 3,
-                                  value: widget.trimestre,
-                                  onChanged: (value) =>
-                                      setState(() => widget.trimestre = value),
-                                )
-                              ],
-                            ))),
-                  ),
-                ],
-              ),
+              const SizedBox(height: 30),
               Card(
-                child: InkWell(
-                  onTap: () {
-                    DatePicker.showDateTimePicker(
-                      context,
-                      showTitleActions: true,
-                      minTime: DateTime.now(),
-                      maxTime: DateTime(DateTime.now().year + 2, 1, 1),
-                      currentTime: DateTime.now(),
-                      locale: LocaleType.es,
-                      onConfirm: (time) async {
-                        setState(() {
-                          widget.fechaPropuesta = time;
-                        });
-                      },
-                    );
-                  },
+                elevation: 8.0,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(20.0),
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.all(20.0),
                   child: Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Padding(
-                        padding: const EdgeInsets.all(12.0),
-                        child: Row(
-                          children: [
-                            const Icon(Icons.calendar_month_outlined),
-                            const SizedBox(width: 20),
-                            Text(
-                              // ignore: unnecessary_null_comparison
-                              widget.fechaPropuesta != null
-                                  ? widget.fechaPropuesta
-                                      .toString()
-                                      .split(" ")
-                                      .first
-                                  : "No se ha seleccionado una fecha*",
-                              style:
-                                  const TextStyle(fontWeight: FontWeight.bold),
-                            )
-                          ],
+                      TextField(
+                        controller: controllerDescripcionExamen,
+                        maxLines: 3,
+                        decoration: const InputDecoration(
+                          labelText: "Descripción del examen*",
+                          border: OutlineInputBorder(),
                         ),
                       ),
-                      Padding(
-                        padding: const EdgeInsets.all(12.0),
-                        child: Row(
-                          children: [
-                            const Icon(
-                              Icons.watch_later_outlined,
+                      const SizedBox(height: 20),
+                      const Text(
+                        "Trimestre:*",
+                        style: TextStyle(
+                            fontSize: 20, fontWeight: FontWeight.bold),
+                      ),
+                      const SizedBox(height: 10),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Expanded(
+                            child: Card(
+                              child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Flexible(
+                                      child: NumberPicker(
+                                        axis: Axis.horizontal,
+                                        minValue: 1,
+                                        maxValue: 3,
+                                        value: widget.trimestre,
+                                        onChanged: (value) => setState(
+                                            () => widget.trimestre = value),
+                                      ),
+                                    )
+                                  ],
+                                ),
+                              ),
                             ),
-                            const SizedBox(
-                              width: 20,
-                            ),
-                            Text(
-                              // ignore: unnecessary_null_comparison
-                              widget.fechaPropuesta != null
-                                  ? Utils.formatTimeString(widget.fechaPropuesta
-                                      .toString()
-                                      .split(" ")
-                                      .last)
-                                  : "No se ha seleccionado hora*",
-                              style:
-                                  const TextStyle(fontWeight: FontWeight.bold),
-                            )
-                          ],
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 20),
+                      const Text(
+                        "Fecha del examen*",
+                        style: TextStyle(
+                            fontSize: 20, fontWeight: FontWeight.bold),
+                      ),
+                      const SizedBox(height: 10),
+                      Card(
+                        elevation: 4.0,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(20.0),
                         ),
+                        child: InkWell(
+                          onTap: () {
+                            DatePicker.showDateTimePicker(
+                              context,
+                              showTitleActions: true,
+                              minTime: DateTime.now(),
+                              maxTime: DateTime(DateTime.now().year + 2, 1, 1),
+                              currentTime: DateTime.now(),
+                              locale: LocaleType.es,
+                              onConfirm: (time) async {
+                                setState(() {
+                                  widget.fechaPropuesta = time;
+                                });
+                              },
+                            );
+                          },
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.all(12.0),
+                                child: Row(
+                                  children: [
+                                    const Icon(Icons.calendar_today),
+                                    const SizedBox(width: 20),
+                                    Flexible(
+                                      child: Text(
+                                        // ignore: unnecessary_null_comparison
+                                        widget.fechaPropuesta != null
+                                            ? widget.fechaPropuesta
+                                                .toString()
+                                                .split(" ")
+                                                .first
+                                            : "No se ha seleccionado una fecha*",
+                                        style: const TextStyle(
+                                            fontWeight: FontWeight.bold),
+                                      ),
+                                    )
+                                  ],
+                                ),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.all(12.0),
+                                child: Row(
+                                  children: [
+                                    const Icon(Icons.watch_later),
+                                    const SizedBox(width: 20),
+                                    Flexible(
+                                      child: Text(
+                                        // ignore: unnecessary_null_comparison
+                                        widget.fechaPropuesta != null
+                                            ? Utils.formatTimeString(widget
+                                                .fechaPropuesta
+                                                .toString()
+                                                .split(" ")
+                                                .last)
+                                            : "No se ha seleccionado hora*",
+                                        style: const TextStyle(
+                                            fontWeight: FontWeight.bold),
+                                      ),
+                                    )
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 20),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          TextButton(
+                            onPressed: () async {
+                              comprobarCampos(
+                                controllerDescripcionExamen.text,
+                                widget.fechaPropuesta,
+                                context,
+                              );
+                            },
+                            child: const Text("Editar examen"),
+                          )
+                        ],
                       ),
                     ],
                   ),
                 ),
               ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  TextButton(
-                      onPressed: () async {
-                        comprobarCampos(controllerDescripcionExamen.text,
-                            widget.fechaPropuesta, context);
-                      },
-                      child: const Text("Editar examen"))
-                ],
-              )
             ],
           ),
         ),

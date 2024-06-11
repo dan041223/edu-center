@@ -5,7 +5,9 @@ import 'package:educenter/models/asignatura.dart';
 import 'package:educenter/models/clase.dart';
 import 'package:educenter/models/usuario.dart';
 import 'package:educenter/utils.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_datetime_picker_plus/flutter_datetime_picker_plus.dart';
 import 'package:numberpicker/numberpicker.dart';
 
@@ -52,193 +54,244 @@ class _AgregarExamenState extends State<AgregarExamen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(),
-        body: SingleChildScrollView(
-          child: Padding(
-            padding: const EdgeInsets.all(12.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const Text(
-                  "Creacion de examen",
-                  style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
+      backgroundColor: Colors.lightBlue[50], // Fondo azul claro
+      appBar: AppBar(
+        backgroundColor: Colors.blue,
+        title: const Text('Agregar Examen'),
+      ),
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(25.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const Icon(
+                Icons.assignment,
+                size: 100,
+                color: Colors.blue, // Color azul principal
+              ),
+              const SizedBox(height: 20),
+              const Center(
+                child: Text(
+                  "Agregar examen",
+                  style: TextStyle(
+                    fontSize: 40,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.blue, // Color azul principal
+                  ),
                 ),
-                loading
-                    ? const Padding(
-                        padding: EdgeInsets.all(10.0),
-                        child: Center(
-                          child: CircularProgressIndicator(),
+              ),
+              const SizedBox(height: 30),
+              Card(
+                elevation: 8.0,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(20.0),
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.all(20.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      DropdownButtonFormField<Clase>(
+                        decoration: const InputDecoration(
+                          labelText: "Seleccionar clase*",
+                          border: OutlineInputBorder(),
+                          prefixIcon: Icon(Icons.class_),
                         ),
-                      )
-                    : DropdownButton(
-                        isExpanded: true,
-                        hint: const Text("Clases"),
-                        items: dropDownItemsClases,
-                        value: widget.elementoSeleccionado1,
+                        value: claseSeleccionada,
+                        items: clasesDeProfesor.map((clase) {
+                          return DropdownMenuItem<Clase>(
+                            value: clase,
+                            child: Text(clase.nombre_clase),
+                          );
+                        }).toList(),
                         onChanged: (value) async {
                           claseSeleccionada = value;
-                          widget.elementoSeleccionado1 = value;
                           asignaturasDeClase = await ClasesBBDD()
                               .getAsignaturasClaseProfesor(
                                   claseSeleccionada!.id_clase, widget.profe);
-                          dropDownItemsAsignaturas.clear();
                           asignaturaSeleccionada = null;
-                          widget.elementoSeleccionado2 = null;
-                          setState(() {});
-                          asignaturasDeClase.forEach((asignatura) {
-                            dropDownItemsAsignaturas.add(DropdownMenuItem(
-                                value: asignatura,
-                                child: Text(asignatura.nombre_asignatura)));
-                          });
                           setState(() {});
                         },
                       ),
-                loading
-                    ? const Padding(
-                        padding: EdgeInsets.all(10.0),
-                        child: Center(
-                          child: CircularProgressIndicator(),
+                      const SizedBox(height: 20),
+                      DropdownButtonFormField<Asignatura>(
+                        decoration: const InputDecoration(
+                          labelText: "Seleccionar asignatura*",
+                          border: OutlineInputBorder(),
+                          prefixIcon: Icon(Icons.book),
                         ),
-                      )
-                    : DropdownButton(
-                        isExpanded: true,
-                        hint: const Text("Asignaturas"),
-                        items: dropDownItemsAsignaturas,
-                        value: widget.elementoSeleccionado2,
+                        value: asignaturaSeleccionada,
+                        items: asignaturasDeClase.map((asignatura) {
+                          return DropdownMenuItem<Asignatura>(
+                            value: asignatura,
+                            child: Text(asignatura.nombre_asignatura),
+                          );
+                        }).toList(),
                         onChanged: (value) {
-                          setState(() {
-                            asignaturaSeleccionada = value;
-                            widget.elementoSeleccionado2 = value;
-                          });
+                          asignaturaSeleccionada = value;
+                          setState(() {});
                         },
                       ),
-                Card(
-                    child: Padding(
-                  padding: EdgeInsets.all(8.0),
-                  child: TextField(
-                    controller: controllerDescripcionExamen,
-                    maxLines: 8, //or null
-                    decoration: InputDecoration(
-                      label: Text(
-                        "Descripcion del examen...*",
+                      const SizedBox(height: 20),
+                      TextField(
+                        controller: controllerDescripcionExamen,
+                        maxLines: 8,
+                        decoration: const InputDecoration(
+                          labelText: "Descripción del examen*",
+                          border: OutlineInputBorder(),
+                        ),
                       ),
-                      hintText: "Introduce la descripcion del examen...",
-                    ),
-                  ),
-                )),
-                const Text(
-                  "Trimestre:*",
-                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                ),
-                const SizedBox(
-                  height: 10,
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Expanded(
-                      child: Card(
-                          child: Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  NumberPicker(
-                                    axis: Axis.horizontal,
-                                    minValue: 1,
-                                    maxValue: 3,
-                                    value: trimestre,
-                                    onChanged: (value) =>
-                                        setState(() => trimestre = value),
-                                  )
-                                ],
-                              ))),
-                    ),
-                  ],
-                ),
-                Card(
-                  child: InkWell(
-                    onTap: () {
-                      DatePicker.showDateTimePicker(
-                        context,
-                        showTitleActions: true,
-                        minTime: DateTime.now(),
-                        maxTime: DateTime(DateTime.now().year + 2, 1, 1),
-                        currentTime: DateTime.now(),
-                        locale: LocaleType.es,
-                        onConfirm: (time) async {
-                          setState(() {
-                            fechaPropuesta = time;
-                          });
-                        },
-                      );
-                    },
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.all(12.0),
-                          child: Row(
+                      const SizedBox(height: 20),
+                      const Text(
+                        "Trimestre*",
+                        style: TextStyle(
+                            fontSize: 20, fontWeight: FontWeight.bold),
+                      ),
+                      const SizedBox(
+                        height: 10,
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Expanded(
+                            child: Card(
+                              child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Flexible(
+                                      child: NumberPicker(
+                                        axis: Axis.horizontal,
+                                        minValue: 1,
+                                        maxValue: 3,
+                                        value: trimestre,
+                                        onChanged: (value) =>
+                                            setState(() => trimestre = value),
+                                      ),
+                                    )
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 20),
+                      Card(
+                        child: InkWell(
+                          onTap: () {
+                            DatePicker.showDateTimePicker(
+                              context,
+                              showTitleActions: true,
+                              minTime: DateTime.now(),
+                              maxTime: DateTime(DateTime.now().year + 2, 1, 1),
+                              currentTime: DateTime.now(),
+                              locale: LocaleType.es,
+                              onConfirm: (time) async {
+                                setState(() {
+                                  fechaPropuesta = time;
+                                });
+                              },
+                            );
+                          },
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                             children: [
-                              Icon(
-                                Icons.calendar_month_outlined,
+                              Padding(
+                                padding: const EdgeInsets.all(12.0),
+                                child: Row(
+                                  children: [
+                                    Icon(
+                                      Icons.calendar_today,
+                                    ),
+                                    SizedBox(
+                                      width: 20,
+                                    ),
+                                    Flexible(
+                                      child: Text(
+                                        // ignore: unnecessary_null_comparison
+                                        fechaPropuesta != null
+                                            ? fechaPropuesta
+                                                .toString()
+                                                .split(" ")
+                                                .first
+                                            : "No se ha seleccionado una fecha*",
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.bold),
+                                      ),
+                                    )
+                                  ],
+                                ),
                               ),
-                              SizedBox(
-                                width: 20,
+                              Padding(
+                                padding: const EdgeInsets.all(12.0),
+                                child: Row(
+                                  children: [
+                                    const Icon(
+                                      Icons.watch_later,
+                                    ),
+                                    const SizedBox(
+                                      width: 20,
+                                    ),
+                                    Flexible(
+                                      child: Text(
+                                        // ignore: unnecessary_null_comparison
+                                        fechaPropuesta != null
+                                            ? Utils.formatTimeString(
+                                                fechaPropuesta!
+                                                    .toString()
+                                                    .split(" ")
+                                                    .last)
+                                            : "No se ha seleccionado hora*",
+                                        style: const TextStyle(
+                                            fontWeight: FontWeight.bold),
+                                      ),
+                                    )
+                                  ],
+                                ),
                               ),
-                              Text(
-                                // ignore: unnecessary_null_comparison
-                                fechaPropuesta != null
-                                    ? fechaPropuesta.toString().split(" ").first
-                                    : "No se ha seleccionado una fecha*",
-                                style: TextStyle(fontWeight: FontWeight.bold),
-                              )
                             ],
                           ),
                         ),
-                        Padding(
-                          padding: const EdgeInsets.all(12.0),
-                          child: Row(
-                            children: [
-                              const Icon(
-                                Icons.watch_later_outlined,
+                      ),
+                      const SizedBox(height: 20),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          ElevatedButton(
+                            onPressed: () {
+                              comprobarCampos(
+                                controllerDescripcionExamen.text,
+                                fechaPropuesta,
+                                widget.profe,
+                                context,
+                              );
+                            },
+                            child: const Text("Crear examen"),
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.blue,
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 50,
+                                vertical: 15,
                               ),
-                              const SizedBox(
-                                width: 20,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(20.0),
                               ),
-                              Text(
-                                // ignore: unnecessary_null_comparison
-                                fechaPropuesta != null
-                                    ? Utils.formatTimeString(fechaPropuesta
-                                        .toString()
-                                        .split(" ")
-                                        .last)
-                                    : "No se ha seleccionado hora*",
-                                style: const TextStyle(
-                                    fontWeight: FontWeight.bold),
-                              )
-                            ],
+                            ),
                           ),
-                        ),
-                      ],
-                    ),
+                        ],
+                      ),
+                    ],
                   ),
                 ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    TextButton(
-                        onPressed: () async {
-                          comprobarCampos(controllerDescripcionExamen.text,
-                              fechaPropuesta, widget.profe, context);
-                        },
-                        child: const Text("Crear examen"))
-                  ],
-                )
-              ],
-            ),
+              ),
+            ],
           ),
-        ));
+        ),
+      ),
+    );
   }
 
   comprobarCampos(String descripcion, DateTime? fechaPropuesta, Usuario profe,

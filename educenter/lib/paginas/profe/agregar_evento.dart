@@ -62,298 +62,341 @@ class _AgregarEventoState extends State<AgregarEvento> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(),
-        body: SingleChildScrollView(
-          child: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const Text(
-                  "Creacion de evento",
-                  style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(12.0),
-                  child: DropdownButton(
-                    dropdownColor: Utils.hexToColor("#1c272b"),
-                    focusColor: Utils.hexToColor("#1c272b"),
-                    isExpanded: true,
-                    hint: const Text("Tipos de evento..."),
-                    items: items,
-                    value: tipoEventoSeleccionadaDyn,
-                    onChanged: (value) {
-                      tipoEventoSeleccionada = value;
-                      tipoEventoSeleccionadaDyn = value;
-                      setState(() {});
-                    },
+      backgroundColor: Colors.lightBlue[50], // Fondo azul claro
+      appBar: AppBar(
+        backgroundColor: Colors.blue,
+        title: const Text('Crear Evento'),
+      ),
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(25.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const Icon(
+                Icons.event,
+                size: 100,
+                color: Colors.blue, // Color azul principal
+              ),
+              const SizedBox(height: 20),
+              const Center(
+                child: Text(
+                  "Crear evento",
+                  style: TextStyle(
+                    fontSize: 40,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.blue, // Color azul principal
                   ),
                 ),
-                loading
-                    ? const Center(
-                        child: CircularProgressIndicator(),
-                      )
-                    : Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: MultiSelectDropDown(
-                            hint: "Clases a las que impartes...",
-                            fieldBackgroundColor: Utils.hexToColor("#1c272b"),
-                            dropdownBackgroundColor:
-                                Utils.hexToColor("#1c272b"),
-                            optionsBackgroundColor: Utils.hexToColor("#1c272b"),
-                            onOptionSelected: (selectedOptions) {
-                              setState(() {
-                                listaClasesDropdownSeleccionadas =
-                                    selectedOptions;
-                                listaClasesSeleccionadas = selectedOptions
-                                    .map((e) => e.value as Clase)
-                                    .toList();
-                              });
+              ),
+              const SizedBox(height: 30),
+              Card(
+                elevation: 8.0,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(20.0),
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.all(20.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      DropdownButtonFormField(
+                        decoration: const InputDecoration(
+                          labelText: "Tipo de evento*",
+                          border: OutlineInputBorder(),
+                          prefixIcon: Icon(Icons.event),
+                        ),
+                        value: tipoEventoSeleccionadaDyn,
+                        items: items,
+                        onChanged: (value) {
+                          setState(() {
+                            tipoEventoSeleccionadaDyn = value;
+                          });
+                        },
+                      ),
+                      const SizedBox(height: 20),
+                      loading
+                          ? CircularProgressIndicator()
+                          : MultiSelectDropDown(
+                              hint: "Clases a las que impartes...",
+                              fieldBackgroundColor: Utils.hexToColor("#1c272b"),
+                              dropdownBackgroundColor:
+                                  Utils.hexToColor("#1c272b"),
+                              optionsBackgroundColor:
+                                  Utils.hexToColor("#1c272b"),
+                              onOptionSelected: (selectedOptions) {
+                                setState(() {
+                                  listaClasesDropdownSeleccionadas =
+                                      selectedOptions;
+                                  listaClasesSeleccionadas = selectedOptions
+                                      .map((e) => e.value as Clase)
+                                      .toList();
+                                });
+                              },
+                              options: listaClasesDropdown),
+                      const SizedBox(height: 20),
+                      TextField(
+                        controller: controllerNombre,
+                        decoration: const InputDecoration(
+                          labelText: "Nombre del evento*",
+                          border: OutlineInputBorder(),
+                        ),
+                      ),
+                      const SizedBox(height: 20),
+                      TextField(
+                        controller: controllerDescripcion,
+                        maxLines: 8,
+                        decoration: const InputDecoration(
+                          labelText: "Descripción del evento*",
+                          border: OutlineInputBorder(),
+                        ),
+                      ),
+                      const SizedBox(height: 20),
+                      TextField(
+                        controller: controllerUbicacion,
+                        decoration: const InputDecoration(
+                          labelText: "Ubicación del evento*",
+                          border: OutlineInputBorder(),
+                        ),
+                      ),
+                      const SizedBox(height: 20),
+                      const Text(
+                        "Selector de color*",
+                        style: TextStyle(
+                            fontSize: 20, fontWeight: FontWeight.bold),
+                      ),
+                      const SizedBox(height: 10),
+                      ColorPicker(
+                        pickerColor: color,
+                        onColorChanged: (value) {
+                          setState(() {
+                            color = value;
+                            colorSeleccionado = Utils.colorToString(color);
+                          });
+                        },
+                      ),
+                      const SizedBox(height: 20),
+                      const Text(
+                        "Fecha de inicio*",
+                        style: TextStyle(
+                            fontSize: 20, fontWeight: FontWeight.bold),
+                      ),
+                      const SizedBox(height: 10),
+                      Card(
+                        elevation: 4.0,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(20.0),
+                        ),
+                        child: InkWell(
+                          onTap: () {
+                            DatePicker.showDateTimePicker(
+                              context,
+                              showTitleActions: true,
+                              minTime: DateTime.now(),
+                              maxTime: DateTime(DateTime.now().year + 2, 1, 1),
+                              currentTime: DateTime.now(),
+                              locale: LocaleType.es,
+                              onConfirm: (time) async {
+                                setState(() {
+                                  fechaInicioPropuesta = time;
+                                });
+                              },
+                            );
+                          },
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.all(12.0),
+                                child: Row(
+                                  children: [
+                                    Icon(
+                                      Icons.calendar_today,
+                                      color: Colors.blue,
+                                    ),
+                                    const SizedBox(
+                                      width: 20,
+                                    ),
+                                    Flexible(
+                                      child: Text(
+                                        // ignore: unnecessary_null_comparison
+                                        fechaInicioPropuesta != null
+                                            ? fechaInicioPropuesta
+                                                .toString()
+                                                .split(" ")
+                                                .first
+                                            : "No se ha seleccionado una fecha*",
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.bold),
+                                      ),
+                                    )
+                                  ],
+                                ),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.all(12.0),
+                                child: Row(
+                                  children: [
+                                    const Icon(
+                                      Icons.watch_later,
+                                      color: Colors.blue,
+                                    ),
+                                    const SizedBox(
+                                      width: 20,
+                                    ),
+                                    Flexible(
+                                      child: Text(
+                                        // ignore: unnecessary_null_comparison
+                                        fechaInicioPropuesta != null
+                                            ? Utils.formatTimeString(
+                                                fechaInicioPropuesta!
+                                                    .toString()
+                                                    .split(" ")
+                                                    .last)
+                                            : "No se ha seleccionado hora*",
+                                        style: const TextStyle(
+                                            fontWeight: FontWeight.bold),
+                                      ),
+                                    )
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 20),
+                      const Text(
+                        "Fecha final*",
+                        style: TextStyle(
+                            fontSize: 20, fontWeight: FontWeight.bold),
+                      ),
+                      const SizedBox(height: 10),
+                      Card(
+                        elevation: 4.0,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(20.0),
+                        ),
+                        child: InkWell(
+                          onTap: () {
+                            DatePicker.showDateTimePicker(
+                              context,
+                              showTitleActions: true,
+                              minTime: DateTime.now(),
+                              maxTime: DateTime(DateTime.now().year + 2, 1, 1),
+                              currentTime: DateTime.now(),
+                              locale: LocaleType.es,
+                              onConfirm: (time) async {
+                                setState(() {
+                                  fechaFinPropuesta = time;
+                                });
+                              },
+                            );
+                          },
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.all(12.0),
+                                child: Row(
+                                  children: [
+                                    Icon(
+                                      Icons.calendar_today,
+                                      color: Colors.blue,
+                                    ),
+                                    const SizedBox(
+                                      width: 20,
+                                    ),
+                                    Flexible(
+                                      child: Text(
+                                        // ignore: unnecessary_null_comparison
+                                        fechaFinPropuesta != null
+                                            ? fechaFinPropuesta
+                                                .toString()
+                                                .split(" ")
+                                                .first
+                                            : "No se ha seleccionado una fecha*",
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.bold),
+                                      ),
+                                    )
+                                  ],
+                                ),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.all(12.0),
+                                child: Row(
+                                  children: [
+                                    const Icon(
+                                      Icons.watch_later,
+                                      color: Colors.blue,
+                                    ),
+                                    const SizedBox(
+                                      width: 20,
+                                    ),
+                                    Flexible(
+                                      child: Text(
+                                        // ignore: unnecessary_null_comparison
+                                        fechaFinPropuesta != null
+                                            ? Utils.formatTimeString(
+                                                fechaFinPropuesta!
+                                                    .toString()
+                                                    .split(" ")
+                                                    .last)
+                                            : "No se ha seleccionado hora*",
+                                        style: const TextStyle(
+                                            fontWeight: FontWeight.bold),
+                                      ),
+                                    )
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 20),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          ElevatedButton(
+                            onPressed: () {
+                              comprobarCampos(
+                                colorSeleccionado,
+                                controllerUbicacion.text,
+                                tipoEventoSeleccionada,
+                                listaClasesSeleccionadas,
+                                controllerNombre.text,
+                                controllerDescripcion.text,
+                                fechaInicioPropuesta,
+                                fechaFinPropuesta,
+                                widget.profesor,
+                                context,
+                              );
                             },
-                            options: listaClasesDropdown),
+                            child: const Text("Crear evento"),
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.blue,
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 50,
+                                vertical: 15,
+                              ),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(20.0),
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                  child: TextField(
-                    controller: controllerNombre,
-                    decoration: InputDecoration(
-                        label: Text(
-                      "Nombre del evento*",
-                    )),
+                    ],
                   ),
                 ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 8),
-                  child: Card(
-                      child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: TextField(
-                      controller: controllerDescripcion,
-                      maxLines: 8, //or null
-                      decoration: const InputDecoration(
-                        label: Text(
-                          "Descripcion del evento...*",
-                        ),
-                        hintText: "Introduce la descripcion del examen...",
-                      ),
-                    ),
-                  )),
-                ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                  child: TextField(
-                    controller: controllerUbicacion,
-                    decoration: InputDecoration(
-                        label: Text(
-                      "Ubicacion del evento*",
-                    )),
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: const Text(
-                    "Selector de color:*",
-                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                  ),
-                ),
-                Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                    child: ColorPicker(
-                      pickerColor: color,
-                      onColorChanged: (value) {
-                        setState(() {
-                          color = value;
-                          colorSeleccionado = Utils.colorToString(color);
-                        });
-                      },
-                    )),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: const Text(
-                    "Fecha de inicio:*",
-                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                  ),
-                ),
-                const SizedBox(
-                  height: 10,
-                ),
-                Card(
-                  child: InkWell(
-                    onTap: () {
-                      DatePicker.showDateTimePicker(
-                        context,
-                        showTitleActions: true,
-                        minTime: DateTime.now(),
-                        maxTime: DateTime(DateTime.now().year + 2, 1, 1),
-                        currentTime: DateTime.now(),
-                        locale: LocaleType.es,
-                        onConfirm: (time) async {
-                          setState(() {
-                            fechaInicioPropuesta = time;
-                          });
-                        },
-                      );
-                    },
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.all(12.0),
-                          child: Row(
-                            children: [
-                              Icon(
-                                Icons.calendar_month_outlined,
-                              ),
-                              SizedBox(
-                                width: 20,
-                              ),
-                              Text(
-                                // ignore: unnecessary_null_comparison
-                                fechaInicioPropuesta != null
-                                    ? fechaInicioPropuesta
-                                        .toString()
-                                        .split(" ")
-                                        .first
-                                    : "No se ha seleccionado una fecha*",
-                                style: TextStyle(fontWeight: FontWeight.bold),
-                              )
-                            ],
-                          ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.all(12.0),
-                          child: Row(
-                            children: [
-                              const Icon(
-                                Icons.watch_later_outlined,
-                              ),
-                              const SizedBox(
-                                width: 20,
-                              ),
-                              Text(
-                                // ignore: unnecessary_null_comparison
-                                fechaInicioPropuesta != null
-                                    ? Utils.formatTimeString(
-                                        fechaInicioPropuesta
-                                            .toString()
-                                            .split(" ")
-                                            .last)
-                                    : "No se ha seleccionado hora*",
-                                style: const TextStyle(
-                                    fontWeight: FontWeight.bold),
-                              )
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: const Text(
-                    "Fecha final:*",
-                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                  ),
-                ),
-                const SizedBox(
-                  height: 10,
-                ),
-                Card(
-                  child: InkWell(
-                    onTap: () {
-                      DatePicker.showDateTimePicker(
-                        context,
-                        showTitleActions: true,
-                        minTime: DateTime.now(),
-                        maxTime: DateTime(DateTime.now().year + 2, 1, 1),
-                        currentTime: DateTime.now(),
-                        locale: LocaleType.es,
-                        onConfirm: (time) async {
-                          setState(() {
-                            fechaFinPropuesta = time;
-                          });
-                        },
-                      );
-                    },
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.all(12.0),
-                          child: Row(
-                            children: [
-                              Icon(
-                                Icons.calendar_month_outlined,
-                              ),
-                              SizedBox(
-                                width: 20,
-                              ),
-                              Text(
-                                // ignore: unnecessary_null_comparison
-                                fechaFinPropuesta != null
-                                    ? fechaFinPropuesta
-                                        .toString()
-                                        .split(" ")
-                                        .first
-                                    : "No se ha seleccionado una fecha*",
-                                style: TextStyle(fontWeight: FontWeight.bold),
-                              )
-                            ],
-                          ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.all(12.0),
-                          child: Row(
-                            children: [
-                              const Icon(
-                                Icons.watch_later_outlined,
-                              ),
-                              const SizedBox(
-                                width: 20,
-                              ),
-                              Text(
-                                // ignore: unnecessary_null_comparison
-                                fechaFinPropuesta != null
-                                    ? Utils.formatTimeString(fechaFinPropuesta
-                                        .toString()
-                                        .split(" ")
-                                        .last)
-                                    : "No se ha seleccionado hora*",
-                                style: const TextStyle(
-                                    fontWeight: FontWeight.bold),
-                              )
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    TextButton(
-                        onPressed: () async {
-                          comprobarCampos(
-                              colorSeleccionado,
-                              controllerUbicacion.text,
-                              tipoEventoSeleccionada,
-                              listaClasesSeleccionadas,
-                              controllerNombre.text,
-                              controllerDescripcion.text,
-                              fechaInicioPropuesta,
-                              fechaFinPropuesta,
-                              widget.profesor,
-                              context);
-                        },
-                        child: const Text("Crear evento"))
-                  ],
-                )
-              ],
-            ),
+              ),
+            ],
           ),
-        ));
+        ),
+      ),
+    );
   }
 
   comprobarCampos(

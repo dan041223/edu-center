@@ -52,151 +52,161 @@ class _CrearCitaState extends State<CrearCita> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(),
-        body: SingleChildScrollView(
-          child: Padding(
-            padding: const EdgeInsets.all(12.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const Text(
-                  "Creacion de cita",
-                  style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
-                ),
-                loading
-                    ? const Padding(
-                        padding: EdgeInsets.all(10.0),
-                        child: Center(
-                          child: CircularProgressIndicator(),
-                        ),
-                      )
-                    : DropdownButton(
-                        isExpanded: true,
-                        hint: const Text("Alumnos..."),
-                        items: dropDownItems,
-                        value: elementoSeleccionado,
-                        onChanged: (value) {
-                          setState(() {
-                            widget.alumnoSeleccionado = value;
-                            elementoSeleccionado = value;
-                          });
-                        },
-                      ),
-                TextField(
-                  controller: controllerTitulo,
-                  decoration: InputDecoration(
-                      label: Text(
-                    "Titulo*",
-                    style: TextStyle(color: widget.colorTitulo),
-                  )),
-                ),
-                const SizedBox(
-                  height: 20,
-                ),
-                Card(
-                    child: Padding(
-                  padding: EdgeInsets.all(8.0),
-                  child: TextField(
-                    controller: controllerDescripcion,
-                    maxLines: 8, //or null
-                    decoration: InputDecoration(
-                      label: Text(
-                        "Razón de la cita...*",
-                      ),
-                      hintText: "Introduce la razón de la cita...",
-                    ),
-                  ),
-                )),
-                Card(
-                  child: InkWell(
-                    onTap: () {
-                      DatePicker.showDateTimePicker(
-                        context,
-                        showTitleActions: true,
-                        minTime: DateTime.now(),
-                        maxTime: DateTime(DateTime.now().year + 2, 1, 1),
-                        currentTime: DateTime.now(),
-                        locale: LocaleType.es,
-                        onConfirm: (time) async {
-                          setState(() {
-                            widget.fechaPropuesta = time;
-                          });
-                        },
-                      );
-                    },
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.all(12.0),
-                          child: Row(
-                            children: [
-                              Icon(
-                                Icons.calendar_month_outlined,
-                              ),
-                              SizedBox(
-                                width: 20,
-                              ),
-                              Text(
-                                // ignore: unnecessary_null_comparison
-                                widget.fechaPropuesta != null
-                                    ? widget.fechaPropuesta
-                                        .toString()
-                                        .split(" ")
-                                        .first
-                                    : "No se ha seleccionado una fecha*",
-                                style: TextStyle(fontWeight: FontWeight.bold),
-                              )
-                            ],
-                          ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.all(12.0),
-                          child: Row(
-                            children: [
-                              const Icon(
-                                Icons.watch_later_outlined,
-                              ),
-                              const SizedBox(
-                                width: 20,
-                              ),
-                              Text(
-                                // ignore: unnecessary_null_comparison
-                                widget.fechaPropuesta != null
-                                    ? Utils.formatTimeString(widget
-                                        .fechaPropuesta
-                                        .toString()
-                                        .split(" ")
-                                        .last)
-                                    : "No se ha seleccionado hora*",
-                                style: const TextStyle(
-                                    fontWeight: FontWeight.bold),
-                              )
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
+      backgroundColor: Colors.lightBlue[50], // Fondo azul claro
+      appBar: AppBar(
+        backgroundColor: Colors.blue,
+        title: const Text('Crear Cita'),
+      ),
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(25.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const Icon(
+                Icons.calendar_today,
+                size: 100,
+                color: Colors.blue, // Color azul principal
+              ),
+              const SizedBox(height: 20),
+              const Center(
+                child: Text(
+                  "Crear cita",
+                  style: TextStyle(
+                    fontSize: 40,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.blue, // Color azul principal
                   ),
                 ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    TextButton(
-                        onPressed: () async {
-                          comprobarCampos(
-                              controllerDescripcion.text,
-                              controllerTitulo.text,
-                              widget.fechaPropuesta,
-                              context);
-                        },
-                        child: Text("Crear cita"))
-                  ],
-                )
-              ],
-            ),
+              ),
+              const SizedBox(height: 30),
+              Card(
+                elevation: 8.0,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(20.0),
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.all(20.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      widget.tutor != null
+                          ? DropdownButtonFormField<Alumno>(
+                              decoration: const InputDecoration(
+                                labelText: "Seleccionar alumno*",
+                                border: OutlineInputBorder(),
+                                prefixIcon: Icon(Icons.person),
+                              ),
+                              value: widget.alumnoSeleccionado,
+                              items: widget.alumnosDeTutor?.map((alumno) {
+                                return DropdownMenuItem<Alumno>(
+                                  value: alumno,
+                                  child: Text(
+                                      "${alumno.nombre} ${alumno.apellido}"),
+                                );
+                              }).toList(),
+                              onChanged: (value) {
+                                setState(() {
+                                  widget.alumnoSeleccionado = value;
+                                });
+                              },
+                            )
+                          : Container(),
+                      const SizedBox(height: 20),
+                      TextField(
+                        controller: controllerTitulo,
+                        decoration: const InputDecoration(
+                          labelText: "Título*",
+                          border: OutlineInputBorder(),
+                        ),
+                      ),
+                      const SizedBox(height: 20),
+                      TextField(
+                        controller: controllerDescripcion,
+                        maxLines: 8,
+                        decoration: const InputDecoration(
+                          labelText: "Descripción*",
+                          border: OutlineInputBorder(),
+                        ),
+                      ),
+                      const SizedBox(height: 20),
+                      Card(
+                        child: InkWell(
+                          onTap: () {
+                            DatePicker.showDateTimePicker(
+                              context,
+                              showTitleActions: true,
+                              minTime: DateTime.now(),
+                              maxTime: DateTime(DateTime.now().year + 2, 1, 1),
+                              currentTime: DateTime.now(),
+                              locale: LocaleType.es,
+                              onConfirm: (time) async {
+                                setState(() {
+                                  widget.fechaPropuesta = time;
+                                });
+                              },
+                            );
+                          },
+                          child: Padding(
+                            padding: const EdgeInsets.all(12.0),
+                            child: Row(
+                              children: [
+                                Icon(Icons.calendar_today),
+                                SizedBox(width: 20),
+                                Flexible(
+                                  child: Text(
+                                    // ignore: unnecessary_null_comparison
+                                    widget.fechaPropuesta != null
+                                        ? widget.fechaPropuesta
+                                            .toString()
+                                            .split(" ")
+                                            .first
+                                        : "No se ha seleccionado una fecha*",
+                                    style:
+                                        TextStyle(fontWeight: FontWeight.bold),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 20),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          ElevatedButton(
+                            onPressed: () {
+                              comprobarCampos(
+                                controllerTitulo.text,
+                                controllerDescripcion.text,
+                                widget.fechaPropuesta,
+                                context,
+                              );
+                            },
+                            child: const Text("Crear cita"),
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.blue,
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 50,
+                                vertical: 15,
+                              ),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(20.0),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
           ),
-        ));
+        ),
+      ),
+    );
   }
 
   comprobarCampos(String text, String text2, DateTime? fechaPropuesta,
