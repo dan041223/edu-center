@@ -5,8 +5,9 @@ import 'package:educenter/models/clase.dart';
 import 'package:flutter/material.dart';
 
 class CrearProfesor extends StatefulWidget {
-  Centro centro;
-  CrearProfesor({super.key, required this.centro});
+  final Centro centro;
+
+  const CrearProfesor({super.key, required this.centro});
 
   @override
   State<CrearProfesor> createState() => _CrearProfesorState();
@@ -21,127 +22,168 @@ class _CrearProfesorState extends State<CrearProfesor> {
   TextEditingController controladorEmailContacto = TextEditingController();
   TextEditingController controladorEmailUsuario = TextEditingController();
 
-  int controladorIdClaseTutor = 0;
   bool loading = true;
+
   @override
   void initState() {
-    Future.delayed(
-      const Duration(milliseconds: 1),
-      () async {
-        List<Clase> clases =
-            await ClasesBBDD().getClasesSinTutor(widget.centro);
-        for (var clase in clases) {
-          itemsDropDown.add(DropdownMenuItem(
-            value: clase,
-            child: Text(clase.nombre_clase),
-          ));
-        }
-        setState(() {
-          loading = false;
-        });
-      },
-    );
-    setState(() {
-      loading = false;
-    });
     super.initState();
+    Future.delayed(const Duration(milliseconds: 1), () async {
+      List<Clase> clases = await ClasesBBDD().getClasesSinTutor(widget.centro);
+      for (var clase in clases) {
+        itemsDropDown.add(DropdownMenuItem(
+          value: clase,
+          child: Text(clase.nombre_clase),
+        ));
+      }
+      setState(() {
+        loading = false;
+      });
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Column(
-            children: [
-              Text(
-                "Crear profesor",
-                style:
-                    const TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
-              ),
-              TextField(
-                controller: controladorNombre,
-                decoration: const InputDecoration(
-                    label: Text(
-                  "Nombre*",
-                )),
-              ),
-              TextField(
-                controller: controladorApellido,
-                decoration: const InputDecoration(
-                    label: Text(
-                  "Apellido*",
-                )),
-              ),
-              TextField(
-                controller: controladorDNI,
-                decoration: const InputDecoration(
-                    label: Text(
-                  "DNI*",
-                )),
-              ),
-              TextField(
-                controller: controladorEmailUsuario,
-                decoration: const InputDecoration(
-                    label: Text(
-                  "Email de usuario*",
-                )),
-              ),
-              TextField(
-                controller: controladorEmailContacto,
-                decoration: const InputDecoration(
-                    label: Text(
-                  "Email de contacto*",
-                )),
-              ),
-              Padding(
-                padding: EdgeInsets.symmetric(vertical: 10),
-                child: loading
-                    ? Center(
-                        child: CircularProgressIndicator(),
-                      )
-                    : Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const Text(
-                            "Clases sin tutor:",
-                            style: TextStyle(
-                                fontSize: 20, fontWeight: FontWeight.bold),
+      backgroundColor: Colors.lightBlue[50], // Fondo azul claro
+      appBar: AppBar(
+        backgroundColor: Colors.blue,
+        title: const Text('Crear Profesor'),
+      ),
+      body: Center(
+        child: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.all(25.0),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Icon(
+                  Icons.person_add,
+                  size: 100,
+                  color: Colors.blue, // Color azul principal
+                ),
+                const SizedBox(height: 20),
+                const Text(
+                  "Crear Profesor",
+                  style: TextStyle(
+                    fontSize: 40,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.blue, // Color azul principal
+                  ),
+                ),
+                const SizedBox(height: 30),
+                Card(
+                  elevation: 8.0,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(20.0),
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.all(20.0),
+                    child: Column(
+                      children: [
+                        TextField(
+                          controller: controladorNombre,
+                          decoration: const InputDecoration(
+                            labelText: "Nombre*",
+                            border: OutlineInputBorder(),
+                            prefixIcon: Icon(Icons.person),
                           ),
-                          DropdownButton(
-                            hint: const Text("Clases..."),
-                            isExpanded: true,
-                            items: itemsDropDown,
-                            value: claseSeleccionada,
-                            onChanged: (value) {
-                              setState(() {});
-                              claseSeleccionada = value;
-                            },
+                        ),
+                        const SizedBox(height: 20),
+                        TextField(
+                          controller: controladorApellido,
+                          decoration: const InputDecoration(
+                            labelText: "Apellido*",
+                            border: OutlineInputBorder(),
+                            prefixIcon: Icon(Icons.person_outline),
                           ),
-                        ],
-                      ),
-              ),
-              TextButton(
-                  onPressed: () {
-                    comprobarCampos(
-                        controladorNombre.text,
-                        controladorApellido.text,
-                        controladorDNI.text,
-                        controladorEmailContacto.text,
-                        controladorEmailUsuario.text,
-                        context);
-                  },
-                  child: Text("Crear"))
-            ],
+                        ),
+                        const SizedBox(height: 20),
+                        TextField(
+                          controller: controladorDNI,
+                          decoration: const InputDecoration(
+                            labelText: "DNI*",
+                            border: OutlineInputBorder(),
+                            prefixIcon: Icon(Icons.badge),
+                          ),
+                        ),
+                        const SizedBox(height: 20),
+                        TextField(
+                          controller: controladorEmailUsuario,
+                          decoration: const InputDecoration(
+                            labelText: "Email de usuario*",
+                            border: OutlineInputBorder(),
+                            prefixIcon: Icon(Icons.email),
+                          ),
+                        ),
+                        const SizedBox(height: 20),
+                        TextField(
+                          controller: controladorEmailContacto,
+                          decoration: const InputDecoration(
+                            labelText: "Email de contacto*",
+                            border: OutlineInputBorder(),
+                            prefixIcon: Icon(Icons.contact_mail),
+                          ),
+                        ),
+                        const SizedBox(height: 20),
+                        loading
+                            ? const Center(child: CircularProgressIndicator())
+                            : Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  const Text(
+                                    "Clases sin tutor:",
+                                    style: TextStyle(
+                                        fontSize: 20,
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                  DropdownButton(
+                                    hint: const Text("Clases..."),
+                                    isExpanded: true,
+                                    items: itemsDropDown,
+                                    value: claseSeleccionada,
+                                    onChanged: (value) {
+                                      setState(() {
+                                        claseSeleccionada = value as Clase?;
+                                      });
+                                    },
+                                  ),
+                                ],
+                              ),
+                        const SizedBox(height: 20),
+                        ElevatedButton(
+                          onPressed: () {
+                            comprobarCampos(
+                              controladorNombre.text,
+                              controladorApellido.text,
+                              controladorDNI.text,
+                              controladorEmailContacto.text,
+                              controladorEmailUsuario.text,
+                              context,
+                            );
+                          },
+                          child: const Text("Crear"),
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.blue,
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 50, vertical: 15),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(20.0),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),
     );
   }
 
-  comprobarCampos(String nombre, String apellido, String dni,
+  void comprobarCampos(String nombre, String apellido, String dni,
       String emailContacto, String emailUsuario, BuildContext context) async {
     if (nombre.isEmpty ||
         apellido.isEmpty ||
@@ -151,13 +193,22 @@ class _CrearProfesorState extends State<CrearProfesor> {
         claseSeleccionada == null) {
       ScaffoldMessenger.of(context).clearSnackBars();
       ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text("No están rellenos todos los campos")));
+        const SnackBar(content: Text("No están rellenos todos los campos")),
+      );
     } else {
-      await ProfesoresBBDD().crearProfesor(nombre, apellido, dni, emailContacto,
-          emailUsuario, claseSeleccionada, widget.centro);
+      await ProfesoresBBDD().crearProfesor(
+        nombre,
+        apellido,
+        dni,
+        emailContacto,
+        emailUsuario,
+        claseSeleccionada!,
+        widget.centro,
+      );
       Navigator.pop(context);
-      ScaffoldMessenger.of(context)
-          .showSnackBar(const SnackBar(content: Text("Profesor creado")));
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Profesor creado")),
+      );
     }
   }
 }

@@ -4,9 +4,10 @@ import 'package:educenter/models/usuario.dart';
 import 'package:flutter/material.dart';
 
 class EditarPadre extends StatefulWidget {
-  Centro centro;
-  Usuario padre;
-  EditarPadre({super.key, required this.padre, required this.centro});
+  final Centro centro;
+  final Usuario padre;
+
+  const EditarPadre({super.key, required this.padre, required this.centro});
 
   @override
   State<EditarPadre> createState() => _EditarPadreState();
@@ -17,97 +18,126 @@ class _EditarPadreState extends State<EditarPadre> {
   TextEditingController controllerApellido = TextEditingController();
   TextEditingController controllerDni = TextEditingController();
   TextEditingController controllerEmailContacto = TextEditingController();
+
   @override
   void initState() {
+    super.initState();
     controllerNombre.text = widget.padre.nombre;
     controllerApellido.text = widget.padre.apellido;
     controllerDni.text = widget.padre.dni;
-    controllerEmailContacto.text = widget.padre.email_contacto.toString();
-    super.initState();
+    controllerEmailContacto.text = widget.padre.email_contacto ?? '';
   }
 
   @override
   Widget build(BuildContext context) {
-    var brillo = Theme.of(context).brightness;
-    bool esOscuro = brillo == Brightness.dark;
     return Scaffold(
-      appBar: AppBar(),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(10.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                "Editar padre o madre",
-                style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
-              ),
-              SizedBox(
-                height: 20,
-              ),
-              TextField(
-                controller: controllerNombre,
-                decoration: InputDecoration(
-                    label: Text(
-                  "Nombre...*",
-                )),
-              ),
-              SizedBox(
-                height: 20,
-              ),
-              TextField(
-                controller: controllerApellido,
-                decoration: InputDecoration(
-                    label: Text(
-                  "Apellido...*",
-                )),
-              ),
-              SizedBox(
-                height: 20,
-              ),
-              TextField(
-                controller: controllerDni,
-                decoration: InputDecoration(
-                    label: Text(
-                  "Dni...*",
-                )),
-              ),
-              SizedBox(
-                height: 20,
-              ),
-              TextField(
-                controller: controllerEmailContacto,
-                decoration: InputDecoration(
-                    label: Text(
-                  "Email de contacto...*",
-                )),
-              ),
-              SizedBox(
-                height: 20,
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  TextButton(
-                      onPressed: () {
-                        comprobarCampos(
-                            controllerNombre.text,
-                            controllerApellido.text,
-                            controllerDni.text,
-                            controllerEmailContacto.text,
-                            context);
-                      },
-                      child: Text("Editar padre/madre")),
-                ],
-              )
-            ],
+      backgroundColor: Colors.lightBlue[50], // Fondo azul claro
+      appBar: AppBar(
+        backgroundColor: Colors.blue,
+        title: const Text('Editar Padre/Madre'),
+      ),
+      body: Center(
+        child: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.all(25.0),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Icon(
+                  Icons.person,
+                  size: 100,
+                  color: Colors.blue, // Color azul principal
+                ),
+                const SizedBox(height: 20),
+                Center(
+                  child: Text(
+                    "Editar a ${widget.padre.nombre}",
+                    style: const TextStyle(
+                      fontSize: 40,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.blue, // Color azul principal
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 30),
+                Card(
+                  elevation: 8.0,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(20.0),
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.all(20.0),
+                    child: Column(
+                      children: [
+                        TextField(
+                          controller: controllerNombre,
+                          decoration: const InputDecoration(
+                            labelText: "Nombre*",
+                            border: OutlineInputBorder(),
+                            prefixIcon: Icon(Icons.person),
+                          ),
+                        ),
+                        const SizedBox(height: 20),
+                        TextField(
+                          controller: controllerApellido,
+                          decoration: const InputDecoration(
+                            labelText: "Apellido*",
+                            border: OutlineInputBorder(),
+                            prefixIcon: Icon(Icons.person_outline),
+                          ),
+                        ),
+                        const SizedBox(height: 20),
+                        TextField(
+                          controller: controllerDni,
+                          decoration: const InputDecoration(
+                            labelText: "DNI*",
+                            border: OutlineInputBorder(),
+                            prefixIcon: Icon(Icons.badge),
+                          ),
+                        ),
+                        const SizedBox(height: 20),
+                        TextField(
+                          controller: controllerEmailContacto,
+                          decoration: const InputDecoration(
+                            labelText: "Email de contacto*",
+                            border: OutlineInputBorder(),
+                            prefixIcon: Icon(Icons.contact_mail),
+                          ),
+                        ),
+                        const SizedBox(height: 20),
+                        ElevatedButton(
+                          onPressed: () {
+                            comprobarCampos(
+                              controllerNombre.text,
+                              controllerApellido.text,
+                              controllerDni.text,
+                              controllerEmailContacto.text,
+                              context,
+                            );
+                          },
+                          child: const Text("Editar padre/madre"),
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.blue,
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 50, vertical: 15),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(20.0),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),
     );
   }
 
-  comprobarCampos(String nombre, String apellido, String dni,
+  void comprobarCampos(String nombre, String apellido, String dni,
       String emailContacto, BuildContext context) async {
     if (nombre.isEmpty ||
         apellido.isEmpty ||
@@ -115,13 +145,21 @@ class _EditarPadreState extends State<EditarPadre> {
         emailContacto.isEmpty) {
       ScaffoldMessenger.of(context).clearSnackBars();
       ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text("No están rellenos todos los campos")));
+        const SnackBar(content: Text("No están rellenos todos los campos")),
+      );
     } else {
       await padresBBDD().editarPadre(
-          nombre, apellido, dni, emailContacto, widget.centro, widget.padre);
+        nombre,
+        apellido,
+        dni,
+        emailContacto,
+        widget.centro,
+        widget.padre,
+      );
       Navigator.pop(context);
-      ScaffoldMessenger.of(context)
-          .showSnackBar(const SnackBar(content: Text("Padre/madre creado")));
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Padre/madre editado")),
+      );
     }
   }
 }

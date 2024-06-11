@@ -243,7 +243,8 @@ class ClasesBBDD {
         .from("usuarios")
         .select("*")
         .isFilter("id_clase_tutor", null)
-        .eq("tipo_usuario", "profesor");
+        .eq("tipo_usuario", "profesor")
+        .eq("id_centro", centro.id_centro);
 
     List<Usuario> usuarios = List.empty(growable: true);
 
