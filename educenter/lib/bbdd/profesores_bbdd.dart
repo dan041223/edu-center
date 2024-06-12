@@ -380,16 +380,26 @@ class ProfesoresBBDD {
       password: "claveTemporal",
       emailConfirm: true,
     ));
-    await usersBBDD.supabase.from("usuarios").insert({
-      "id_usuario": data.user!.id,
-      "nombre": nombre,
-      "apellido": apellido,
-      "dni": dni,
-      "email_contacto": emailContacto,
-      "id_clase_tutor": claseSeleccionada?.id_clase,
-      "id_centro": centro.id_centro,
-      "tipo_usuario": "profesor"
-    });
+    claseSeleccionada != null
+        ? await usersBBDD.supabase.from("usuarios").insert({
+            "id_usuario": data.user!.id,
+            "nombre": nombre,
+            "apellido": apellido,
+            "dni": dni,
+            "email_contacto": emailContacto,
+            "id_clase_tutor": claseSeleccionada.id_clase,
+            "id_centro": centro.id_centro,
+            "tipo_usuario": "profesor"
+          })
+        : await usersBBDD.supabase.from("usuarios").insert({
+            "id_usuario": data.user!.id,
+            "nombre": nombre,
+            "apellido": apellido,
+            "dni": dni,
+            "email_contacto": emailContacto,
+            "id_centro": centro.id_centro,
+            "tipo_usuario": "profesor"
+          });
   }
 
   Future<Usuario?> getTutorClase(Clase clase) async {

@@ -189,8 +189,7 @@ class _CrearProfesorState extends State<CrearProfesor> {
         apellido.isEmpty ||
         dni.isEmpty ||
         emailContacto.isEmpty ||
-        emailUsuario.isEmpty ||
-        claseSeleccionada == null) {
+        emailUsuario.isEmpty) {
       ScaffoldMessenger.of(context).clearSnackBars();
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text("No están rellenos todos los campos")),
@@ -202,7 +201,7 @@ class _CrearProfesorState extends State<CrearProfesor> {
         dni,
         emailContacto,
         emailUsuario,
-        claseSeleccionada!,
+        claseSeleccionada,
         widget.centro,
       );
       Navigator.pop(context);

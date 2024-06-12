@@ -77,85 +77,90 @@ class _ClasesPanelState extends State<ClasesPanel> {
                 ? const Center(
                     child: CircularProgressIndicator(),
                   )
-                : ListView.builder(
-                    shrinkWrap: true,
-                    physics: const NeverScrollableScrollPhysics(),
-                    itemCount: clasesCentro.length,
-                    itemBuilder: (context, index) {
-                      return Card(
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(15.0),
-                        ),
-                        margin: const EdgeInsets.symmetric(
-                            vertical: 8.0, horizontal: 16.0),
-                        child: Padding(
-                          padding: const EdgeInsets.all(20),
-                          child: InkWell(
-                            onTap: () {
-                              Navigator.of(context).push(MaterialPageRoute(
-                                builder: (context) => ClasePanel(
-                                  clase: clasesCentro[index],
-                                  centro: widget.centro,
-                                ),
-                              ));
-                            },
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text(
-                                  clasesCentro[index].nombre_clase,
-                                  style: const TextStyle(
-                                      fontSize: 18,
-                                      fontWeight: FontWeight.w500),
-                                ),
-                                IconButton(
-                                  onPressed: () async {
-                                    if (await confirm(
-                                      context,
-                                      title: const Text(
-                                          "¿Estas seguro de querer borrar esta clase?"),
-                                      textCancel: const Text("Mantener"),
-                                      textOK: const Text("Eliminar"),
-                                      content: Container(),
-                                    )) {
-                                      try {
-                                        await ClasesBBDD()
-                                            .deleteClase(clasesCentro[index]);
-                                        // ignore: use_build_context_synchronously
-                                        ScaffoldMessenger.of(context)
-                                            .showSnackBar(
-                                          const SnackBar(
-                                            content: Text(
-                                                "Clase eliminada correctamente"),
-                                          ),
-                                        );
-                                        setState(() {
-                                          clasesCentro.removeAt(index);
-                                        });
-                                      } catch (e) {
-                                        // ignore: use_build_context_synchronously
-                                        ScaffoldMessenger.of(context)
-                                            .showSnackBar(
-                                          const SnackBar(
-                                            content: Text(
-                                                "No se ha podido eliminar ya que posee datos asociados"),
-                                          ),
-                                        );
-                                      }
-                                    }
-                                  },
-                                  icon: const Icon(
-                                    Icons.delete,
-                                    color: Colors.red,
-                                  ),
-                                ),
-                              ],
+                : clasesCentro.isEmpty
+                    ? Center(
+                        child: Text("El centro no posee clases registradas"),
+                      )
+                    : ListView.builder(
+                        shrinkWrap: true,
+                        physics: const NeverScrollableScrollPhysics(),
+                        itemCount: clasesCentro.length,
+                        itemBuilder: (context, index) {
+                          return Card(
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(15.0),
                             ),
-                          ),
-                        ),
-                      );
-                    },
-                  ),
+                            margin: const EdgeInsets.symmetric(
+                                vertical: 8.0, horizontal: 16.0),
+                            child: Padding(
+                              padding: const EdgeInsets.all(20),
+                              child: InkWell(
+                                onTap: () {
+                                  Navigator.of(context).push(MaterialPageRoute(
+                                    builder: (context) => ClasePanel(
+                                      clase: clasesCentro[index],
+                                      centro: widget.centro,
+                                    ),
+                                  ));
+                                },
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text(
+                                      clasesCentro[index].nombre_clase,
+                                      style: const TextStyle(
+                                          fontSize: 18,
+                                          fontWeight: FontWeight.w500),
+                                    ),
+                                    IconButton(
+                                      onPressed: () async {
+                                        if (await confirm(
+                                          context,
+                                          title: const Text(
+                                              "¿Estas seguro de querer borrar esta clase?"),
+                                          textCancel: const Text("Mantener"),
+                                          textOK: const Text("Eliminar"),
+                                          content: Container(),
+                                        )) {
+                                          try {
+                                            await ClasesBBDD().deleteClase(
+                                                clasesCentro[index]);
+                                            // ignore: use_build_context_synchronously
+                                            ScaffoldMessenger.of(context)
+                                                .showSnackBar(
+                                              const SnackBar(
+                                                content: Text(
+                                                    "Clase eliminada correctamente"),
+                                              ),
+                                            );
+                                            setState(() {
+                                              clasesCentro.removeAt(index);
+                                            });
+                                          } catch (e) {
+                                            // ignore: use_build_context_synchronously
+                                            ScaffoldMessenger.of(context)
+                                                .showSnackBar(
+                                              const SnackBar(
+                                                content: Text(
+                                                    "No se ha podido eliminar ya que posee datos asociados"),
+                                              ),
+                                            );
+                                          }
+                                        }
+                                      },
+                                      icon: const Icon(
+                                        Icons.delete,
+                                        color: Colors.red,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          );
+                        },
+                      ),
           ],
         ),
       ),

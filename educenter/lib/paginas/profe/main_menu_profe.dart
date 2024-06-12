@@ -60,17 +60,22 @@ class _MainMenuProfeState extends State<MainMenuProfe> {
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   Container(
-                    width: 80,
-                    height: 80,
-                    clipBehavior: Clip.antiAlias,
-                    decoration: const BoxDecoration(
-                      shape: BoxShape.circle,
-                    ),
-                    child: Image.network(
-                      widget.profe.url_foto_perfil.toString(),
-                      fit: BoxFit.cover,
-                    ),
-                  ),
+                      width: 80,
+                      height: 80,
+                      clipBehavior: Clip.antiAlias,
+                      decoration: const BoxDecoration(
+                        shape: BoxShape.circle,
+                      ),
+                      child: widget.profe.url_foto_perfil != null &&
+                              widget.profe.url_foto_perfil!.isNotEmpty
+                          ? Image.network(
+                              widget.profe.url_foto_perfil.toString(),
+                              fit: BoxFit.cover,
+                            )
+                          : Icon(
+                              Icons.person,
+                              size: 80,
+                            )),
                   Text(
                     "${widget.profe.nombre} ${widget.profe.apellido}",
                     style: const TextStyle(fontSize: 25),

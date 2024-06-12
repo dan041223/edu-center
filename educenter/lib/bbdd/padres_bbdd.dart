@@ -7,6 +7,8 @@ import 'package:educenter/models/asignatura.dart';
 import 'package:educenter/models/centro.dart';
 import 'package:educenter/models/clase.dart';
 import 'package:educenter/models/usuario.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/src/widgets/framework.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class padresBBDD {
@@ -49,8 +51,14 @@ class padresBBDD {
     return listaHijos;
   }
 
-  Future crearPadre(String nombre, String apellido, String dni,
-      String emailContacto, String emailUsuario, Centro centro) async {
+  Future crearPadre(
+      String nombre,
+      String apellido,
+      String dni,
+      String emailContacto,
+      String emailUsuario,
+      Centro centro,
+      BuildContext context) async {
     UserResponse data = await usersBBDD.supabase.auth.admin.createUser(
         AdminUserAttributes(
             email: emailUsuario,
@@ -65,6 +73,9 @@ class padresBBDD {
       "id_centro": centro.id_centro,
       "tipo_usuario": "padre_madre"
     });
+    Navigator.pop(context);
+    ScaffoldMessenger.of(context)
+        .showSnackBar(const SnackBar(content: Text("Padre/madre creado")));
   }
 
   Future<List<Alumno>> getHijosDePadre(Usuario padre) async {
@@ -79,6 +90,7 @@ class padresBBDD {
       Alumno hijo = await AlumnosBBDD().getAlumno(idHijoPadre);
       hijosPadre.add(hijo);
     }
+
     return hijosPadre;
   }
 

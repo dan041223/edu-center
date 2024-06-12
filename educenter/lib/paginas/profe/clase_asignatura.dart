@@ -100,66 +100,77 @@ class _ClaseAsignaturaState extends State<ClaseAsignatura> {
                       ],
                     ),
                   ),
-                  ListView.builder(
-                    shrinkWrap: true,
-                    physics: const NeverScrollableScrollPhysics(),
-                    itemCount: alumnos.length,
-                    itemBuilder: (BuildContext context, int index) {
-                      return Card(
-                        child: InkWell(
-                          onTap: () {
-                            widget.usuario != null &&
-                                    widget.usuario!.tipo_usuario ==
-                                        "administrador"
-                                ? Navigator.of(context).push(MaterialPageRoute(
-                                    builder: (context) => AlumnoPerfilAdmin(
-                                      alumno: alumnos[index],
-                                      centro: widget.centro!,
-                                    ),
-                                  ))
-                                : AlumnosBBDD()
-                                    .getAlumno(alumnos[index].id_alumno)
-                                    .then((alumno) => Navigator.of(context)
-                                        .push(MaterialPageRoute(
-                                            builder: (context) => AlumnoPerfil(
-                                                profesor:
-                                                    widget.asignatura.profesor,
-                                                alumno: alumno,
-                                                asignatura:
-                                                    widget.asignatura))));
-                          },
-                          child: Padding(
-                            padding: const EdgeInsets.all(12),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceAround,
-                              children: [
-                                Container(
-                                  width: 80,
-                                  height: 80,
-                                  clipBehavior: Clip.antiAlias,
-                                  decoration: const BoxDecoration(
-                                    shape: BoxShape.circle,
+                  alumnos.isEmpty
+                      ? Center(
+                          child: Text("Esta asignatura no tiene alumnos"),
+                        )
+                      : ListView.builder(
+                          shrinkWrap: true,
+                          physics: const NeverScrollableScrollPhysics(),
+                          itemCount: alumnos.length,
+                          itemBuilder: (BuildContext context, int index) {
+                            return Card(
+                              child: InkWell(
+                                onTap: () {
+                                  widget.usuario != null &&
+                                          widget.usuario!.tipo_usuario ==
+                                              "administrador"
+                                      ? Navigator.of(context).push(
+                                          MaterialPageRoute(
+                                          builder: (context) =>
+                                              AlumnoPerfilAdmin(
+                                            alumno: alumnos[index],
+                                            centro: widget.centro!,
+                                          ),
+                                        ))
+                                      : AlumnosBBDD()
+                                          .getAlumno(alumnos[index].id_alumno)
+                                          .then((alumno) => Navigator
+                                                  .of(context)
+                                              .push(MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      AlumnoPerfil(
+                                                          profesor: widget
+                                                              .asignatura
+                                                              .profesor,
+                                                          alumno: alumno,
+                                                          asignatura: widget
+                                                              .asignatura))));
+                                },
+                                child: Padding(
+                                  padding: const EdgeInsets.all(12),
+                                  child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceAround,
+                                    children: [
+                                      Container(
+                                        width: 80,
+                                        height: 80,
+                                        clipBehavior: Clip.antiAlias,
+                                        decoration: const BoxDecoration(
+                                          shape: BoxShape.circle,
+                                        ),
+                                        child: alumnos[index].url_foto_perfil !=
+                                                null
+                                            ? Image.network(
+                                                alumnos[index]
+                                                    .url_foto_perfil
+                                                    .toString(),
+                                                fit: BoxFit.cover,
+                                              )
+                                            : const Icon(Icons.person),
+                                      ),
+                                      Text(
+                                        "${alumnos[index].nombre} ${alumnos[index].apellido}",
+                                        style: const TextStyle(fontSize: 15),
+                                      )
+                                    ],
                                   ),
-                                  child: alumnos[index].url_foto_perfil != null
-                                      ? Image.network(
-                                          alumnos[index]
-                                              .url_foto_perfil
-                                              .toString(),
-                                          fit: BoxFit.cover,
-                                        )
-                                      : const Icon(Icons.person),
                                 ),
-                                Text(
-                                  "${alumnos[index].nombre} ${alumnos[index].apellido}",
-                                  style: const TextStyle(fontSize: 15),
-                                )
-                              ],
-                            ),
-                          ),
-                        ),
-                      );
-                    },
-                  )
+                              ),
+                            );
+                          },
+                        )
                 ],
               ));
   }

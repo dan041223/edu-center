@@ -147,11 +147,13 @@ class _AgregarPadreState extends State<AgregarPadre> {
       ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text("No están rellenos todos los campos")));
     } else {
-      await padresBBDD().crearPadre(
-          nombre, apellido, dni, emailContacto, emailUsuario, widget.centro);
-      Navigator.pop(context);
-      ScaffoldMessenger.of(context)
-          .showSnackBar(const SnackBar(content: Text("Padre/madre creado")));
+      try {
+        await padresBBDD().crearPadre(nombre, apellido, dni, emailContacto,
+            emailUsuario, widget.centro, context);
+      } catch (e) {
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+            content: Text("Ya existe un usuario con esos datos")));
+      }
     }
   }
 }

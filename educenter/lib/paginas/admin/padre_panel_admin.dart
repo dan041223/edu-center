@@ -86,6 +86,8 @@ class _PadrePanelAdminState extends State<PadrePanelAdmin> {
                                   )
                                 : const Icon(
                                     Icons.person,
+                                    color: Colors.black,
+                                    size: 80,
                                   )),
                         const SizedBox(
                           width: 20,

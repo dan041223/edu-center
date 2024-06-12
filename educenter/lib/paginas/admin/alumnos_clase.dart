@@ -39,7 +39,9 @@ class _AlumnosClaseState extends State<AlumnosClase> {
     var brillo = Theme.of(context).brightness;
     bool esOscuro = brillo == Brightness.dark;
     return Scaffold(
-      appBar: AppBar(),
+      appBar: AppBar(
+        title: Text("Alumnos de ${widget.clase.nombre_clase}"),
+      ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           Navigator.of(context).push(MaterialPageRoute(
@@ -57,35 +59,40 @@ class _AlumnosClaseState extends State<AlumnosClase> {
                 ? const Center(
                     child: CircularProgressIndicator(),
                   )
-                : ListView.builder(
-                    shrinkWrap: true,
-                    physics: const NeverScrollableScrollPhysics(),
-                    itemCount: alumnosClase.length,
-                    itemBuilder: (context, index) {
-                      return Card(
-                        child: InkWell(
-                          onTap: () {
-                            Navigator.of(context).push(MaterialPageRoute(
-                              builder: (context) => AlumnoPerfilAdmin(
-                                alumno: alumnosClase[index],
-                                centro: widget.centro,
-                              ),
-                            ));
-                          },
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                            children: [
-                              Padding(
-                                padding: const EdgeInsets.all(10.0),
-                                child: Container(
-                                    width: 100,
-                                    height: 100,
-                                    clipBehavior: Clip.antiAlias,
-                                    decoration: const BoxDecoration(
-                                      shape: BoxShape.circle,
-                                    ),
-                                    child:
-                                        alumnosClase[index].url_foto_perfil !=
+                : alumnosClase.isEmpty
+                    ? Center(
+                        child: Text("Esta clase no tiene alumnos asociados"),
+                      )
+                    : ListView.builder(
+                        shrinkWrap: true,
+                        physics: const NeverScrollableScrollPhysics(),
+                        itemCount: alumnosClase.length,
+                        itemBuilder: (context, index) {
+                          return Card(
+                            child: InkWell(
+                              onTap: () {
+                                Navigator.of(context).push(MaterialPageRoute(
+                                  builder: (context) => AlumnoPerfilAdmin(
+                                    alumno: alumnosClase[index],
+                                    centro: widget.centro,
+                                  ),
+                                ));
+                              },
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceEvenly,
+                                children: [
+                                  Padding(
+                                    padding: const EdgeInsets.all(10.0),
+                                    child: Container(
+                                        width: 100,
+                                        height: 100,
+                                        clipBehavior: Clip.antiAlias,
+                                        decoration: const BoxDecoration(
+                                          shape: BoxShape.circle,
+                                        ),
+                                        child: alumnosClase[index]
+                                                        .url_foto_perfil !=
                                                     null &&
                                                 alumnosClase[index]
                                                         .url_foto_perfil !=
@@ -98,58 +105,59 @@ class _AlumnosClaseState extends State<AlumnosClase> {
                                             : const Icon(
                                                 Icons.person,
                                               )),
-                              ),
-                              const SizedBox(
-                                width: 20,
-                              ),
-                              Flexible(
-                                child: Text(
-                                  "${alumnosClase[index].nombre} ${alumnosClase[index].apellido}",
-                                  style: TextStyle(
-                                    color:
-                                        esOscuro ? Colors.white : Colors.black,
-                                    fontSize: 20,
-                                    fontWeight: FontWeight.bold,
                                   ),
-                                  overflow: TextOverflow.fade,
-                                ),
+                                  const SizedBox(
+                                    width: 20,
+                                  ),
+                                  Flexible(
+                                    child: Text(
+                                      "${alumnosClase[index].nombre} ${alumnosClase[index].apellido}",
+                                      style: TextStyle(
+                                        color: esOscuro
+                                            ? Colors.white
+                                            : Colors.black,
+                                        fontSize: 20,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                      overflow: TextOverflow.fade,
+                                    ),
+                                  ),
+                                  IconButton(
+                                      onPressed: () async {
+                                        if (await confirm(context,
+                                            title: const Text(
+                                                "¿Estas seguro de querer borrar este alumno?"),
+                                            textCancel: const Text("Mantener"),
+                                            textOK: const Text("Eliminar"),
+                                            content: Container())) {
+                                          try {
+                                            await AlumnosBBDD().deleteAlumno(
+                                                alumnosClase[index].id_alumno);
+                                            // ignore: use_build_context_synchronously
+                                            ScaffoldMessenger.of(context)
+                                                .showSnackBar(const SnackBar(
+                                                    content: Text(
+                                                        "Alumno eliminado correctamente")));
+                                          } catch (e) {
+                                            // ignore: use_build_context_synchronously
+                                            ScaffoldMessenger.of(context)
+                                                .showSnackBar(const SnackBar(
+                                                    content: Text(
+                                                        "No se ha podido eliminar ya que posee datos asociados")));
+                                          }
+                                        } else {}
+                                      },
+                                      icon: const Icon(
+                                        Icons.delete_rounded,
+                                        size: 30,
+                                        color: Colors.red,
+                                      )),
+                                ],
                               ),
-                              IconButton(
-                                  onPressed: () async {
-                                    if (await confirm(context,
-                                        title: const Text(
-                                            "¿Estas seguro de querer borrar este alumno?"),
-                                        textCancel: const Text("Mantener"),
-                                        textOK: const Text("Eliminar"),
-                                        content: Container())) {
-                                      try {
-                                        await AlumnosBBDD().deleteAlumno(
-                                            alumnosClase[index].id_alumno);
-                                        // ignore: use_build_context_synchronously
-                                        ScaffoldMessenger.of(context)
-                                            .showSnackBar(const SnackBar(
-                                                content: Text(
-                                                    "Alumno eliminado correctamente")));
-                                      } catch (e) {
-                                        // ignore: use_build_context_synchronously
-                                        ScaffoldMessenger.of(context)
-                                            .showSnackBar(const SnackBar(
-                                                content: Text(
-                                                    "No se ha podido eliminar ya que posee datos asociados")));
-                                      }
-                                    } else {}
-                                  },
-                                  icon: const Icon(
-                                    Icons.delete_rounded,
-                                    size: 30,
-                                    color: Colors.red,
-                                  )),
-                            ],
-                          ),
-                        ),
-                      );
-                    },
-                  )
+                            ),
+                          );
+                        },
+                      )
           ],
         ),
       ),

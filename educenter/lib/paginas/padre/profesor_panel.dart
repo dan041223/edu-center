@@ -194,26 +194,40 @@ class _ProfesorPanelState extends State<ProfesorPanel> {
                           ? const Center(
                               child: CircularProgressIndicator(),
                             )
-                          : ListView.builder(
-                              physics: const NeverScrollableScrollPhysics(),
-                              shrinkWrap: true,
-                              itemCount: widget.alumno != null
-                                  ? (asignaturasProfeDeAlumno.isEmpty
-                                      ? 1
-                                      : asignaturasProfeDeAlumno.length)
-                                  : asignaturasProfe.length,
-                              itemBuilder: (context, index) {
-                                return ListTile(
-                                    title: Text(widget.alumno != null
-                                        ? (asignaturasProfeDeAlumno.isNotEmpty
-                                            ? "- ${asignaturasProfeDeAlumno[index].nombre_asignatura}"
-                                            : "No imparte asignaturas a ${widget.alumno!.nombre}")
-                                        : asignaturasProfe[index].clase != null
-                                            ? "- ${asignaturasProfe[index].clase!.nombre_clase} ${asignaturasProfe[index].nombre_asignatura}"
-                                            : asignaturasProfe[index]
-                                                .nombre_asignatura));
-                              },
-                            ),
+                          : asignaturasProfe.isEmpty
+                              ? const Center(
+                                  child: Text("No imparte asignaturas"),
+                                )
+                              : asignaturasProfeDeAlumno.isEmpty
+                                  ? Center(
+                                      child: Text(
+                                          "No le imparte asignaturas al hijo"),
+                                    )
+                                  : ListView.builder(
+                                      physics:
+                                          const NeverScrollableScrollPhysics(),
+                                      shrinkWrap: true,
+                                      itemCount: widget.alumno != null
+                                          ? (asignaturasProfeDeAlumno.isEmpty
+                                              ? 1
+                                              : asignaturasProfeDeAlumno.length)
+                                          : asignaturasProfe.length,
+                                      itemBuilder: (context, index) {
+                                        return ListTile(
+                                            title: Text(widget.alumno != null
+                                                ? (asignaturasProfeDeAlumno
+                                                        .isNotEmpty
+                                                    ? "- ${asignaturasProfeDeAlumno[index].nombre_asignatura}"
+                                                    : "No imparte asignaturas a ${widget.alumno!.nombre}")
+                                                : asignaturasProfe[index]
+                                                                .clase !=
+                                                            null &&
+                                                        asignaturasProfe
+                                                            .isNotEmpty
+                                                    ? "- ${asignaturasProfe[index].clase!.nombre_clase} ${asignaturasProfe[index].nombre_asignatura}"
+                                                    : "No imparte asignaturas"));
+                                      },
+                                    ),
                     ),
                   ),
                   const Text(
