@@ -432,43 +432,43 @@ class _CitaPanelState extends State<CitaPanel> {
                             child: Card(
                               child: Padding(
                                 padding: const EdgeInsets.all(20.0),
-                                child: Expanded(
-                                  child: Column(
-                                    children: [
-                                      Container(
-                                          width: 90,
-                                          height: 90,
-                                          clipBehavior: Clip.antiAlias,
-                                          decoration: const BoxDecoration(
-                                            shape: BoxShape.circle,
-                                          ),
-                                          child: widget.citaSeleccionada.tutor
-                                                          .url_foto_perfil !=
-                                                      null &&
-                                                  widget.citaSeleccionada.tutor
-                                                          .url_foto_perfil !=
-                                                      ""
-                                              ? Image.network(
-                                                  widget.citaSeleccionada.tutor
-                                                      .url_foto_perfil!,
-                                                  fit: BoxFit.cover,
-                                                )
-                                              : const Icon(
-                                                  Icons.person,
-                                                )),
-                                      const SizedBox(
-                                        height: 5,
-                                      ),
-                                      Flexible(
-                                        child: Text(
-                                          "${widget.citaSeleccionada.tutor.nombre} ${widget.citaSeleccionada.tutor.apellido}",
-                                          style: const TextStyle(
-                                            fontWeight: FontWeight.bold,
-                                          ),
+                                child: Column(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceEvenly,
+                                  children: [
+                                    Container(
+                                        width: 90,
+                                        height: 90,
+                                        clipBehavior: Clip.antiAlias,
+                                        decoration: const BoxDecoration(
+                                          shape: BoxShape.circle,
                                         ),
-                                      )
-                                    ],
-                                  ),
+                                        child: widget.citaSeleccionada.tutor
+                                                        .url_foto_perfil !=
+                                                    null &&
+                                                widget.citaSeleccionada.tutor
+                                                        .url_foto_perfil !=
+                                                    ""
+                                            ? Image.network(
+                                                widget.citaSeleccionada.tutor
+                                                    .url_foto_perfil!,
+                                                fit: BoxFit.cover,
+                                              )
+                                            : const Icon(
+                                                Icons.person,
+                                              )),
+                                    const SizedBox(
+                                      height: 5,
+                                    ),
+                                    Flexible(
+                                      child: Text(
+                                        "${widget.citaSeleccionada.tutor.nombre} ${widget.citaSeleccionada.tutor.apellido}",
+                                        style: const TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                    )
+                                  ],
                                 ),
                               ),
                             ),

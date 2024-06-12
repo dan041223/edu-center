@@ -87,7 +87,7 @@ class _HorarioState extends State<Horario> {
                   ),
                 ),
               ))
-          : Expanded(child: Center(child: CircularProgressIndicator())),
+          : Center(child: CircularProgressIndicator()),
     );
   }
 }
