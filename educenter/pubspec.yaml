@@ -14,6 +14,8 @@ dependencies:
   flutter_colorpicker: ^1.1.0
   flutter_datetime_picker_plus: ^2.2.0
   flutter_expandable_fab: ^2.0.0
+  flutter_launcher_icons: ^0.13.1
+  flutter_native_splash: ^2.4.0
   multi_dropdown: ^2.1.4
   numberpicker: ^2.1.2
   supabase_flutter: ^2.5.1
@@ -27,3 +29,17 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
+  assets:
+    - assets/Recurso_1(Personalizado).png
+
+flutter_native_splash:
+  color: "#212020"
+  image: "assets/Recurso_1(Personalizado).png"
+  android_12:
+    color: "#212020"
+    image: "assets/Recurso_1(Personalizado).png"
+
+flutter_launcher_icons:
+  android: "launcher_icon"
+  image_path: "assets/Recurso_1(Personalizado).png"
+  min_sdk_android: 21

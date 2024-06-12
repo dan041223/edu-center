@@ -1,3 +1,4 @@
+import 'package:educenter/bbdd/alumnos_bbdd.dart';
 import 'package:educenter/bbdd/citas_bbdd.dart';
 import 'package:educenter/bbdd/profesores_bbdd.dart';
 import 'package:educenter/models/alumno.dart';
@@ -15,6 +16,7 @@ class CrearCita extends StatefulWidget {
   Alumno? alumno;
   List<Alumno>? alumnosDeTutor;
   Usuario? tutor;
+  Usuario? tutorAlumno;
   CrearCita({super.key, this.alumno, this.alumnosDeTutor, this.tutor});
 
   @override
@@ -214,17 +216,20 @@ class _CrearCitaState extends State<CrearCita> {
     if (text.isEmpty ||
         text2.isEmpty ||
         fechaPropuesta == null ||
-        widget.alumnoSeleccionado == null) {
+        (widget.alumnoSeleccionado == null && widget.alumno == null)) {
       ScaffoldMessenger.of(context).clearSnackBars();
       ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text("No están rellenos todos los campos")));
     } else {
-      await CitasBBDD().crearCitaProfesor(
-          controllerTitulo.text,
-          controllerDescripcion.text,
-          fechaPropuesta,
-          widget.alumnoSeleccionado!,
-          widget.tutor!);
+      widget.alumno != null
+          ? await CitasBBDD().crearCita(controllerTitulo.text,
+              controllerDescripcion.text, fechaPropuesta, widget.alumno!)
+          : await CitasBBDD().crearCitaProfesor(
+              controllerTitulo.text,
+              controllerDescripcion.text,
+              fechaPropuesta,
+              widget.alumnoSeleccionado!,
+              widget.tutor!);
       Navigator.pop(context);
       ScaffoldMessenger.of(context)
           .showSnackBar(const SnackBar(content: Text("Cita creada")));

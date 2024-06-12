@@ -108,16 +108,34 @@ class _CitasPanelState extends State<CitasPanel> {
                         decoration: const BoxDecoration(
                           shape: BoxShape.circle,
                         ),
-                        child: widget.alumno?.url_foto_perfil != null
-                            ? Image.network(
-                                widget.alumno!.url_foto_perfil!.toString(),
-                                fit: BoxFit.cover,
-                              )
-                            : Icon(
-                                Icons.person,
-                                size: 85,
-                                color: Colors.black,
-                              )),
+                        child: widget.tutor != null
+                            ? widget.tutor!.url_foto_perfil != null
+                                ? Image.network(
+                                    widget.tutor!.url_foto_perfil!.toString(),
+                                    fit: BoxFit.cover,
+                                  )
+                                : Icon(
+                                    Icons.person,
+                                    size: 85,
+                                    color: Colors.black,
+                                  )
+                            : widget.alumno != null
+                                ? widget.alumno!.url_foto_perfil != null
+                                    ? Image.network(
+                                        widget.alumno!.url_foto_perfil!
+                                            .toString(),
+                                        fit: BoxFit.cover,
+                                      )
+                                    : Icon(
+                                        Icons.person,
+                                        size: 85,
+                                        color: Colors.black,
+                                      )
+                                : Icon(
+                                    Icons.person,
+                                    size: 85,
+                                    color: Colors.black,
+                                  )),
                     const SizedBox(
                       width: 20,
                     ),

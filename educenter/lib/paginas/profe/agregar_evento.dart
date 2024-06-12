@@ -111,6 +111,7 @@ class _AgregarEventoState extends State<AgregarEvento> {
                         onChanged: (value) {
                           setState(() {
                             tipoEventoSeleccionadaDyn = value;
+                            tipoEventoSeleccionada = value;
                           });
                         },
                       ),

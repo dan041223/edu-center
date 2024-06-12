@@ -156,7 +156,7 @@ class _EditarClaseState extends State<EditarClase> {
   }
 
   void comprobarCampos(String nombre, Usuario? tutorSeleccionado) async {
-    if (nombre.isEmpty || tutorSeleccionado == null) {
+    if (nombre.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text("No están rellenos todos los campos"),

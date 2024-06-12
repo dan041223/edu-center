@@ -189,7 +189,7 @@ class _asignatura_hijoState extends State<asignatura_hijo> {
                                             listaExamenesProximos[index]
                                                 .fecha_examen
                                                 .toString(),
-                                            Colors.black12)
+                                            Colors.white)
                                       ],
                                     ),
                                   ),

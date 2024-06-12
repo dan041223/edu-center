@@ -38,98 +38,125 @@ class _ClasesPanelState extends State<ClasesPanel> {
     var brillo = Theme.of(context).brightness;
     bool esOscuro = brillo == Brightness.dark;
     return Scaffold(
-      appBar: AppBar(),
+      appBar: AppBar(
+        title: Text('Panel de Clases'),
+        backgroundColor: Colors.blue,
+      ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           Navigator.of(context).push(MaterialPageRoute(
-            builder: (context) => CrearClase(
-              centro: widget.centro,
-            ),
+            builder: (context) => CrearClase(centro: widget.centro),
           ));
         },
         child: Icon(Icons.add),
+        backgroundColor: Colors.blue,
       ),
       body: SingleChildScrollView(
-          child: Column(
-        children: [
-          Container(
-            width: double.infinity,
-            decoration: BoxDecoration(
+        child: Column(
+          children: [
+            Container(
+              width: double.infinity,
+              decoration: BoxDecoration(
                 shape: BoxShape.rectangle,
-                color: esOscuro ? Colors.white : Colors.black12,
-                borderRadius: const BorderRadius.all(Radius.circular(20))),
-            margin: const EdgeInsets.all(10),
-            padding: const EdgeInsets.all(25),
-            child: Text(
-              "Clases del centro",
-              style: TextStyle(
-                color: esOscuro ? Colors.black : Colors.white,
-                fontSize: 25,
-                fontWeight: FontWeight.bold,
+                color: esOscuro ? Colors.white : Colors.blue.shade50,
+                borderRadius: BorderRadius.all(Radius.circular(20)),
+              ),
+              margin: EdgeInsets.all(10),
+              padding: EdgeInsets.all(25),
+              child: Text(
+                "Clases del centro",
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  color: esOscuro ? Colors.black : Colors.blue,
+                  fontSize: 25,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
             ),
-          ),
-          loading
-              ? const Center(
-                  child: CircularProgressIndicator(),
-                )
-              : ListView.builder(
-                  shrinkWrap: true,
-                  physics: NeverScrollableScrollPhysics(),
-                  itemCount: clasesCentro.length,
-                  itemBuilder: (context, index) {
-                    return Card(
-                      child: Padding(
-                        padding: EdgeInsets.all(20),
-                        child: InkWell(
-                          onTap: () {
-                            Navigator.of(context).push(MaterialPageRoute(
-                              builder: (context) => ClasePanel(
+            loading
+                ? Center(
+                    child: CircularProgressIndicator(),
+                  )
+                : ListView.builder(
+                    shrinkWrap: true,
+                    physics: NeverScrollableScrollPhysics(),
+                    itemCount: clasesCentro.length,
+                    itemBuilder: (context, index) {
+                      return Card(
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(15.0),
+                        ),
+                        margin: EdgeInsets.symmetric(
+                            vertical: 8.0, horizontal: 16.0),
+                        child: Padding(
+                          padding: EdgeInsets.all(20),
+                          child: InkWell(
+                            onTap: () {
+                              Navigator.of(context).push(MaterialPageRoute(
+                                builder: (context) => ClasePanel(
                                   clase: clasesCentro[index],
-                                  centro: widget.centro),
-                            ));
-                          },
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text(clasesCentro[index].nombre_clase),
-                              IconButton(
+                                  centro: widget.centro,
+                                ),
+                              ));
+                            },
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                  clasesCentro[index].nombre_clase,
+                                  style: TextStyle(
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.w500),
+                                ),
+                                IconButton(
                                   onPressed: () async {
-                                    if (await confirm(context,
-                                        title: const Text(
-                                            "¿Estas seguro de querer borrar esta clase?"),
-                                        textCancel: const Text("Mantener"),
-                                        textOK: const Text("Eliminar"),
-                                        content: Container())) {
+                                    if (await confirm(
+                                      context,
+                                      title: const Text(
+                                          "¿Estas seguro de querer borrar esta clase?"),
+                                      textCancel: const Text("Mantener"),
+                                      textOK: const Text("Eliminar"),
+                                      content: Container(),
+                                    )) {
                                       try {
                                         await ClasesBBDD()
                                             .deleteClase(clasesCentro[index]);
                                         ScaffoldMessenger.of(context)
-                                            .showSnackBar(const SnackBar(
-                                                content: Text(
-                                                    "Clase eliminada correctamente")));
+                                            .showSnackBar(
+                                          const SnackBar(
+                                            content: Text(
+                                                "Clase eliminada correctamente"),
+                                          ),
+                                        );
+                                        setState(() {
+                                          clasesCentro.removeAt(index);
+                                        });
                                       } catch (e) {
-                                        // ignore: use_build_context_synchronously
                                         ScaffoldMessenger.of(context)
-                                            .showSnackBar(const SnackBar(
-                                                content: Text(
-                                                    "No se ha podido eliminar ya que posee datos asociados")));
+                                            .showSnackBar(
+                                          const SnackBar(
+                                            content: Text(
+                                                "No se ha podido eliminar ya que posee datos asociados"),
+                                          ),
+                                        );
                                       }
-                                    } else {}
+                                    }
                                   },
                                   icon: Icon(
                                     Icons.delete,
                                     color: Colors.red,
-                                  ))
-                            ],
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
                         ),
-                      ),
-                    );
-                  },
-                ),
-        ],
-      )),
+                      );
+                    },
+                  ),
+          ],
+        ),
+      ),
     );
   }
 }

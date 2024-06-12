@@ -147,13 +147,15 @@ class _ProfesorPanelState extends State<ProfesorPanel> {
                           shape: BoxShape.circle,
                         ),
                         child: widget.profesor.url_foto_perfil != null &&
-                                widget.profesor.url_foto_perfil != ""
+                                widget.profesor.url_foto_perfil!.isNotEmpty
                             ? Image.network(
                                 widget.profesor.url_foto_perfil!,
                                 fit: BoxFit.cover,
                               )
                             : const Icon(
                                 Icons.person,
+                                color: Colors.black,
+                                size: 80,
                               )),
                     const SizedBox(
                       width: 20,

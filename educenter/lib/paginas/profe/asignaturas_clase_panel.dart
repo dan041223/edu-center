@@ -50,7 +50,7 @@ class AasignaturasClaseState extends State<AsignaturasClase> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Title"),
+        title: const Text("Asignaturas"),
       ),
       floatingActionButton: loading
           ? Container()
@@ -98,59 +98,64 @@ class AasignaturasClaseState extends State<AsignaturasClase> {
                         borderRadius: BorderRadius.circular(20.0),
                       ),
                       child: InkWell(
-                        onTap: () {
-                          Navigator.of(context).push(MaterialPageRoute(
-                              builder: (context) => ClaseAsignatura(
-                                    centro: widget.centro,
-                                    usuario: widget.user,
-                                    asignatura: widget.asignaturas[index],
-                                    clase: widget.clase,
-                                  )));
-                        },
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Padding(
-                              padding: const EdgeInsets.all(20.0),
-                              child: Text(
-                                widget.asignaturas[index].nombre_asignatura,
-                                style: const TextStyle(
-                                    fontSize: 21,
-                                    color: Colors.black,
-                                    fontWeight: FontWeight.bold),
-                              ),
-                            ),
-                            IconButton(
-                                onPressed: () async {
-                                  if (await confirm(context,
-                                      title: const Text(
-                                          "¿Estas seguro de querer borrar esta asignatura?"),
-                                      textCancel: const Text("Mantener"),
-                                      textOK: const Text("Eliminar"),
-                                      content: Container())) {
-                                    try {
-                                      await ClasesBBDD().deleteAsignatura(
-                                          widget.asignaturas[index]);
-                                      ScaffoldMessenger.of(context)
-                                          .showSnackBar(const SnackBar(
-                                              content: Text(
-                                                  "Asignatura eliminada correctamente")));
-                                    } catch (e) {
-                                      // ignore: use_build_context_synchronously
-                                      ScaffoldMessenger.of(context)
-                                          .showSnackBar(const SnackBar(
-                                              content: Text(
-                                                  "No se ha podido eliminar ya que posee datos asociados")));
-                                    }
-                                  } else {}
-                                },
-                                icon: Icon(
-                                  Icons.delete,
-                                  color: Colors.red,
-                                ))
-                          ],
-                        ),
-                      ),
+                          onTap: () {
+                            Navigator.of(context).push(MaterialPageRoute(
+                                builder: (context) => ClaseAsignatura(
+                                      centro: widget.centro,
+                                      usuario: widget.user,
+                                      asignatura: widget.asignaturas[index],
+                                      clase: widget.clase,
+                                    )));
+                          },
+                          child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Padding(
+                                  padding: const EdgeInsets.all(20.0),
+                                  child: Text(
+                                    widget.asignaturas[index].nombre_asignatura,
+                                    style: const TextStyle(
+                                        fontSize: 21,
+                                        color: Colors.black,
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                ),
+                                user != null
+                                    ? user!.tipo_usuario == "administrador"
+                                        ? IconButton(
+                                            onPressed: () async {
+                                              if (await confirm(context,
+                                                  title: const Text(
+                                                      "¿Estas seguro de querer borrar esta asignatura?"),
+                                                  textCancel:
+                                                      const Text("Mantener"),
+                                                  textOK:
+                                                      const Text("Eliminar"),
+                                                  content: Container())) {
+                                                try {
+                                                  await ClasesBBDD()
+                                                      .deleteAsignatura(widget
+                                                          .asignaturas[index]);
+                                                  ScaffoldMessenger.of(context)
+                                                      .showSnackBar(const SnackBar(
+                                                          content: Text(
+                                                              "Asignatura eliminada correctamente")));
+                                                } catch (e) {
+                                                  // ignore: use_build_context_synchronously
+                                                  ScaffoldMessenger.of(context)
+                                                      .showSnackBar(const SnackBar(
+                                                          content: Text(
+                                                              "No se ha podido eliminar ya que posee datos asociados")));
+                                                }
+                                              } else {}
+                                            },
+                                            icon: Icon(
+                                              Icons.delete,
+                                              color: Colors.red,
+                                            ))
+                                        : Container()
+                                    : Container()
+                              ])),
                     );
                   },
                 ),

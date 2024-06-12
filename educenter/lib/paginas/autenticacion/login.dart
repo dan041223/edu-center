@@ -71,6 +71,19 @@ class _LoginState extends State<Login> {
                             prefixIcon: Icon(Icons.lock),
                           ),
                         ),
+                        const SizedBox(height: 10),
+                        Align(
+                          alignment: Alignment.centerRight,
+                          child: TextButton(
+                            onPressed: () {
+                              // Aquí iría la lógica para recuperar la contraseña
+                            },
+                            child: const Text(
+                              "¿Olvidaste la contraseña?",
+                              style: TextStyle(color: Colors.blue),
+                            ),
+                          ),
+                        ),
                         const SizedBox(height: 20),
                         loading
                             ? const CircularProgressIndicator()
@@ -136,6 +149,9 @@ class _LoginState extends State<Login> {
                                     loading = false;
                                   })
                                 });
+                        setState(() {
+                          loading = false;
+                        });
                       },
                       child: const Text("Padre"),
                       style: ElevatedButton.styleFrom(
@@ -164,6 +180,9 @@ class _LoginState extends State<Login> {
                                     loading = false;
                                   })
                                 });
+                        setState(() {
+                          loading = false;
+                        });
                       },
                       child: const Text("Profesor"),
                       style: ElevatedButton.styleFrom(
@@ -192,6 +211,9 @@ class _LoginState extends State<Login> {
                                     loading = false;
                                   })
                                 });
+                        setState(() {
+                          loading = false;
+                        });
                       },
                       child: const Text("Admin"),
                       style: ElevatedButton.styleFrom(
