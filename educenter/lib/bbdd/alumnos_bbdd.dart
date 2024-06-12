@@ -1,6 +1,5 @@
 import 'package:educenter/bbdd/eventos_bbdd.dart';
 import 'package:educenter/bbdd/examenes_bbdd.dart';
-import 'package:educenter/bbdd/padres_bbdd.dart';
 import 'package:educenter/bbdd/profesores_bbdd.dart';
 import 'package:educenter/bbdd/users_bbdd.dart';
 import 'package:educenter/models/alumno.dart';

@@ -1,5 +1,4 @@
 import 'package:educenter/bbdd/padres_bbdd.dart';
-import 'package:educenter/bbdd/users_bbdd.dart';
 import 'package:educenter/models/centro.dart';
 import 'package:flutter/material.dart';
 
@@ -115,7 +114,6 @@ class _AgregarPadreState extends State<AgregarPadre> {
                               context,
                             );
                           },
-                          child: const Text("Crear padre/madre"),
                           style: ElevatedButton.styleFrom(
                             backgroundColor: Colors.blue,
                             padding: const EdgeInsets.symmetric(
@@ -124,6 +122,7 @@ class _AgregarPadreState extends State<AgregarPadre> {
                               borderRadius: BorderRadius.circular(20.0),
                             ),
                           ),
+                          child: const Text("Crear padre/madre"),
                         ),
                       ],
                     ),

@@ -1,11 +1,9 @@
 import 'package:educenter/bbdd/alumnos_bbdd.dart';
-import 'package:educenter/bbdd/examenes_alumno_bbdd.dart';
 import 'package:educenter/bbdd/incidencia_bbdd.dart';
 import 'package:educenter/bbdd/users_bbdd.dart';
 import 'package:educenter/incidencia_hijo.dart';
 import 'package:educenter/models/alumno.dart';
 import 'package:educenter/models/asignatura.dart';
-import 'package:educenter/models/clase.dart';
 import 'package:educenter/models/incidencia.dart';
 import 'package:educenter/models/usuario.dart';
 import 'package:educenter/paginas/profe/agregar_incidencia.dart';
@@ -13,6 +11,7 @@ import 'package:educenter/paginas/profe/examenes_alumno.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+// ignore: must_be_immutable
 class AlumnoPerfil extends StatefulWidget {
   Usuario profesor;
   Asignatura asignatura;
@@ -86,7 +85,7 @@ class _AlumnoPerfilState extends State<AlumnoPerfil> {
                                   widget.alumno.url_foto_perfil!.toString(),
                                   fit: BoxFit.cover,
                                 )
-                              : Icon(Icons.person,
+                              : const Icon(Icons.person,
                                   color: Colors.black, size: 80)),
                       const SizedBox(
                         width: 20,
@@ -119,8 +118,8 @@ class _AlumnoPerfilState extends State<AlumnoPerfil> {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Icon(Icons.format_list_numbered_sharp),
-                          SizedBox(
+                          const Icon(Icons.format_list_numbered_sharp),
+                          const SizedBox(
                             width: 10,
                           ),
                           Text(
@@ -204,7 +203,7 @@ class _AlumnoPerfilState extends State<AlumnoPerfil> {
                                       Text(
                                         incidenciasAlumno[index]
                                             .titulo_incidencia,
-                                        style: TextStyle(
+                                        style: const TextStyle(
                                             fontWeight: FontWeight.bold),
                                       ),
                                     ],
@@ -219,7 +218,7 @@ class _AlumnoPerfilState extends State<AlumnoPerfil> {
                           child: Text(
                               "${widget.alumno.nombre} no tiene incidencias..."),
                         ),
-              SizedBox(
+              const SizedBox(
                 height: 10,
               ),
               const Text(
@@ -265,7 +264,7 @@ class _AlumnoPerfilState extends State<AlumnoPerfil> {
                   : padresAlumno.isNotEmpty
                       ? GridView.builder(
                           shrinkWrap: true,
-                          physics: NeverScrollableScrollPhysics(),
+                          physics: const NeverScrollableScrollPhysics(),
                           gridDelegate:
                               const SliverGridDelegateWithFixedCrossAxisCount(
                             childAspectRatio: 1,
@@ -317,7 +316,7 @@ class _AlumnoPerfilState extends State<AlumnoPerfil> {
                           child: Text(
                               "${widget.alumno.nombre} no tiene padres registrados."),
                         ),
-              SizedBox(
+              const SizedBox(
                 height: 20,
               ),
               padresAlumno.any((element) => element.email_contacto != null)

@@ -1,5 +1,3 @@
-import 'dart:ui';
-
 import 'package:educenter/bbdd/centro_bbdd.dart';
 import 'package:educenter/bbdd/profesores_bbdd.dart';
 import 'package:educenter/bbdd/users_bbdd.dart';
@@ -10,11 +8,11 @@ import 'package:educenter/models/horario_clase.dart';
 import 'package:educenter/models/usuario.dart';
 
 class ClasesBBDD {
-  Future<List<HorarioClase>> getHorarioClase(int id_clase) async {
+  Future<List<HorarioClase>> getHorarioClase(int idClase) async {
     var data = await usersBBDD.supabase
         .from("horario_clase")
         .select("*")
-        .eq("id_clase", id_clase)
+        .eq("id_clase", idClase)
         .order("hora_inicial", ascending: true);
 
     List<int> idAsignaturasUnicas = List.empty(growable: true);
@@ -27,7 +25,7 @@ class ClasesBBDD {
     var claseBD = await usersBBDD.supabase
         .from("clases")
         .select("*")
-        .eq("id_clase", id_clase)
+        .eq("id_clase", idClase)
         .single();
     Clase clase = Clase(
         claseBD["id_clase"], claseBD["nombre_clase"], claseBD["id_centro"]);

@@ -9,6 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_datetime_picker_plus/flutter_datetime_picker_plus.dart';
 
+// ignore: must_be_immutable
 class CitaPanel extends StatefulWidget {
   Cita citaSeleccionada;
   CitaPanel({super.key, required this.citaSeleccionada});
@@ -17,17 +18,17 @@ class CitaPanel extends StatefulWidget {
   State<CitaPanel> createState() => _CitaPanelState();
 }
 
-bool fechasSonIguales(DateTime? fecha_padre, DateTime? fecha_tutor) {
-  if (fecha_padre == null || fecha_tutor == null) {
+bool fechasSonIguales(DateTime? fechaPadre, DateTime? fechaTutor) {
+  if (fechaPadre == null || fechaTutor == null) {
     return false;
   }
-  return fecha_padre.isAtSameMomentAs(fecha_tutor);
+  return fechaPadre.isAtSameMomentAs(fechaTutor);
 }
 
 class _CitaPanelState extends State<CitaPanel> {
   @override
   Widget build(BuildContext context) {
-    bool acordado = fechasSonIguales(widget.citaSeleccionada?.fecha_padre,
+    bool acordado = fechasSonIguales(widget.citaSeleccionada.fecha_padre,
         widget.citaSeleccionada.fecha_tutor);
     setState(() {});
     var brillo = Theme.of(context).brightness;
@@ -57,7 +58,7 @@ class _CitaPanelState extends State<CitaPanel> {
                         color: esOscuro ? Colors.black : Colors.white,
                       ),
                     ),
-                    SizedBox(
+                    const SizedBox(
                       height: 15,
                     ),
                     Text(
@@ -138,10 +139,10 @@ class _CitaPanelState extends State<CitaPanel> {
                                                 left: 12.0),
                                             child: Row(
                                               children: [
-                                                Icon(
+                                                const Icon(
                                                   Icons.calendar_month_outlined,
                                                 ),
-                                                SizedBox(
+                                                const SizedBox(
                                                   width: 20,
                                                 ),
                                                 Flexible(
@@ -156,7 +157,7 @@ class _CitaPanelState extends State<CitaPanel> {
                                                             .split(" ")
                                                             .first
                                                         : "Fecha no especificada",
-                                                    style: TextStyle(
+                                                    style: const TextStyle(
                                                         fontWeight:
                                                             FontWeight.bold),
                                                   ),
@@ -169,10 +170,10 @@ class _CitaPanelState extends State<CitaPanel> {
                                                 left: 12.0),
                                             child: Row(
                                               children: [
-                                                Icon(
+                                                const Icon(
                                                   Icons.watch_later_outlined,
                                                 ),
-                                                SizedBox(
+                                                const SizedBox(
                                                   width: 20,
                                                 ),
                                                 Flexible(
@@ -188,7 +189,7 @@ class _CitaPanelState extends State<CitaPanel> {
                                                                 .split(" ")
                                                                 .last)
                                                         : "Hora no especificada",
-                                                    style: TextStyle(
+                                                    style: const TextStyle(
                                                         fontWeight:
                                                             FontWeight.bold),
                                                   ),
@@ -205,7 +206,7 @@ class _CitaPanelState extends State<CitaPanel> {
                             ),
                             Column(
                               children: [
-                                Text(
+                                const Text(
                                   "Tutor",
                                   style: TextStyle(fontWeight: FontWeight.bold),
                                 ),
@@ -220,6 +221,7 @@ class _CitaPanelState extends State<CitaPanel> {
                                           return;
                                         }
                                         DatePicker.showDateTimePicker(
+                                          // ignore: use_build_context_synchronously
                                           context,
                                           showTitleActions: true,
                                           minTime: DateTime.now(),
@@ -248,10 +250,10 @@ class _CitaPanelState extends State<CitaPanel> {
                                                 left: 12.0),
                                             child: Row(
                                               children: [
-                                                Icon(
+                                                const Icon(
                                                   Icons.calendar_month_outlined,
                                                 ),
-                                                SizedBox(
+                                                const SizedBox(
                                                   width: 20,
                                                 ),
                                                 Flexible(
@@ -266,7 +268,7 @@ class _CitaPanelState extends State<CitaPanel> {
                                                             .split(" ")
                                                             .first
                                                         : "Fecha no especificada",
-                                                    style: TextStyle(
+                                                    style: const TextStyle(
                                                         fontWeight:
                                                             FontWeight.bold),
                                                   ),
@@ -279,10 +281,10 @@ class _CitaPanelState extends State<CitaPanel> {
                                                 left: 12.0),
                                             child: Row(
                                               children: [
-                                                Icon(
+                                                const Icon(
                                                   Icons.watch_later_outlined,
                                                 ),
-                                                SizedBox(
+                                                const SizedBox(
                                                   width: 20,
                                                 ),
                                                 Flexible(
@@ -298,7 +300,7 @@ class _CitaPanelState extends State<CitaPanel> {
                                                                 .split(" ")
                                                                 .last)
                                                         : "Fecha aun no especificada",
-                                                    style: TextStyle(
+                                                    style: const TextStyle(
                                                         fontWeight:
                                                             FontWeight.bold),
                                                   ),
@@ -325,7 +327,7 @@ class _CitaPanelState extends State<CitaPanel> {
                                     mainAxisAlignment:
                                         MainAxisAlignment.spaceEvenly,
                                     children: [
-                                      Text(
+                                      const Text(
                                         "Fecha y hora acordadas:",
                                         style: TextStyle(
                                             fontWeight: FontWeight.bold),
@@ -333,16 +335,7 @@ class _CitaPanelState extends State<CitaPanel> {
                                       Text(widget.citaSeleccionada
                                                   .fecha_tutor !=
                                               null
-                                          ? widget.citaSeleccionada.fecha_tutor
-                                                  .toString()
-                                                  .split(" ")
-                                                  .first +
-                                              " - " +
-                                              Utils.formatTimeString(widget
-                                                  .citaSeleccionada.fecha_tutor
-                                                  .toString()
-                                                  .split(" ")
-                                                  .last)
+                                          ? "${widget.citaSeleccionada.fecha_tutor.toString().split(" ").first} - ${Utils.formatTimeString(widget.citaSeleccionada.fecha_tutor.toString().split(" ").last)}"
                                           : "Fecha aún no especificada")
                                     ],
                                   ),
@@ -355,15 +348,15 @@ class _CitaPanelState extends State<CitaPanel> {
               ),
             ),
             Padding(
-              padding: EdgeInsets.all(12.0),
+              padding: const EdgeInsets.all(12.0),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
+                  const Text(
                     "Alumno y tutor:",
                     style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                   ),
-                  Divider(
+                  const Divider(
                     height: 20,
                   ),
                   GridView(
@@ -378,7 +371,7 @@ class _CitaPanelState extends State<CitaPanel> {
                     children: [
                       Column(
                         children: [
-                          Text(
+                          const Text(
                             "Alumno",
                             style: TextStyle(fontWeight: FontWeight.bold),
                           ),
@@ -417,7 +410,7 @@ class _CitaPanelState extends State<CitaPanel> {
                                     Flexible(
                                       child: Text(
                                         "${widget.citaSeleccionada.alumno.nombre} ${widget.citaSeleccionada.alumno.apellido}",
-                                        style: TextStyle(
+                                        style: const TextStyle(
                                           fontWeight: FontWeight.bold,
                                         ),
                                       ),
@@ -431,7 +424,7 @@ class _CitaPanelState extends State<CitaPanel> {
                       ),
                       Column(
                         children: [
-                          Text(
+                          const Text(
                             "Tutor",
                             style: TextStyle(fontWeight: FontWeight.bold),
                           ),
@@ -469,7 +462,7 @@ class _CitaPanelState extends State<CitaPanel> {
                                       Flexible(
                                         child: Text(
                                           "${widget.citaSeleccionada.tutor.nombre} ${widget.citaSeleccionada.tutor.apellido}",
-                                          style: TextStyle(
+                                          style: const TextStyle(
                                             fontWeight: FontWeight.bold,
                                           ),
                                         ),

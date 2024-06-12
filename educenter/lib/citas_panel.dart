@@ -7,6 +7,7 @@ import 'package:educenter/models/cita.dart';
 import 'package:educenter/models/usuario.dart';
 import 'package:flutter/material.dart';
 
+// ignore: must_be_immutable
 class CitasPanel extends StatefulWidget {
   Alumno? alumno;
   Usuario? tutor;
@@ -114,7 +115,7 @@ class _CitasPanelState extends State<CitasPanel> {
                                     widget.tutor!.url_foto_perfil!.toString(),
                                     fit: BoxFit.cover,
                                   )
-                                : Icon(
+                                : const Icon(
                                     Icons.person,
                                     size: 85,
                                     color: Colors.black,
@@ -126,12 +127,12 @@ class _CitasPanelState extends State<CitasPanel> {
                                             .toString(),
                                         fit: BoxFit.cover,
                                       )
-                                    : Icon(
+                                    : const Icon(
                                         Icons.person,
                                         size: 85,
                                         color: Colors.black,
                                       )
-                                : Icon(
+                                : const Icon(
                                     Icons.person,
                                     size: 85,
                                     color: Colors.black,
@@ -214,7 +215,7 @@ class _CitasPanelState extends State<CitasPanel> {
                                       ? "${widget.tutor!.nombre} no tiene citas por confirmar."
                                       : "",
                             ),
-                  SizedBox(
+                  const SizedBox(
                     height: 20,
                   ),
                   const Text(
@@ -224,11 +225,11 @@ class _CitasPanelState extends State<CitasPanel> {
                   const Divider(
                     height: 20,
                   ),
-                  SizedBox(
+                  const SizedBox(
                     height: 10,
                   ),
                   loading
-                      ? Center(child: CircularProgressIndicator())
+                      ? const Center(child: CircularProgressIndicator())
                       : citasProximas.isNotEmpty
                           ? ListView.builder(
                               physics: const NeverScrollableScrollPhysics(),
@@ -248,8 +249,8 @@ class _CitasPanelState extends State<CitasPanel> {
                                       padding: const EdgeInsets.all(15.0),
                                       child: Row(
                                         children: [
-                                          Icon(Icons.timelapse_outlined),
-                                          SizedBox(
+                                          const Icon(Icons.timelapse_outlined),
+                                          const SizedBox(
                                             width: 20,
                                           ),
                                           Text(citasProximas[index].titulo),
@@ -267,7 +268,7 @@ class _CitasPanelState extends State<CitasPanel> {
                                       ? "${widget.tutor!.nombre} no tiene citas próximas."
                                       : "",
                             ),
-                  SizedBox(
+                  const SizedBox(
                     height: 20,
                   ),
                   const Text(
@@ -278,7 +279,7 @@ class _CitasPanelState extends State<CitasPanel> {
                     height: 20,
                   ),
                   loading
-                      ? Center(child: CircularProgressIndicator())
+                      ? const Center(child: CircularProgressIndicator())
                       : citasPasadas.isNotEmpty
                           ? ListView.builder(
                               physics: const NeverScrollableScrollPhysics(),
@@ -298,8 +299,9 @@ class _CitasPanelState extends State<CitasPanel> {
                                       padding: const EdgeInsets.all(15.0),
                                       child: Row(
                                         children: [
-                                          Icon(Icons.history_toggle_off_sharp),
-                                          SizedBox(
+                                          const Icon(
+                                              Icons.history_toggle_off_sharp),
+                                          const SizedBox(
                                             width: 20,
                                           ),
                                           Text(citasPasadas[index].titulo),
@@ -324,7 +326,7 @@ class _CitasPanelState extends State<CitasPanel> {
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        child: Icon(Icons.add),
+        child: const Icon(Icons.add),
         onPressed: () {
           Navigator.of(context).push(MaterialPageRoute(
               builder: (context) => CrearCita(

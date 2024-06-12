@@ -1,4 +1,3 @@
-import 'package:educenter/bbdd/clases_bbdd.dart';
 import 'package:educenter/bbdd/profesores_bbdd.dart';
 import 'package:educenter/models/centro.dart';
 import 'package:educenter/models/clase.dart';
@@ -127,7 +126,6 @@ class _EditarProfesorState extends State<EditarProfesor> {
                               context,
                             );
                           },
-                          child: const Text("Modificar"),
                           style: ElevatedButton.styleFrom(
                             backgroundColor: Colors.blue,
                             padding: const EdgeInsets.symmetric(
@@ -136,6 +134,7 @@ class _EditarProfesorState extends State<EditarProfesor> {
                               borderRadius: BorderRadius.circular(20.0),
                             ),
                           ),
+                          child: const Text("Modificar"),
                         ),
                       ],
                     ),
@@ -159,7 +158,9 @@ class _EditarProfesorState extends State<EditarProfesor> {
     } else {
       await ProfesoresBBDD()
           .modificarProfesor(nombre, apellido, dni, email, widget.profesor);
+      // ignore: use_build_context_synchronously
       Navigator.pop(context);
+      // ignore: use_build_context_synchronously
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text("Profesor modificado")),
       );

@@ -1,14 +1,12 @@
 import 'package:educenter/bbdd/alumnos_bbdd.dart';
 import 'package:educenter/models/clase.dart';
-import 'package:educenter/utils.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_datetime_picker_plus/flutter_datetime_picker_plus.dart';
 
 class CrearAlumno extends StatefulWidget {
   final Clase clase;
 
-  const CrearAlumno({Key? key, required this.clase}) : super(key: key);
+  const CrearAlumno({super.key, required this.clase});
 
   @override
   State<CrearAlumno> createState() => _CrearAlumnoState();
@@ -78,9 +76,9 @@ class _CrearAlumnoState extends State<CrearAlumno> {
                         ),
                       ),
                       const SizedBox(height: 20),
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: const Text(
+                      const Padding(
+                        padding: EdgeInsets.all(8.0),
+                        child: Text(
                           "Fecha de nacimiento",
                           style: TextStyle(
                             fontSize: 20,
@@ -111,8 +109,8 @@ class _CrearAlumnoState extends State<CrearAlumno> {
                             padding: const EdgeInsets.all(12.0),
                             child: Row(
                               children: [
-                                Icon(Icons.calendar_today),
-                                SizedBox(width: 20),
+                                const Icon(Icons.calendar_today),
+                                const SizedBox(width: 20),
                                 Flexible(
                                   child: Text(
                                     // ignore: unnecessary_null_comparison
@@ -122,8 +120,8 @@ class _CrearAlumnoState extends State<CrearAlumno> {
                                             .split(" ")
                                             .first
                                         : "No se ha seleccionado una fecha*",
-                                    style:
-                                        TextStyle(fontWeight: FontWeight.bold),
+                                    style: const TextStyle(
+                                        fontWeight: FontWeight.bold),
                                   ),
                                 ),
                               ],
@@ -144,7 +142,6 @@ class _CrearAlumnoState extends State<CrearAlumno> {
                                   widget.clase,
                                   context);
                             },
-                            child: const Text("Crear alumno"),
                             style: ElevatedButton.styleFrom(
                               backgroundColor: Colors.blue,
                               padding: const EdgeInsets.symmetric(
@@ -155,6 +152,7 @@ class _CrearAlumnoState extends State<CrearAlumno> {
                                 borderRadius: BorderRadius.circular(20.0),
                               ),
                             ),
+                            child: const Text("Crear alumno"),
                           ),
                         ],
                       ),
@@ -179,7 +177,9 @@ class _CrearAlumnoState extends State<CrearAlumno> {
       );
     } else {
       await AlumnosBBDD().crearAlumno(nombre, apellido, fechaNacimiento, clase);
+      // ignore: use_build_context_synchronously
       Navigator.pop(context);
+      // ignore: use_build_context_synchronously
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text("Alumno creado")),
       );

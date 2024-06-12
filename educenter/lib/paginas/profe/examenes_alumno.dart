@@ -1,13 +1,11 @@
 import 'package:educenter/bbdd/examenes_alumno_bbdd.dart';
-import 'package:educenter/components/fecha_xs.dart';
 import 'package:educenter/examen_panel.dart';
 import 'package:educenter/models/alumno.dart';
 import 'package:educenter/models/asignatura.dart';
-import 'package:educenter/models/clase.dart';
 import 'package:educenter/models/examen.dart';
-import 'package:educenter/models/usuario.dart';
 import 'package:flutter/material.dart';
 
+// ignore: must_be_immutable
 class ExamenesAlumno extends StatefulWidget {
   Alumno alumno;
   Asignatura asignatura;
@@ -86,7 +84,7 @@ class _ExamenesAlumnoState extends State<ExamenesAlumno> {
                                   widget.alumno.url_foto_perfil!.toString(),
                                   fit: BoxFit.cover,
                                 )
-                              : Icon(Icons.person,
+                              : const Icon(Icons.person,
                                   color: Colors.black, size: 80),
                         ),
                         Flexible(
@@ -102,7 +100,7 @@ class _ExamenesAlumnoState extends State<ExamenesAlumno> {
                     ),
                   ],
                 )),
-            SizedBox(
+            const SizedBox(
               height: 20,
             ),
             const Text(
@@ -113,7 +111,7 @@ class _ExamenesAlumnoState extends State<ExamenesAlumno> {
               height: 20,
             ),
             loading
-                ? Center(
+                ? const Center(
                     child: CircularProgressIndicator(),
                   )
                 : examenesAlumnoAsignaturaProximos.isEmpty
@@ -148,8 +146,8 @@ class _ExamenesAlumnoState extends State<ExamenesAlumno> {
                                 padding: const EdgeInsets.all(15.0),
                                 child: Row(
                                   children: [
-                                    Icon(Icons.timelapse_outlined),
-                                    SizedBox(
+                                    const Icon(Icons.timelapse_outlined),
+                                    const SizedBox(
                                       width: 20,
                                     ),
                                     Text(
@@ -161,7 +159,7 @@ class _ExamenesAlumnoState extends State<ExamenesAlumno> {
                           );
                         },
                       ),
-            SizedBox(
+            const SizedBox(
               height: 20,
             ),
             const Text(
@@ -172,7 +170,7 @@ class _ExamenesAlumnoState extends State<ExamenesAlumno> {
               height: 20,
             ),
             loading
-                ? Center(
+                ? const Center(
                     child: CircularProgressIndicator(),
                   )
                 : examenesAlumnoAsignaturaPasados.isEmpty
@@ -206,8 +204,8 @@ class _ExamenesAlumnoState extends State<ExamenesAlumno> {
                                 padding: const EdgeInsets.all(15.0),
                                 child: Row(
                                   children: [
-                                    Icon(Icons.history_toggle_off_sharp),
-                                    SizedBox(
+                                    const Icon(Icons.history_toggle_off_sharp),
+                                    const SizedBox(
                                       width: 20,
                                     ),
                                     Text(

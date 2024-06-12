@@ -10,6 +10,7 @@ import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:flutter_datetime_picker_plus/flutter_datetime_picker_plus.dart';
 import 'package:multi_dropdown/multiselect_dropdown.dart';
 
+// ignore: must_be_immutable
 class AgregarEvento extends StatefulWidget {
   Usuario profesor;
   AgregarEvento({super.key, required this.profesor});
@@ -37,7 +38,7 @@ class _AgregarEventoState extends State<AgregarEvento> {
   @override
   void initState() {
     Future.delayed(
-      Duration(milliseconds: 1),
+      const Duration(milliseconds: 1),
       () async {
         List<Clase> listaClases =
             await ProfesoresBBDD().getClasesProfesor(widget.profesor);
@@ -117,7 +118,7 @@ class _AgregarEventoState extends State<AgregarEvento> {
                       ),
                       const SizedBox(height: 20),
                       loading
-                          ? CircularProgressIndicator()
+                          ? const CircularProgressIndicator()
                           : MultiSelectDropDown(
                               hint: "Clases a las que impartes...",
                               fieldBackgroundColor: Utils.hexToColor("#1c272b"),
@@ -211,7 +212,7 @@ class _AgregarEventoState extends State<AgregarEvento> {
                                 padding: const EdgeInsets.all(12.0),
                                 child: Row(
                                   children: [
-                                    Icon(
+                                    const Icon(
                                       Icons.calendar_today,
                                       color: Colors.blue,
                                     ),
@@ -227,7 +228,7 @@ class _AgregarEventoState extends State<AgregarEvento> {
                                                 .split(" ")
                                                 .first
                                             : "No se ha seleccionado una fecha*",
-                                        style: TextStyle(
+                                        style: const TextStyle(
                                             fontWeight: FontWeight.bold),
                                       ),
                                     )
@@ -301,7 +302,7 @@ class _AgregarEventoState extends State<AgregarEvento> {
                                 padding: const EdgeInsets.all(12.0),
                                 child: Row(
                                   children: [
-                                    Icon(
+                                    const Icon(
                                       Icons.calendar_today,
                                       color: Colors.blue,
                                     ),
@@ -317,7 +318,7 @@ class _AgregarEventoState extends State<AgregarEvento> {
                                                 .split(" ")
                                                 .first
                                             : "No se ha seleccionado una fecha*",
-                                        style: TextStyle(
+                                        style: const TextStyle(
                                             fontWeight: FontWeight.bold),
                                       ),
                                     )
@@ -375,7 +376,6 @@ class _AgregarEventoState extends State<AgregarEvento> {
                                 context,
                               );
                             },
-                            child: const Text("Crear evento"),
                             style: ElevatedButton.styleFrom(
                               backgroundColor: Colors.blue,
                               padding: const EdgeInsets.symmetric(
@@ -386,6 +386,7 @@ class _AgregarEventoState extends State<AgregarEvento> {
                                 borderRadius: BorderRadius.circular(20.0),
                               ),
                             ),
+                            child: const Text("Crear evento"),
                           ),
                         ],
                       ),

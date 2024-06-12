@@ -1,12 +1,11 @@
-import 'package:educenter/bbdd/alumnos_bbdd.dart';
 import 'package:educenter/bbdd/citas_bbdd.dart';
 import 'package:educenter/bbdd/profesores_bbdd.dart';
 import 'package:educenter/models/alumno.dart';
 import 'package:educenter/models/usuario.dart';
-import 'package:educenter/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_datetime_picker_plus/flutter_datetime_picker_plus.dart';
 
+// ignore: must_be_immutable
 class CrearCita extends StatefulWidget {
   Alumno? alumnoSeleccionado;
   Color colorTitulo = Colors.white;
@@ -32,16 +31,16 @@ class _CrearCitaState extends State<CrearCita> {
   @override
   void initState() {
     Future.delayed(
-      Duration(milliseconds: 1),
+      const Duration(milliseconds: 1),
       () async {
         if (widget.tutor != null) {
           widget.alumnosDeTutor =
               await ProfesoresBBDD().getAlumnosClaseTutor(widget.tutor!);
-          widget.alumnosDeTutor!.forEach((alumno) {
+          for (var alumno in widget.alumnosDeTutor!) {
             dropDownItems.add(DropdownMenuItem(
                 value: alumno,
                 child: Text("${alumno.nombre} ${alumno.apellido}")));
-          });
+          }
           setState(() {
             loading = false;
           });
@@ -153,8 +152,8 @@ class _CrearCitaState extends State<CrearCita> {
                             padding: const EdgeInsets.all(12.0),
                             child: Row(
                               children: [
-                                Icon(Icons.calendar_today),
-                                SizedBox(width: 20),
+                                const Icon(Icons.calendar_today),
+                                const SizedBox(width: 20),
                                 Flexible(
                                   child: Text(
                                     // ignore: unnecessary_null_comparison
@@ -164,8 +163,8 @@ class _CrearCitaState extends State<CrearCita> {
                                             .split(" ")
                                             .first
                                         : "No se ha seleccionado una fecha*",
-                                    style:
-                                        TextStyle(fontWeight: FontWeight.bold),
+                                    style: const TextStyle(
+                                        fontWeight: FontWeight.bold),
                                   ),
                                 ),
                               ],
@@ -186,7 +185,6 @@ class _CrearCitaState extends State<CrearCita> {
                                 context,
                               );
                             },
-                            child: const Text("Crear cita"),
                             style: ElevatedButton.styleFrom(
                               backgroundColor: Colors.blue,
                               padding: const EdgeInsets.symmetric(
@@ -197,6 +195,7 @@ class _CrearCitaState extends State<CrearCita> {
                                 borderRadius: BorderRadius.circular(20.0),
                               ),
                             ),
+                            child: const Text("Crear cita"),
                           ),
                         ],
                       ),
@@ -230,7 +229,9 @@ class _CrearCitaState extends State<CrearCita> {
               fechaPropuesta,
               widget.alumnoSeleccionado!,
               widget.tutor!);
+      // ignore: use_build_context_synchronously
       Navigator.pop(context);
+      // ignore: use_build_context_synchronously
       ScaffoldMessenger.of(context)
           .showSnackBar(const SnackBar(content: Text("Cita creada")));
     }

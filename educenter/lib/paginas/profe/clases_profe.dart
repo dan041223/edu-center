@@ -6,6 +6,7 @@ import 'package:educenter/models/clase.dart';
 import 'package:educenter/models/usuario.dart';
 import 'package:flutter/material.dart';
 
+// ignore: must_be_immutable
 class ClasesProfe extends StatefulWidget {
   Usuario profe;
   ClasesProfe({super.key, required this.profe});

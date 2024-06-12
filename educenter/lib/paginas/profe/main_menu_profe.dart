@@ -5,6 +5,7 @@ import 'package:educenter/calendario.dart';
 import 'package:educenter/paginas/profe/clases_profe.dart';
 import 'package:flutter/material.dart';
 
+// ignore: must_be_immutable
 class MainMenuProfe extends StatefulWidget {
   Usuario profe;
   MainMenuProfe({super.key, required this.profe});

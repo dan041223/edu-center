@@ -8,6 +8,7 @@ import 'package:educenter/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+// ignore: must_be_immutable
 class CentroPanel extends StatefulWidget {
   Usuario? user;
   Alumno? alumno;
@@ -23,9 +24,11 @@ class _CentroPanelState extends State<CentroPanel> {
 
   @override
   void initState() {
+    super.initState();
     Future.delayed(const Duration(milliseconds: 1), () async {
-      if (widget.alumno != null)
+      if (widget.alumno != null) {
         profesor = await AlumnosBBDD().getTutorAlumno(widget.alumno!);
+      }
       setState(() {});
     });
   }
@@ -41,7 +44,7 @@ class _CentroPanelState extends State<CentroPanel> {
                   builder: (context) => EditarCentro(centro: widget.centro),
                 ));
               },
-              child: Icon(Icons.edit),
+              child: const Icon(Icons.edit),
             )
           : Container(),
       body: Padding(
@@ -275,7 +278,7 @@ class _CentroPanelState extends State<CentroPanel> {
                   widget.alumno != null
                       ? Text(
                           "Tutor/a de ${widget.alumno!.nombre}:",
-                          style: TextStyle(
+                          style: const TextStyle(
                               fontSize: 20, fontWeight: FontWeight.bold),
                         )
                       : Container(),

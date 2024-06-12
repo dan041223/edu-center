@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_datetime_picker_plus/flutter_datetime_picker_plus.dart';
 import 'package:numberpicker/numberpicker.dart';
 
+// ignore: must_be_immutable
 class EditarExamenAlumno extends StatefulWidget {
   String? comentarioAlumno;
   double? notaElegida;
@@ -36,7 +37,6 @@ class _EditarExamenAlumnoState extends State<EditarExamenAlumno> {
     Future.delayed(
       const Duration(milliseconds: 1),
       () {
-        print("");
         widget.notaElegida != null
             ? widget.notaElegida = double.parse(widget.notaExamen)
             : widget.notaElegida = 10;
@@ -108,7 +108,7 @@ class _EditarExamenAlumnoState extends State<EditarExamenAlumno> {
                         decoration: InputDecoration(
                           labelText:
                               "Comentario acerca de ${widget.alumno.nombre}*",
-                          border: OutlineInputBorder(),
+                          border: const OutlineInputBorder(),
                         ),
                       ),
                       const SizedBox(height: 20),
@@ -204,7 +204,7 @@ class _EditarExamenAlumnoState extends State<EditarExamenAlumno> {
                                 padding: const EdgeInsets.all(12.0),
                                 child: Row(
                                   children: [
-                                    Icon(
+                                    const Icon(
                                       Icons.calendar_today,
                                       color: Colors.blue,
                                     ),
@@ -220,7 +220,7 @@ class _EditarExamenAlumnoState extends State<EditarExamenAlumno> {
                                                 .split(" ")
                                                 .first
                                             : "No se ha seleccionado una fecha*",
-                                        style: TextStyle(
+                                        style: const TextStyle(
                                             fontWeight: FontWeight.bold),
                                       ),
                                     )
@@ -273,7 +273,6 @@ class _EditarExamenAlumnoState extends State<EditarExamenAlumno> {
                                 context,
                               );
                             },
-                            child: const Text("Editar examen"),
                             style: ElevatedButton.styleFrom(
                               backgroundColor: Colors.blue,
                               padding: const EdgeInsets.symmetric(
@@ -284,6 +283,7 @@ class _EditarExamenAlumnoState extends State<EditarExamenAlumno> {
                                 borderRadius: BorderRadius.circular(20.0),
                               ),
                             ),
+                            child: const Text("Editar examen"),
                           ),
                         ],
                       ),
@@ -316,7 +316,9 @@ class _EditarExamenAlumnoState extends State<EditarExamenAlumno> {
           widget.examen.trimestre,
           widget.notaElegida.toString());
 
+      // ignore: use_build_context_synchronously
       Navigator.pop(context);
+      // ignore: use_build_context_synchronously
       ScaffoldMessenger.of(context)
           .showSnackBar(const SnackBar(content: Text("Examen modificado")));
     }

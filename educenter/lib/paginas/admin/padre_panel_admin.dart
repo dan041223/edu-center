@@ -7,6 +7,7 @@ import 'package:educenter/models/usuario.dart';
 import 'package:educenter/paginas/admin/editar_padre.dart';
 import 'package:flutter/material.dart';
 
+// ignore: must_be_immutable
 class PadrePanelAdmin extends StatefulWidget {
   Centro centro;
   Usuario padre;
@@ -22,7 +23,7 @@ class _PadrePanelAdminState extends State<PadrePanelAdmin> {
   @override
   void initState() {
     Future.delayed(
-      Duration(milliseconds: 1),
+      const Duration(milliseconds: 1),
       () async {
         hijosPadre = await padresBBDD().getHijosDePadre(widget.padre);
         if (!mounted) {
@@ -51,7 +52,7 @@ class _PadrePanelAdminState extends State<PadrePanelAdmin> {
             ),
           ));
         },
-        child: Icon(Icons.edit),
+        child: const Icon(Icons.edit),
       ),
       body: SingleChildScrollView(
         child: Padding(
@@ -105,7 +106,7 @@ class _PadrePanelAdminState extends State<PadrePanelAdmin> {
                   ],
                 ),
               ),
-              SizedBox(
+              const SizedBox(
                 height: 10,
               ),
               const Text(
@@ -116,14 +117,14 @@ class _PadrePanelAdminState extends State<PadrePanelAdmin> {
                 height: 20,
               ),
               loading
-                  ? Center(
+                  ? const Center(
                       child: CircularProgressIndicator(),
                     )
                   : hijosPadre.isEmpty
                       ? Center(
                           child: Text(
                             "${widget.padre.nombre} no tiene hijos registrados",
-                            style: TextStyle(
+                            style: const TextStyle(
                                 fontSize: 20, fontWeight: FontWeight.bold),
                           ),
                         )
@@ -198,6 +199,7 @@ class _PadrePanelAdminState extends State<PadrePanelAdmin> {
                                             try {
                                               await AlumnosBBDD().deleteAlumno(
                                                   hijosPadre[index].id_alumno);
+                                              // ignore: use_build_context_synchronously
                                               ScaffoldMessenger.of(context)
                                                   .showSnackBar(const SnackBar(
                                                       content: Text(
@@ -211,7 +213,7 @@ class _PadrePanelAdminState extends State<PadrePanelAdmin> {
                                             }
                                           } else {}
                                         },
-                                        icon: Icon(
+                                        icon: const Icon(
                                           Icons.delete_rounded,
                                           size: 30,
                                           color: Colors.red,

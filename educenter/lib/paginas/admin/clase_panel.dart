@@ -8,6 +8,7 @@ import 'package:educenter/paginas/admin/editar_clase.dart';
 import 'package:educenter/paginas/profe/asignaturas_clase_panel.dart';
 import 'package:flutter/material.dart';
 
+// ignore: must_be_immutable
 class ClasePanel extends StatefulWidget {
   Clase clase;
   Centro centro;
@@ -23,7 +24,7 @@ class _ClasePanelState extends State<ClasePanel> {
   @override
   void initState() {
     Future.delayed(
-      Duration(milliseconds: 1),
+      const Duration(milliseconds: 1),
       () async {
         user = await usersBBDD().getUsuario();
         setState(() {
@@ -48,7 +49,7 @@ class _ClasePanelState extends State<ClasePanel> {
                     clase: widget.clase,
                   )));
         },
-        child: Icon(Icons.edit),
+        child: const Icon(Icons.edit),
       ),
       body: SingleChildScrollView(
         child: Column(

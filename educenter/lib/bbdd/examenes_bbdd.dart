@@ -1,5 +1,4 @@
 import 'package:educenter/bbdd/alumnos_bbdd.dart';
-import 'package:educenter/bbdd/clases_bbdd.dart';
 import 'package:educenter/bbdd/profesores_bbdd.dart';
 import 'package:educenter/bbdd/users_bbdd.dart';
 import 'package:educenter/models/alumno.dart';

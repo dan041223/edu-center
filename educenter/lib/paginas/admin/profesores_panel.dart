@@ -7,6 +7,7 @@ import 'package:educenter/paginas/padre/profesor_panel.dart';
 import 'package:educenter/paginas/profe/crear_profesor.dart';
 import 'package:flutter/material.dart';
 
+// ignore: must_be_immutable
 class ProfesoresPanel extends StatefulWidget {
   Centro centro;
   ProfesoresPanel({super.key, required this.centro});
@@ -22,7 +23,7 @@ class _ProfesoresPanelState extends State<ProfesoresPanel> {
   @override
   void initState() {
     Future.delayed(
-      Duration(milliseconds: 1),
+      const Duration(milliseconds: 1),
       () async {
         admin = await usersBBDD().getUsuario();
         profesoresCentro =
@@ -49,7 +50,7 @@ class _ProfesoresPanelState extends State<ProfesoresPanel> {
             ),
           ));
         },
-        child: Icon(Icons.person_add_alt_1),
+        child: const Icon(Icons.person_add_alt_1),
       ),
       body: SingleChildScrollView(
         child: Column(
@@ -72,16 +73,16 @@ class _ProfesoresPanelState extends State<ProfesoresPanel> {
               ),
             ),
             loading
-                ? Center(
+                ? const Center(
                     child: CircularProgressIndicator(),
                   )
                 : profesoresCentro.isEmpty
-                    ? Center(
+                    ? const Center(
                         child: Text("El centro no posee profesores"),
                       )
                     : ListView.builder(
                         shrinkWrap: true,
-                        physics: NeverScrollableScrollPhysics(),
+                        physics: const NeverScrollableScrollPhysics(),
                         itemCount: profesoresCentro.length,
                         itemBuilder: (context, index) {
                           return Card(
@@ -150,20 +151,21 @@ class _ProfesoresPanelState extends State<ProfesoresPanel> {
                                             await usersBBDD().deleteUser(
                                                 profesoresCentro[index]
                                                     .id_usuario);
+                                            // ignore: use_build_context_synchronously
                                             ScaffoldMessenger.of(context)
                                                 .showSnackBar(const SnackBar(
                                                     content: Text(
                                                         "Usuario eliminado correctamente")));
                                           } catch (e) {
-                                            print("ERROR: " + e.toString());
+                                            // ignore: use_build_context_synchronously
                                             ScaffoldMessenger.of(context)
-                                                .showSnackBar(SnackBar(
+                                                .showSnackBar(const SnackBar(
                                                     content: Text(
                                                         "No se ha podido eliminar ya que posee datos asociados")));
                                           }
                                         } else {}
                                       },
-                                      icon: Icon(
+                                      icon: const Icon(
                                         Icons.delete_rounded,
                                         size: 30,
                                         color: Colors.red,

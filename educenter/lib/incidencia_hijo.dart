@@ -3,13 +3,13 @@ import 'package:educenter/components/fecha_xs.dart';
 import 'package:educenter/models/incidencia.dart';
 import 'package:educenter/models/usuario.dart';
 import 'package:educenter/paginas/padre/profesor_panel.dart';
-import 'package:educenter/paginas/profe/alumno_perfil.dart';
 import 'package:educenter/utils.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 // ignore: unnecessary_import
 import 'package:flutter/widgets.dart';
 
+// ignore: must_be_immutable
 class IncidenciaHijo extends StatefulWidget {
   Usuario? user;
   Incidencia incidenciaSeleccionada;
@@ -32,7 +32,7 @@ class _IncidenciaHijoState extends State<IncidenciaHijo> {
   @override
   void initState() {
     Future.delayed(
-      Duration(milliseconds: 1),
+      const Duration(milliseconds: 1),
       () async {
         widget.user = await usersBBDD().getUsuario();
         setState(() {});
@@ -53,7 +53,7 @@ class _IncidenciaHijoState extends State<IncidenciaHijo> {
         ),
       ),
       body: Padding(
-        padding: EdgeInsets.all(10),
+        padding: const EdgeInsets.all(10),
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
           Container(
               decoration: BoxDecoration(

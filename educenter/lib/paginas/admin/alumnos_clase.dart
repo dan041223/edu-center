@@ -1,14 +1,13 @@
 import 'package:confirm_dialog/confirm_dialog.dart';
 import 'package:educenter/bbdd/alumnos_bbdd.dart';
-import 'package:educenter/bbdd/users_bbdd.dart';
 import 'package:educenter/models/alumno.dart';
 import 'package:educenter/models/centro.dart';
 import 'package:educenter/models/clase.dart';
 import 'package:educenter/paginas/admin/alumno_perfil_admin.dart';
 import 'package:educenter/paginas/admin/crear_alumno.dart';
-import 'package:educenter/paginas/profe/alumno_perfil.dart';
 import 'package:flutter/material.dart';
 
+// ignore: must_be_immutable
 class AlumnosClase extends StatefulWidget {
   Centro centro;
   Clase clase;
@@ -24,7 +23,7 @@ class _AlumnosClaseState extends State<AlumnosClase> {
   @override
   void initState() {
     Future.delayed(
-      Duration(milliseconds: 1),
+      const Duration(milliseconds: 1),
       () async {
         alumnosClase = await AlumnosBBDD().getAlumnosClase(widget.clase);
         setState(() {
@@ -49,18 +48,18 @@ class _AlumnosClaseState extends State<AlumnosClase> {
             ),
           ));
         },
-        child: Icon(Icons.add),
+        child: const Icon(Icons.add),
       ),
       body: SingleChildScrollView(
         child: Column(
           children: [
             loading
-                ? Center(
+                ? const Center(
                     child: CircularProgressIndicator(),
                   )
                 : ListView.builder(
                     shrinkWrap: true,
-                    physics: NeverScrollableScrollPhysics(),
+                    physics: const NeverScrollableScrollPhysics(),
                     itemCount: alumnosClase.length,
                     itemBuilder: (context, index) {
                       return Card(
@@ -126,6 +125,7 @@ class _AlumnosClaseState extends State<AlumnosClase> {
                                       try {
                                         await AlumnosBBDD().deleteAlumno(
                                             alumnosClase[index].id_alumno);
+                                        // ignore: use_build_context_synchronously
                                         ScaffoldMessenger.of(context)
                                             .showSnackBar(const SnackBar(
                                                 content: Text(
@@ -139,7 +139,7 @@ class _AlumnosClaseState extends State<AlumnosClase> {
                                       }
                                     } else {}
                                   },
-                                  icon: Icon(
+                                  icon: const Icon(
                                     Icons.delete_rounded,
                                     size: 30,
                                     color: Colors.red,

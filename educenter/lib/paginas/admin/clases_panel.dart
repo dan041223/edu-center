@@ -1,13 +1,13 @@
 import 'package:confirm_dialog/confirm_dialog.dart';
 import 'package:educenter/bbdd/centro_bbdd.dart';
 import 'package:educenter/bbdd/clases_bbdd.dart';
-import 'package:educenter/bbdd/users_bbdd.dart';
 import 'package:educenter/models/centro.dart';
 import 'package:educenter/models/clase.dart';
 import 'package:educenter/paginas/admin/clase_panel.dart';
 import 'package:educenter/paginas/admin/crear_clase.dart';
 import 'package:flutter/material.dart';
 
+// ignore: must_be_immutable
 class ClasesPanel extends StatefulWidget {
   Centro centro;
   ClasesPanel({super.key, required this.centro});
@@ -22,7 +22,7 @@ class _ClasesPanelState extends State<ClasesPanel> {
   @override
   void initState() {
     Future.delayed(
-      Duration(milliseconds: 1),
+      const Duration(milliseconds: 1),
       () async {
         clasesCentro = await CentroBBDD().getClasesCentro(widget.centro);
         setState(() {
@@ -39,7 +39,7 @@ class _ClasesPanelState extends State<ClasesPanel> {
     bool esOscuro = brillo == Brightness.dark;
     return Scaffold(
       appBar: AppBar(
-        title: Text('Panel de Clases'),
+        title: const Text('Panel de Clases'),
         backgroundColor: Colors.blue,
       ),
       floatingActionButton: FloatingActionButton(
@@ -48,8 +48,8 @@ class _ClasesPanelState extends State<ClasesPanel> {
             builder: (context) => CrearClase(centro: widget.centro),
           ));
         },
-        child: Icon(Icons.add),
         backgroundColor: Colors.blue,
+        child: const Icon(Icons.add),
       ),
       body: SingleChildScrollView(
         child: Column(
@@ -59,10 +59,10 @@ class _ClasesPanelState extends State<ClasesPanel> {
               decoration: BoxDecoration(
                 shape: BoxShape.rectangle,
                 color: esOscuro ? Colors.white : Colors.blue.shade50,
-                borderRadius: BorderRadius.all(Radius.circular(20)),
+                borderRadius: const BorderRadius.all(Radius.circular(20)),
               ),
-              margin: EdgeInsets.all(10),
-              padding: EdgeInsets.all(25),
+              margin: const EdgeInsets.all(10),
+              padding: const EdgeInsets.all(25),
               child: Text(
                 "Clases del centro",
                 textAlign: TextAlign.center,
@@ -74,22 +74,22 @@ class _ClasesPanelState extends State<ClasesPanel> {
               ),
             ),
             loading
-                ? Center(
+                ? const Center(
                     child: CircularProgressIndicator(),
                   )
                 : ListView.builder(
                     shrinkWrap: true,
-                    physics: NeverScrollableScrollPhysics(),
+                    physics: const NeverScrollableScrollPhysics(),
                     itemCount: clasesCentro.length,
                     itemBuilder: (context, index) {
                       return Card(
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(15.0),
                         ),
-                        margin: EdgeInsets.symmetric(
+                        margin: const EdgeInsets.symmetric(
                             vertical: 8.0, horizontal: 16.0),
                         child: Padding(
-                          padding: EdgeInsets.all(20),
+                          padding: const EdgeInsets.all(20),
                           child: InkWell(
                             onTap: () {
                               Navigator.of(context).push(MaterialPageRoute(
@@ -104,7 +104,7 @@ class _ClasesPanelState extends State<ClasesPanel> {
                               children: [
                                 Text(
                                   clasesCentro[index].nombre_clase,
-                                  style: TextStyle(
+                                  style: const TextStyle(
                                       fontSize: 18,
                                       fontWeight: FontWeight.w500),
                                 ),
@@ -121,6 +121,7 @@ class _ClasesPanelState extends State<ClasesPanel> {
                                       try {
                                         await ClasesBBDD()
                                             .deleteClase(clasesCentro[index]);
+                                        // ignore: use_build_context_synchronously
                                         ScaffoldMessenger.of(context)
                                             .showSnackBar(
                                           const SnackBar(
@@ -132,6 +133,7 @@ class _ClasesPanelState extends State<ClasesPanel> {
                                           clasesCentro.removeAt(index);
                                         });
                                       } catch (e) {
+                                        // ignore: use_build_context_synchronously
                                         ScaffoldMessenger.of(context)
                                             .showSnackBar(
                                           const SnackBar(
@@ -142,7 +144,7 @@ class _ClasesPanelState extends State<ClasesPanel> {
                                       }
                                     }
                                   },
-                                  icon: Icon(
+                                  icon: const Icon(
                                     Icons.delete,
                                     color: Colors.red,
                                   ),

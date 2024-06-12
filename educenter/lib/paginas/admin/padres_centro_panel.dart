@@ -7,6 +7,7 @@ import 'package:educenter/paginas/admin/agregar_padre.dart';
 import 'package:educenter/paginas/admin/padre_panel_admin.dart';
 import 'package:flutter/material.dart';
 
+// ignore: must_be_immutable
 class PadresCentroPanel extends StatefulWidget {
   Centro centro;
   PadresCentroPanel({super.key, required this.centro});
@@ -21,7 +22,7 @@ class _PadresCentroPanelState extends State<PadresCentroPanel> {
   @override
   void initState() {
     Future.delayed(
-      Duration(milliseconds: 1),
+      const Duration(milliseconds: 1),
       () async {
         listaPadresCentro = await CentroBBDD().getPadresCentro(widget.centro);
         setState(() {
@@ -44,7 +45,7 @@ class _PadresCentroPanelState extends State<PadresCentroPanel> {
             builder: (context) => AgregarPadre(centro: widget.centro),
           ));
         },
-        child: Icon(Icons.add),
+        child: const Icon(Icons.add),
       ),
       body: SingleChildScrollView(
         child: Column(
@@ -67,16 +68,16 @@ class _PadresCentroPanelState extends State<PadresCentroPanel> {
               ),
             ),
             loading
-                ? Center(
+                ? const Center(
                     child: CircularProgressIndicator(),
                   )
                 : listaPadresCentro.isEmpty
-                    ? Center(
+                    ? const Center(
                         child: Text("El centro no posee padres registrados"),
                       )
                     : ListView.builder(
                         shrinkWrap: true,
-                        physics: NeverScrollableScrollPhysics(),
+                        physics: const NeverScrollableScrollPhysics(),
                         itemCount: listaPadresCentro.length,
                         itemBuilder: (context, index) {
                           return Card(
@@ -145,20 +146,21 @@ class _PadresCentroPanelState extends State<PadresCentroPanel> {
                                             await usersBBDD().deleteUser(
                                                 listaPadresCentro[index]
                                                     .id_usuario);
+                                            // ignore: use_build_context_synchronously
                                             ScaffoldMessenger.of(context)
                                                 .showSnackBar(const SnackBar(
                                                     content: Text(
                                                         "Usuario eliminado correctamente")));
                                           } catch (e) {
-                                            print("ERROR: " + e.toString());
+                                            // ignore: use_build_context_synchronously
                                             ScaffoldMessenger.of(context)
-                                                .showSnackBar(SnackBar(
+                                                .showSnackBar(const SnackBar(
                                                     content: Text(
                                                         "No se ha podido eliminar ya que posee datos asociados")));
                                           }
                                         } else {}
                                       },
-                                      icon: Icon(
+                                      icon: const Icon(
                                         Icons.delete_rounded,
                                         size: 30,
                                         color: Colors.red,

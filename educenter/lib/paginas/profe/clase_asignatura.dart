@@ -9,8 +9,8 @@ import 'package:educenter/paginas/admin/editar_asignatura.dart';
 import 'package:educenter/paginas/profe/alumno_perfil.dart';
 import 'package:educenter/utils.dart';
 import 'package:flutter/material.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
 
+// ignore: must_be_immutable
 class ClaseAsignatura extends StatefulWidget {
   Centro? centro;
   Usuario? usuario;
@@ -64,7 +64,7 @@ class _ClaseAsignaturaState extends State<ClaseAsignatura> {
                             centro: widget.centro!),
                       ));
                     },
-                    child: Icon(Icons.edit),
+                    child: const Icon(Icons.edit),
                   )
                 : Container(),
         body: loading

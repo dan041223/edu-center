@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_datetime_picker_plus/flutter_datetime_picker_plus.dart';
 import 'package:numberpicker/numberpicker.dart';
 
+// ignore: must_be_immutable
 class EditarExamen extends StatefulWidget {
   double? notaElegida;
   int trimestre = 1;
@@ -237,7 +238,9 @@ class _EditarExamenState extends State<EditarExamen> {
         widget.trimestre,
       );
 
+      // ignore: use_build_context_synchronously
       Navigator.pop(context);
+      // ignore: use_build_context_synchronously
       ScaffoldMessenger.of(context)
           .showSnackBar(const SnackBar(content: Text("Examen modificado")));
     }

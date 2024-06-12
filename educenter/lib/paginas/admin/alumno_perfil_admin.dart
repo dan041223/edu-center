@@ -9,6 +9,7 @@ import 'package:educenter/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:multi_dropdown/multiselect_dropdown.dart';
 
+// ignore: must_be_immutable
 class AlumnoPerfilAdmin extends StatefulWidget {
   Alumno alumno;
   Centro centro;
@@ -29,7 +30,7 @@ class _AlumnoPerfilAdminState extends State<AlumnoPerfilAdmin> {
   @override
   void initState() {
     Future.delayed(
-      Duration(milliseconds: 1),
+      const Duration(milliseconds: 1),
       () async {
         user = await usersBBDD().getUsuario();
         padresAlumno = await AlumnosBBDD().getPadresDeAlumno(widget.alumno);
@@ -40,14 +41,13 @@ class _AlumnoPerfilAdminState extends State<AlumnoPerfilAdmin> {
             .map((padre) => padre.id_usuario)
             .contains(element.id_usuario));
 
-        padresCentroNoDeAlumno.forEach((padre) {
+        for (var padre in padresCentroNoDeAlumno) {
           listaItems.add(ValueItem(
               value: padre, label: "${padre.nombre} ${padre.apellido}"));
-        });
+        }
         setState(() {
           loading = false;
         });
-        print("object");
       },
     );
     super.initState();
@@ -68,7 +68,7 @@ class _AlumnoPerfilAdminState extends State<AlumnoPerfilAdmin> {
             ),
           ));
         },
-        child: Icon(Icons.edit),
+        child: const Icon(Icons.edit),
       ),
       body: SingleChildScrollView(
         child: Padding(
@@ -97,7 +97,7 @@ class _AlumnoPerfilAdminState extends State<AlumnoPerfilAdmin> {
                                   widget.alumno.url_foto_perfil!.toString(),
                                   fit: BoxFit.cover,
                                 )
-                              : Icon(Icons.person,
+                              : const Icon(Icons.person,
                                   color: Colors.black, size: 80)),
                       const SizedBox(
                         width: 20,
@@ -122,13 +122,13 @@ class _AlumnoPerfilAdminState extends State<AlumnoPerfilAdmin> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text(
+                        const Text(
                           "Padres del alumno",
                           style: TextStyle(
                               fontSize: 20, fontWeight: FontWeight.bold),
                         ),
                         loading
-                            ? CircularProgressIndicator()
+                            ? const CircularProgressIndicator()
                             : IconButton(
                                 onPressed: () {
                                   setState(() {
@@ -137,22 +137,22 @@ class _AlumnoPerfilAdminState extends State<AlumnoPerfilAdmin> {
                                         : modoAgregarPadres = true;
                                   });
                                 },
-                                icon: Icon(
+                                icon: const Icon(
                                   Icons.person_add,
                                   color: Colors.green,
                                 ))
                       ],
                     ),
-                    Divider(
+                    const Divider(
                       height: 10,
                     ),
                     loading
-                        ? Center(
+                        ? const Center(
                             child: CircularProgressIndicator(),
                           )
                         : !modoAgregarPadres
                             ? padresAlumno.isEmpty
-                                ? Text(
+                                ? const Text(
                                     "Este alumno no tiene padres registrados")
                                 : GridView.builder(
                                     shrinkWrap: true,
@@ -209,11 +209,11 @@ class _AlumnoPerfilAdminState extends State<AlumnoPerfilAdmin> {
                                 children: [
                                   Text(
                                     "Agregar padres a ${widget.alumno.nombre}:",
-                                    style: TextStyle(
+                                    style: const TextStyle(
                                         fontSize: 20,
                                         fontWeight: FontWeight.bold),
                                   ),
-                                  SizedBox(
+                                  const SizedBox(
                                     height: 10,
                                   ),
                                   padresCentroNoDeAlumno.isEmpty
@@ -248,21 +248,22 @@ class _AlumnoPerfilAdminState extends State<AlumnoPerfilAdmin> {
                                                   padresSeleccionados.isEmpty
                                                       ? ScaffoldMessenger.of(
                                                               context)
-                                                          .showSnackBar(SnackBar(
-                                                              content: Text(
-                                                                  "Sin nuevos padres seleccionados")))
+                                                          .showSnackBar(
+                                                              const SnackBar(
+                                                                  content: Text(
+                                                                      "Sin nuevos padres seleccionados")))
                                                       : AlumnosBBDD()
                                                           .agregarPadres(
                                                               padresSeleccionados,
                                                               widget.alumno);
                                                   ScaffoldMessenger.of(context)
                                                       .showSnackBar(
-                                                    SnackBar(
+                                                    const SnackBar(
                                                         content: Text(
                                                             "Padres agregados")),
                                                   );
                                                 },
-                                                child: Row(
+                                                child: const Row(
                                                   children: [
                                                     Icon(
                                                       Icons.check,

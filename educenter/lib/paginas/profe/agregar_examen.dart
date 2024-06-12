@@ -11,6 +11,7 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_datetime_picker_plus/flutter_datetime_picker_plus.dart';
 import 'package:numberpicker/numberpicker.dart';
 
+// ignore: must_be_immutable
 class AgregarExamen extends StatefulWidget {
   dynamic elementoSeleccionado1;
   dynamic elementoSeleccionado2;
@@ -35,14 +36,14 @@ class _AgregarExamenState extends State<AgregarExamen> {
   @override
   void initState() {
     Future.delayed(
-      Duration(milliseconds: 1),
+      const Duration(milliseconds: 1),
       () async {
         clasesDeProfesor =
             await ProfesoresBBDD().getClasesProfesor(widget.profe);
-        clasesDeProfesor.forEach((clase) {
+        for (var clase in clasesDeProfesor) {
           dropDownItemsClases.add(
               DropdownMenuItem(value: clase, child: Text(clase.nombre_clase)));
-        });
+        }
         setState(() {
           loading = false;
         });
@@ -203,10 +204,10 @@ class _AgregarExamenState extends State<AgregarExamen> {
                                 padding: const EdgeInsets.all(12.0),
                                 child: Row(
                                   children: [
-                                    Icon(
+                                    const Icon(
                                       Icons.calendar_today,
                                     ),
-                                    SizedBox(
+                                    const SizedBox(
                                       width: 20,
                                     ),
                                     Flexible(
@@ -218,7 +219,7 @@ class _AgregarExamenState extends State<AgregarExamen> {
                                                 .split(" ")
                                                 .first
                                             : "No se ha seleccionado una fecha*",
-                                        style: TextStyle(
+                                        style: const TextStyle(
                                             fontWeight: FontWeight.bold),
                                       ),
                                     )
@@ -269,7 +270,6 @@ class _AgregarExamenState extends State<AgregarExamen> {
                                 context,
                               );
                             },
-                            child: const Text("Crear examen"),
                             style: ElevatedButton.styleFrom(
                               backgroundColor: Colors.blue,
                               padding: const EdgeInsets.symmetric(
@@ -280,6 +280,7 @@ class _AgregarExamenState extends State<AgregarExamen> {
                                 borderRadius: BorderRadius.circular(20.0),
                               ),
                             ),
+                            child: const Text("Crear examen"),
                           ),
                         ],
                       ),

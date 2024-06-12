@@ -1,7 +1,5 @@
 // ignore_for_file: must_be_immutable
 
-import 'package:educenter/bbdd/centro_bbdd.dart';
-import 'package:educenter/bbdd/clases_bbdd.dart';
 import 'package:educenter/bbdd/profesores_bbdd.dart';
 import 'package:educenter/models/alumno.dart';
 import 'package:educenter/models/asignatura.dart';
@@ -9,9 +7,7 @@ import 'package:educenter/models/centro.dart';
 import 'package:educenter/models/clase.dart';
 import 'package:educenter/models/usuario.dart';
 import 'package:educenter/paginas/admin/editar_profesor.dart';
-import 'package:educenter/utils.dart';
 import 'package:flutter/material.dart';
-import 'package:multi_dropdown/multiselect_dropdown.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class ProfesorPanel extends StatefulWidget {
@@ -44,6 +40,7 @@ class _ProfesorPanelState extends State<ProfesorPanel> {
   // List<ValueItem> listaAsignaturasDropdownSeleccionadas =
   //     List.empty(growable: true);
   // @override
+  @override
   void initState() {
     super.initState();
     Future.delayed(const Duration(milliseconds: 1), () async {
@@ -104,7 +101,7 @@ class _ProfesorPanelState extends State<ProfesorPanel> {
                   ),
                 ));
               },
-              child: Icon(Icons.edit),
+              child: const Icon(Icons.edit),
             )
           : Container(),
       body: Column(
@@ -194,7 +191,7 @@ class _ProfesorPanelState extends State<ProfesorPanel> {
                     child: Padding(
                       padding: const EdgeInsets.only(bottom: 15.0),
                       child: loading
-                          ? Center(
+                          ? const Center(
                               child: CircularProgressIndicator(),
                             )
                           : ListView.builder(

@@ -1,11 +1,11 @@
 import 'package:educenter/bbdd/incidencia_bbdd.dart';
-import 'package:educenter/bbdd/users_bbdd.dart';
 import 'package:educenter/models/alumno.dart';
 import 'package:educenter/models/usuario.dart';
 import 'package:educenter/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_datetime_picker_plus/flutter_datetime_picker_plus.dart';
 
+// ignore: must_be_immutable
 class AgregarIncidencia extends StatefulWidget {
   Usuario profesor;
   Alumno alumno;
@@ -166,7 +166,7 @@ class _AgregarIncidenciaState extends State<AgregarIncidencia> {
                                 padding: const EdgeInsets.all(12.0),
                                 child: Row(
                                   children: [
-                                    Icon(
+                                    const Icon(
                                       Icons.calendar_today,
                                       color: Colors.blue,
                                     ),
@@ -182,7 +182,7 @@ class _AgregarIncidenciaState extends State<AgregarIncidencia> {
                                                 .split(" ")
                                                 .first
                                             : "No se ha seleccionado una fecha*",
-                                        style: TextStyle(
+                                        style: const TextStyle(
                                             fontWeight: FontWeight.bold),
                                       ),
                                     )

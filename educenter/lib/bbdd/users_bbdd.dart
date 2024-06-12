@@ -3,7 +3,6 @@
 import 'package:educenter/paginas/admin/main_menu_admin.dart';
 import 'package:educenter/paginas/autenticacion/login.dart';
 import 'package:educenter/paginas/padre/main_menu.dart';
-import 'package:educenter/paginas/profe/clases_profe.dart';
 import 'package:educenter/models/usuario.dart';
 import 'package:educenter/paginas/profe/main_menu_profe.dart';
 import 'package:flutter/material.dart';
